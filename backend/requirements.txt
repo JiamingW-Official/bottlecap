@@ -5,7 +5,7 @@ redis==5.2.1
 httpx==0.28.1
 anthropic==0.43.0
 supabase==2.11.0
-resend==2.5.0
+resend==2.23.0
 pytrends==4.9.2
 beautifulsoup4==4.12.3
 sse-starlette==2.2.1
