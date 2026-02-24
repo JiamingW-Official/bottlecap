@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir=false --import-alias=\"@/*\" --use-npm 2>&1)",
+      "Bash(cd C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap:*)",
+      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && rm -rf tmpinit 2>/dev/null; mkdir -p nxinit && echo -e \"No\\\\n\" | npx create-next-app@latest nxinit --typescript --tailwind --eslint --app --src-dir=false --import-alias=\"@/*\" --use-npm 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npm init -y 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npm install next@14 react react-dom typescript @types/react @types/node 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npm install tailwindcss @tailwindcss/postcss postcss autoprefixer eslint eslint-config-next 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npm install @anthropic-ai/sdk @supabase/supabase-js stripe resend framer-motion html-to-image lucide-react @vercel/og 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npx shadcn@latest init -d 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npx shadcn@latest add button card input textarea progress badge separator toast dialog -y 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npx shadcn@latest add button card input textarea progress badge separator sonner dialog -y 2>&1)",
+      "Bash(true:*)",
+      "Bash(tail:*)",
+      "Bash(cd \"C:/Users/Jwmon/OneDrive/文档/Github/bottlecap\" && npx tsc --noEmit app/page.tsx 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npm run build 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npm run lint 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npx eslint --version 2>&1)",
+      "Bash(head:*)",
+      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npm install --save-dev eslint@8 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npm install --save-dev eslint@8 eslint-config-next@14 2>&1)"
+    ]
+  }
+}
