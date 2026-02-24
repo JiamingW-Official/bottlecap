@@ -1,14 +1,21 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useParams } from "next/navigation"
+import { useState, useEffect, useRef, useCallback, Suspense } from "react"
+import { useParams, useSearchParams } from "next/navigation"
+import { motion, AnimatePresence } from "framer-motion"
 import ReportCard from "@/components/ReportCard"
 import ShareButton from "@/components/ShareButton"
-import { Copy, Check, ChevronDown, ChevronUp } from "lucide-react"
+import RadarChart from "@/components/RadarChart"
+import CostBreakdownChart from "@/components/CostBreakdownChart"
+import { Copy, Check, ChevronDown, ChevronUp, Download, AlertTriangle, Lightbulb, TrendingUp } from "lucide-react"
+import { toast } from "sonner"
 import { AnalysisResult, Report } from "@/types"
 
-export default function ReportPage() {
+const MAX_POLL_MS = 10 * 60 * 1000 // 10 minutes
+
+function ReportContent() {
   const params = useParams()
+  const searchParams = useSearchParams()
   const id = params.id as string
 
   const [report, setReport] = useState<Report | null>(null)
@@ -20,11 +27,37 @@ export default function ReportPage() {
   )
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
 
+  // Ref to track whether polling should continue (avoids stale closure)
+  const shouldPollRef = useRef(true)
+  const pollStartRef = useRef(Date.now())
+
+  // Show success toast on payment redirect
+  useEffect(() => {
+    if (searchParams.get("success") === "true") {
+      toast.success("Payment confirmed! Your report is being generated.")
+    }
+  }, [searchParams])
+
+  // Initialize checklist from localStorage
+  useEffect(() => {
+    if (!id) return
+    try {
+      const saved = localStorage.getItem(`bottlecap_checklist_${id}`)
+      if (saved) {
+        const parsed: number[] = JSON.parse(saved)
+        setCheckedItems(new Set(parsed))
+      }
+    } catch {}
+  }, [id])
+
   // -------------------------------------------------------------------------
-  // Polling: fetch report on mount, then every 5s until status === "complete"
+  // Polling: fetch report on mount, then every 5s until complete/failed
   // -------------------------------------------------------------------------
   useEffect(() => {
     if (!id) return
+
+    pollStartRef.current = Date.now()
+    shouldPollRef.current = true
 
     const fetchData = async () => {
       try {
@@ -32,34 +65,64 @@ export default function ReportPage() {
         if (!res.ok) {
           setError("Report not found")
           setLoading(false)
+          shouldPollRef.current = false
           return
         }
         const data = await res.json()
         setReport(data.report)
         setLoading(false)
+
+        if (
+          data.report.status === "complete" ||
+          data.report.status === "failed"
+        ) {
+          shouldPollRef.current = false
+        }
       } catch {
         setError("Failed to load report")
         setLoading(false)
+        shouldPollRef.current = false
       }
     }
 
     fetchData()
 
     const interval = setInterval(async () => {
-      if (report?.status === "complete") return
+      // Stop polling if report is done, or max timeout exceeded
+      if (!shouldPollRef.current) {
+        clearInterval(interval)
+        return
+      }
+      if (Date.now() - pollStartRef.current > MAX_POLL_MS) {
+        shouldPollRef.current = false
+        clearInterval(interval)
+        setError("Report generation timed out. Please contact support.")
+        return
+      }
+
       try {
         const res = await fetch(`/api/report?id=${id}`)
         if (res.ok) {
           const data = await res.json()
           setReport(data.report)
+          if (
+            data.report.status === "complete" ||
+            data.report.status === "failed"
+          ) {
+            shouldPollRef.current = false
+            clearInterval(interval)
+          }
         }
       } catch {
         // Silently retry on next interval
       }
     }, 5000)
 
-    return () => clearInterval(interval)
-  }, [id, report?.status])
+    return () => {
+      shouldPollRef.current = false
+      clearInterval(interval)
+    }
+  }, [id])
 
   // -------------------------------------------------------------------------
   // Helpers
@@ -73,14 +136,24 @@ export default function ReportPage() {
     })
   }
 
-  const toggleCheck = (index: number) => {
-    setCheckedItems((prev) => {
-      const next = new Set(prev)
-      if (next.has(index)) next.delete(index)
-      else next.add(index)
-      return next
-    })
-  }
+  const toggleCheck = useCallback(
+    (index: number) => {
+      setCheckedItems((prev) => {
+        const next = new Set(prev)
+        if (next.has(index)) next.delete(index)
+        else next.add(index)
+        // Persist to localStorage
+        try {
+          localStorage.setItem(
+            `bottlecap_checklist_${id}`,
+            JSON.stringify(Array.from(next))
+          )
+        } catch {}
+        return next
+      })
+    },
+    [id]
+  )
 
   const handleCopySpec = (spec: string, index: number) => {
     navigator.clipboard.writeText(spec)
@@ -105,9 +178,20 @@ export default function ReportPage() {
           <ChevronDown className="w-5 h-5 text-[#6B6B6B]" />
         )}
       </button>
-      {expandedSections.has(sectionId) && (
-        <div className="px-6 pb-6">{content}</div>
-      )}
+      <AnimatePresence initial={false}>
+        {expandedSections.has(sectionId) && (
+          <motion.div
+            key={sectionId}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="px-6 pb-6">{content}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 
@@ -138,10 +222,7 @@ export default function ReportPage() {
             strokeLinecap="round"
           />
         </svg>
-        <h2 className="text-2xl font-bold mt-6">
-          Your report is being generated...
-        </h2>
-        <p className="text-[#6B6B6B] mt-2">Usually takes 2-5 minutes</p>
+        <h2 className="text-2xl font-bold mt-6">Loading report...</h2>
       </div>
     )
   }
@@ -154,8 +235,39 @@ export default function ReportPage() {
       <div className="min-h-screen flex flex-col items-center justify-center">
         <h2 className="text-2xl font-bold">Report not found</h2>
         <p className="text-[#6B6B6B] mt-2">
-          This report may have been removed or the link is invalid.
+          {error ||
+            "This report may have been removed or the link is invalid."}
         </p>
+        <a
+          href="mailto:hello@bottlecap.io"
+          className="mt-4 text-[#FF6B35] hover:underline text-sm"
+        >
+          Contact support
+        </a>
+      </div>
+    )
+  }
+
+  // -------------------------------------------------------------------------
+  // Failed state (shows error instead of spinner forever)
+  // -------------------------------------------------------------------------
+  if (report.status === "failed") {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
+        <div className="w-16 h-16 bg-[#FEE2E2] rounded-full flex items-center justify-center mb-6">
+          <span className="text-3xl">!</span>
+        </div>
+        <h2 className="text-2xl font-bold">Something went wrong</h2>
+        <p className="text-[#6B6B6B] mt-2 max-w-md">
+          We hit an issue generating your report. Our team has been notified
+          and will look into it.
+        </p>
+        <a
+          href="mailto:hello@bottlecap.io"
+          className="mt-4 bg-[#FF6B35] text-white rounded-full px-6 py-2 text-sm font-semibold hover:bg-[#E85A25] transition-colors"
+        >
+          Email support
+        </a>
       </div>
     )
   }
@@ -223,8 +335,9 @@ export default function ReportPage() {
             analysis={analysis}
             productName={report.productName || "Product"}
             reportId={report.id}
+            completedAt={report.completedAt}
           />
-          <div className="mt-6 flex justify-center">
+          <div className="mt-6">
             <ShareButton
               productName={report.productName || "Product"}
               analysis={analysis}
@@ -235,73 +348,221 @@ export default function ReportPage() {
 
         {/* Right column - scrollable details */}
         <div className="lg:w-[60%] space-y-6">
-          {/* Section 1: Supplier Country Comparison */}
+          {/* Section: Product Classification */}
           {renderSection(
-            "countries",
-            "Supplier Country Comparison",
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-[#E8E8E4]">
-                    <th className="text-left py-3 font-semibold">Country</th>
-                    <th className="text-left py-3 font-semibold">Tariff</th>
-                    <th className="text-left py-3 font-semibold">Lead Time</th>
-                    <th className="text-left py-3 font-semibold">MOQ</th>
-                    <th className="text-left py-3 font-semibold">Score</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {analysis.sourcingCountries.map((c, i) => (
-                    <tr
-                      key={c.countryCode}
-                      className={`border-b border-[#E8E8E4] ${i === 0 ? "bg-[#FFF0EB]" : ""}`}
-                    >
-                      <td className="py-3">
-                        {c.countryEmoji} {c.country}
-                      </td>
-                      <td className="py-3">{c.tariffRate}%</td>
-                      <td className="py-3">{c.leadTimeDays} days</td>
-                      <td className="py-3">{c.moq.toLocaleString()}</td>
-                      <td className="py-3 font-semibold">
-                        {c.recommendationScore}/100
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {/* Show pros/cons for top country */}
-              {analysis.sourcingCountries.length > 0 && (
-                <div className="mt-4 grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-semibold text-[#22C55E] mb-2">
-                      Pros
-                    </p>
-                    <ul className="space-y-1">
-                      {analysis.sourcingCountries[0]?.pros.map((p, i) => (
-                        <li key={i} className="text-sm text-[#6B6B6B]">
-                          + {p}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-[#EF4444] mb-2">
-                      Cons
-                    </p>
-                    <ul className="space-y-1">
-                      {analysis.sourcingCountries[0]?.cons.map((c, i) => (
-                        <li key={i} className="text-sm text-[#6B6B6B]">
-                          - {c}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+            "classification",
+            "Product Classification",
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-[#F5F5F0] rounded-xl p-4">
+                  <p className="text-xs text-[#6B6B6B] mb-1">HS Code</p>
+                  <p className="text-lg font-bold text-[#1A1A1A]">
+                    {analysis.hsCode}
+                  </p>
+                  <p className="text-xs text-[#9B9B9B] mt-1">
+                    Confidence: {analysis.hsCodeConfidence}%
+                  </p>
                 </div>
-              )}
+                <div className="bg-[#F5F5F0] rounded-xl p-4">
+                  <p className="text-xs text-[#6B6B6B] mb-1">Category</p>
+                  <p className="text-lg font-bold text-[#1A1A1A]">
+                    {analysis.category}
+                  </p>
+                </div>
+              </div>
+              <p className="text-sm text-[#6B6B6B]">
+                {analysis.hsCodeExplanation}
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-[#F5F5F0] rounded-xl p-4">
+                  <p className="text-xs text-[#6B6B6B] mb-1">
+                    Cost Assumptions
+                  </p>
+                  <p className="text-sm text-[#1A1A1A]">
+                    {analysis.costEstimate.assumptions}
+                  </p>
+                </div>
+                <div className="bg-[#F5F5F0] rounded-xl p-4">
+                  <p className="text-xs text-[#6B6B6B] mb-1">
+                    Annual Savings vs Sourcing Agent
+                  </p>
+                  <p className="text-lg font-bold text-[#22C55E]">
+                    ${analysis.annualSavingsOpportunity?.toLocaleString() || "N/A"}
+                  </p>
+                </div>
+              </div>
             </div>
           )}
 
-          {/* Section 2: Materials Analysis */}
+          {/* Section: Cost Visualization */}
+          {renderSection(
+            "cost-visual",
+            "Cost Breakdown",
+            <div className="space-y-6">
+              <CostBreakdownChart
+                segments={[
+                  {
+                    label: "Manufacturing",
+                    value: analysis.costEstimate.min * 0.55,
+                    color: "#FF6B35",
+                  },
+                  {
+                    label: "Materials",
+                    value: analysis.costEstimate.min * 0.25,
+                    color: "#FF9F1C",
+                  },
+                  {
+                    label: "Shipping & Logistics",
+                    value: analysis.costEstimate.min * 0.12,
+                    color: "#22C55E",
+                  },
+                  {
+                    label: "Duties & Tariffs",
+                    value: analysis.costEstimate.min * 0.08,
+                    color: "#3B82F6",
+                  },
+                ]}
+                total={analysis.costEstimate.min}
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-[#F5F5F0] rounded-xl p-4 text-center">
+                  <p className="text-xs text-[#6B6B6B]">Low Estimate</p>
+                  <p className="text-2xl font-black text-[#22C55E]">
+                    ${analysis.costEstimate.min.toFixed(2)}
+                  </p>
+                  <p className="text-xs text-[#9B9B9B]">per unit</p>
+                </div>
+                <div className="bg-[#F5F5F0] rounded-xl p-4 text-center">
+                  <p className="text-xs text-[#6B6B6B]">High Estimate</p>
+                  <p className="text-2xl font-black text-[#EF4444]">
+                    ${analysis.costEstimate.max.toFixed(2)}
+                  </p>
+                  <p className="text-xs text-[#9B9B9B]">per unit</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Section: Supplier Country Comparison (card-based, all countries) */}
+          {renderSection(
+            "countries",
+            "Supplier Country Comparison",
+            <div className="space-y-6">
+              {/* Radar chart for top country */}
+              {analysis.sourcingCountries.length > 0 && (
+                <div className="flex flex-col items-center mb-4">
+                  <p className="text-sm text-[#6B6B6B] mb-3">
+                    Top pick: {analysis.sourcingCountries[0].country}
+                  </p>
+                  <RadarChart
+                    data={[
+                      {
+                        label: "Score",
+                        value: analysis.sourcingCountries[0].recommendationScore,
+                      },
+                      {
+                        label: "Cost",
+                        value: Math.max(0, 100 - analysis.sourcingCountries[0].tariffRate * 3),
+                      },
+                      {
+                        label: "Speed",
+                        value: Math.max(0, 100 - analysis.sourcingCountries[0].leadTimeDays * 2),
+                      },
+                      {
+                        label: "MOQ",
+                        value: Math.max(0, 100 - analysis.sourcingCountries[0].moq / 50),
+                      },
+                      {
+                        label: "Quality",
+                        value: Math.min(100, analysis.sourcingCountries[0].recommendationScore + 5),
+                      },
+                    ]}
+                    size={260}
+                  />
+                </div>
+              )}
+              {/* Country cards */}
+              <div className="space-y-4">
+              {analysis.sourcingCountries.map((c, i) => (
+                <div
+                  key={c.countryCode}
+                  className={`rounded-xl border p-5 ${
+                    i === 0
+                      ? "border-[#FF6B35] bg-[#FFF0EB]"
+                      : "border-[#E8E8E4] bg-white"
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">{c.countryEmoji}</span>
+                      <h4 className="font-semibold text-[#1A1A1A]">
+                        {c.country}
+                      </h4>
+                      {i === 0 && (
+                        <span className="text-xs bg-[#FF6B35] text-white px-2 py-0.5 rounded-full">
+                          Top pick
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-lg font-bold text-[#1A1A1A]">
+                      {c.recommendationScore}/100
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3 mb-3 text-sm">
+                    <div>
+                      <p className="text-[#9B9B9B] text-xs">Tariff</p>
+                      <p className="font-semibold">{c.tariffRate}%</p>
+                    </div>
+                    <div>
+                      <p className="text-[#9B9B9B] text-xs">Lead Time</p>
+                      <p className="font-semibold">{c.leadTimeDays} days</p>
+                    </div>
+                    <div>
+                      <p className="text-[#9B9B9B] text-xs">MOQ</p>
+                      <p className="font-semibold">
+                        {c.moq.toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <div>
+                      <p className="text-xs font-semibold text-[#22C55E] mb-1">
+                        Pros
+                      </p>
+                      <ul className="space-y-0.5">
+                        {c.pros.map((p, j) => (
+                          <li key={j} className="text-xs text-[#6B6B6B]">
+                            + {p}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-[#EF4444] mb-1">
+                        Cons
+                      </p>
+                      <ul className="space-y-0.5">
+                        {c.cons.map((con, j) => (
+                          <li key={j} className="text-xs text-[#6B6B6B]">
+                            - {con}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-[#FF6B35] font-medium">
+                    Best for: {c.bestFor}
+                  </p>
+                </div>
+              ))}
+              </div>
+            </div>
+          )}
+
+          {/* Section: Materials Analysis */}
           {renderSection(
             "materials",
             "Materials Analysis",
@@ -338,7 +599,7 @@ export default function ReportPage() {
             </div>
           )}
 
-          {/* Section 3: Manufacturing Specs */}
+          {/* Section: Manufacturing Specs */}
           {renderSection(
             "specs",
             "Manufacturing Specs",
@@ -349,7 +610,7 @@ export default function ReportPage() {
                   className="flex items-center justify-between p-3 bg-[#F5F5F0] rounded-lg"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 bg-[#FF6B35] text-white rounded-full flex items-center justify-center text-xs font-bold">
+                    <span className="w-6 h-6 bg-[#FF6B35] text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">
                       {i + 1}
                     </span>
                     <span className="text-sm">{spec}</span>
@@ -357,6 +618,7 @@ export default function ReportPage() {
                   <button
                     onClick={() => handleCopySpec(spec, i)}
                     className="text-[#9B9B9B] hover:text-[#1A1A1A] transition-colors"
+                    aria-label={`Copy spec ${i + 1}`}
                   >
                     {copiedIndex === i ? (
                       <Check className="w-4 h-4 text-[#22C55E]" />
@@ -369,7 +631,7 @@ export default function ReportPage() {
             </div>
           )}
 
-          {/* Section 4: Optimization Tips */}
+          {/* Section: Optimization Tips */}
           {renderSection(
             "tips",
             "Optimization Tips",
@@ -390,7 +652,7 @@ export default function ReportPage() {
             </div>
           )}
 
-          {/* Section 5: Action Checklist */}
+          {/* Section: Action Checklist */}
           {renderSection(
             "actions",
             "Action Checklist",
@@ -421,6 +683,89 @@ export default function ReportPage() {
             </div>
           )}
 
+          {/* Section: Red Flags */}
+          {analysis.redFlags && analysis.redFlags.length > 0 &&
+            renderSection(
+              "red-flags",
+              "Red Flags & Risks",
+              <div className="space-y-3">
+                {analysis.redFlags.map((flag, i) => (
+                  <div
+                    key={i}
+                    className="flex items-start gap-3 p-3 bg-[#FEF2F2] rounded-lg border-l-4 border-[#EF4444]"
+                  >
+                    <AlertTriangle className="w-5 h-5 text-[#EF4444] shrink-0 mt-0.5" />
+                    <p className="text-sm text-[#1A1A1A]">{flag}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+          {/* Encouraging Note */}
+          {analysis.encouragingNote && (
+            <div className="bg-[#F0FDF4] border border-[#22C55E]/20 rounded-2xl p-6">
+              <div className="flex items-start gap-3">
+                <Lightbulb className="w-6 h-6 text-[#22C55E] shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-semibold text-[#166534] mb-1">
+                    Looking Good!
+                  </h3>
+                  <p className="text-sm text-[#4A4A4A] leading-relaxed">
+                    {analysis.encouragingNote}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Summary Stats Bar */}
+          <div className="bg-white rounded-2xl border border-[#E8E8E4] p-6">
+            <h3 className="font-semibold text-[#1A1A1A] mb-4 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-[#FF6B35]" />
+              Quick Summary
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="text-center">
+                <p className="text-2xl font-black text-[#FF6B35]">
+                  {analysis.feasibilityScore}
+                </p>
+                <p className="text-xs text-[#6B6B6B]">Feasibility Score</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-black text-[#1A1A1A]">
+                  {analysis.sourcingCountries.length}
+                </p>
+                <p className="text-xs text-[#6B6B6B]">Countries Analyzed</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-black text-[#22C55E]">
+                  ${analysis.costEstimate.min}
+                </p>
+                <p className="text-xs text-[#6B6B6B]">Min Unit Cost</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-black text-[#1A1A1A]">
+                  {analysis.optimizationTips.length}
+                </p>
+                <p className="text-xs text-[#6B6B6B]">Optimization Tips</p>
+              </div>
+            </div>
+          </div>
+
+          {/* PDF Export */}
+          <div className="flex justify-center">
+            <button
+              onClick={() => {
+                toast.info("Preparing PDF... This may take a moment.")
+                window.print()
+              }}
+              className="flex items-center gap-2 bg-white border-2 border-[#E8E8E4] rounded-full px-6 py-3 text-sm font-semibold text-[#1A1A1A] hover:border-[#FF6B35] transition-colors"
+            >
+              <Download className="w-4 h-4" />
+              Export as PDF
+            </button>
+          </div>
+
           {/* Upsell Card */}
           <div className="bg-gradient-to-r from-[#FF6B35] to-[#FF9F1C] rounded-2xl p-8 text-white mt-8">
             <h3 className="text-2xl font-bold mb-3">
@@ -430,7 +775,12 @@ export default function ReportPage() {
               Get factory names, direct contact info, WhatsApp numbers, and past
               work examples — all manually verified.
             </p>
-            <button className="bg-white text-[#FF6B35] font-bold rounded-full px-8 py-3 hover:bg-white/90 transition-colors">
+            <button
+              onClick={() => {
+                window.location.href = `mailto:hello@bottlecap.io?subject=Supplier List Request — ${report.productName || "Product"}&body=Hi, I'd like to purchase the verified supplier list for my report (ID: ${report.id}).`
+              }}
+              className="bg-white text-[#FF6B35] font-bold rounded-full px-8 py-3 hover:bg-white/90 transition-colors cursor-pointer"
+            >
               Unlock Supplier List — $199
             </button>
             <p className="text-sm text-white/60 mt-3">
@@ -440,5 +790,13 @@ export default function ReportPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ReportPage() {
+  return (
+    <Suspense>
+      <ReportContent />
+    </Suspense>
   )
 }

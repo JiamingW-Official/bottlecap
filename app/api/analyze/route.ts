@@ -70,13 +70,17 @@ export async function POST(request: Request) {
     // 7. Save results
     await updateAnalysisResult(reportId, analysisResult)
 
-    // 8. Send report-ready email
-    await sendReportReadyEmail(
-      report.userEmail,
-      report.productName || 'Your Product',
-      analysisResult,
-      reportId
-    )
+    // 8. Send report-ready email (isolated — failure must not mark report as failed)
+    try {
+      await sendReportReadyEmail(
+        report.userEmail,
+        report.productName || 'Your Product',
+        analysisResult,
+        reportId
+      )
+    } catch (emailError) {
+      console.error('Failed to send report-ready email (report still complete):', emailError)
+    }
 
     return NextResponse.json({ success: true, reportId })
   } catch (error) {

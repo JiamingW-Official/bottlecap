@@ -20,7 +20,9 @@
       "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npx eslint --version 2>&1)",
       "Bash(head:*)",
       "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npm install --save-dev eslint@8 2>&1)",
-      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npm install --save-dev eslint@8 eslint-config-next@14 2>&1)"
+      "Bash(cd \"C:\\\\Users\\\\Jwmon\\\\OneDrive\\\\文档\\\\Github\\\\bottlecap\" && npm install --save-dev eslint@8 eslint-config-next@14 2>&1)",
+      "Bash(cd \"C:/Users/Jwmon/OneDrive/文档/Github/bottlecap\" && npm run build 2>&1)",
+      "Bash(cd \"C:/Users/Jwmon/OneDrive/文档/Github/bottlecap\" && npm run lint 2>&1)"
     ]
   }
 }

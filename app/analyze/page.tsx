@@ -1,19 +1,23 @@
 "use client"
 
-import Link from "next/link"
+import { useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 import SubmitForm from "@/components/SubmitForm"
 
-export default function AnalyzePage() {
+function AnalyzeContent() {
+  const searchParams = useSearchParams()
+  const cancelled = searchParams.get("cancelled") === "true"
+
   return (
     <div className="max-w-2xl mx-auto px-6 py-12">
-      <Link
-        href="/"
-        className="text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors text-sm"
-      >
-        ← Back to home
-      </Link>
+      {cancelled && (
+        <div className="mb-6 p-4 bg-[#FEF3C7] border border-[#F59E0B] rounded-xl text-sm text-[#92400E]">
+          Payment was cancelled. No worries — your progress is saved. Pick up
+          where you left off whenever you&apos;re ready.
+        </div>
+      )}
 
-      <div className="mt-8">
+      <div>
         <SubmitForm />
       </div>
 
@@ -22,5 +26,13 @@ export default function AnalyzePage() {
         <span>Powered by Anthropic</span>
       </div>
     </div>
+  )
+}
+
+export default function AnalyzePage() {
+  return (
+    <Suspense>
+      <AnalyzeContent />
+    </Suspense>
   )
 }

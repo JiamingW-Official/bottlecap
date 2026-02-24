@@ -168,16 +168,42 @@ export async function analyzeProduct(
   const userPrompt = buildUserPrompt(input)
 
   // Build message content — multimodal if image present
-  const content: Anthropic.MessageCreateParams['messages'][0]['content'] =
-    input.imageUrl
-      ? [
+  let content: Anthropic.MessageCreateParams['messages'][0]['content']
+
+  if (input.imageUrl) {
+    // Detect base64 data URI vs remote URL
+    if (input.imageUrl.startsWith('data:')) {
+      // Extract media type and base64 data from data URI
+      const matches = input.imageUrl.match(/^data:(image\/[^;]+);base64,(.+)$/)
+      if (matches) {
+        content = [
           {
             type: 'image' as const,
-            source: { type: 'url' as const, url: input.imageUrl },
+            source: {
+              type: 'base64' as const,
+              media_type: matches[1] as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp',
+              data: matches[2],
+            },
           },
           { type: 'text' as const, text: userPrompt },
         ]
-      : userPrompt
+      } else {
+        // Fallback to text-only if data URI is malformed
+        content = userPrompt
+      }
+    } else {
+      // Remote URL
+      content = [
+        {
+          type: 'image' as const,
+          source: { type: 'url' as const, url: input.imageUrl },
+        },
+        { type: 'text' as const, text: userPrompt },
+      ]
+    }
+  } else {
+    content = userPrompt
+  }
 
   const response = await getClient().messages.create({
     model: 'claude-sonnet-4-6-20250514',
@@ -191,8 +217,20 @@ export async function analyzeProduct(
     throw new Error(`Unexpected response type: ${block.type}`)
   }
 
+  // Strip markdown JSON fences if present
+  let jsonText = block.text.trim()
+  if (jsonText.startsWith('```json')) {
+    jsonText = jsonText.slice(7)
+  } else if (jsonText.startsWith('```')) {
+    jsonText = jsonText.slice(3)
+  }
+  if (jsonText.endsWith('```')) {
+    jsonText = jsonText.slice(0, -3)
+  }
+  jsonText = jsonText.trim()
+
   try {
-    return JSON.parse(block.text) as AnalysisResult
+    return JSON.parse(jsonText) as AnalysisResult
   } catch {
     console.error('Failed to parse Claude response as JSON:', block.text)
     throw new Error('Analysis returned invalid JSON. Please try again.')

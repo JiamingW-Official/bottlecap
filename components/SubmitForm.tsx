@@ -1,29 +1,59 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
-import { Loader2, Upload, Check, ChevronRight } from "lucide-react"
+import {
+  Loader2,
+  Upload,
+  Check,
+  ChevronRight,
+  ChevronLeft,
+} from "lucide-react"
+import { toast } from "sonner"
 import type { ProductInput } from "@/types"
+
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
 
 export default function SubmitForm() {
   const [currentStep, setCurrentStep] = useState<number>(1)
   const [formData, setFormData] = useState<Partial<ProductInput>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const descriptionLength = formData.productDescription?.length || 0
+  const descriptionValid = descriptionLength >= 20
+
+  // Pre-fill from hero textarea via sessionStorage
+  useEffect(() => {
+    const heroText = sessionStorage.getItem("bottlecap_hero_text")
+    if (heroText) {
+      setFormData((prev) => ({ ...prev, productDescription: heroText }))
+      sessionStorage.removeItem("bottlecap_hero_text")
+    }
+  }, [])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
-      setImageFile(file)
-      const url = URL.createObjectURL(file)
-      setImagePreview(url)
+    if (!file) return
+
+    if (file.size > MAX_IMAGE_SIZE) {
+      toast.error("Image must be under 5MB")
+      if (fileInputRef.current) fileInputRef.current.value = ""
+      return
     }
+
+    // Convert to base64 for API submission
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      const base64 = reader.result as string
+      setFormData((prev) => ({ ...prev, imageUrl: base64 }))
+      setImagePreview(base64)
+    }
+    reader.readAsDataURL(file)
   }
 
   const handleSubmit = async () => {
@@ -44,9 +74,17 @@ export default function SubmitForm() {
       })
 
       const data = await response.json()
+
+      if (!response.ok || !data.url) {
+        toast.error(data.error || "Failed to create checkout. Please try again.")
+        setIsSubmitting(false)
+        return
+      }
+
       window.location.href = data.url
     } catch (error) {
       console.error("Checkout error:", error)
+      toast.error("Something went wrong. Please try again.")
       setIsSubmitting(false)
     }
   }
@@ -54,7 +92,14 @@ export default function SubmitForm() {
   return (
     <div>
       {/* Progress bar */}
-      <div className="flex items-center gap-2 mb-10">
+      <div
+        className="flex items-center gap-2 mb-10"
+        role="progressbar"
+        aria-valuenow={currentStep}
+        aria-valuemin={1}
+        aria-valuemax={3}
+        aria-label={`Step ${currentStep} of 3`}
+      >
         <div
           className={`h-1.5 rounded-full transition-all duration-300 ${
             currentStep >= 1 ? "bg-[#FF6B35] w-16" : "bg-[#E8E8E4] w-8"
@@ -96,6 +141,22 @@ export default function SubmitForm() {
               }
             />
 
+            {/* Character counter */}
+            <div className="flex justify-between items-center mt-1 px-1">
+              <p
+                className={`text-xs ${
+                  descriptionLength > 0 && !descriptionValid
+                    ? "text-[#EF4444]"
+                    : "text-[#9B9B9B]"
+                }`}
+              >
+                {descriptionLength > 0 && !descriptionValid
+                  ? `${20 - descriptionLength} more characters needed`
+                  : "Minimum 20 characters"}
+              </p>
+              <p className="text-xs text-[#9B9B9B]">{descriptionLength}/20</p>
+            </div>
+
             {/* Image upload area */}
             <div className="mt-4">
               <label className="block border-2 border-dashed border-[#E8E8E4] rounded-xl p-6 text-center cursor-pointer hover:border-[#FF6B35] transition-colors">
@@ -135,8 +196,8 @@ export default function SubmitForm() {
             {/* Next button */}
             <div className="mt-6 flex justify-end">
               <button
-                className="bg-[#FF6B35] text-white rounded-full px-8 py-3 font-semibold flex items-center gap-2 disabled:opacity-50"
-                disabled={!formData.productDescription}
+                className="bg-[#FF6B35] text-white rounded-full px-8 py-3 font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!descriptionValid}
                 onClick={() => setCurrentStep(2)}
               >
                 Next
@@ -228,7 +289,7 @@ export default function SubmitForm() {
                     setFormData({ ...formData, mainConcern: "cost" })
                   }
                 >
-                  💸 Cost too high
+                  Cost too high
                 </button>
                 <button
                   className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
@@ -240,7 +301,7 @@ export default function SubmitForm() {
                     setFormData({ ...formData, mainConcern: "factory" })
                   }
                 >
-                  🏭 Can&apos;t find a factory
+                  Can&apos;t find a factory
                 </button>
                 <button
                   className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
@@ -252,7 +313,7 @@ export default function SubmitForm() {
                     setFormData({ ...formData, mainConcern: "quality" })
                   }
                 >
-                  ⭐ Quality worries
+                  Quality worries
                 </button>
                 <button
                   className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
@@ -264,7 +325,7 @@ export default function SubmitForm() {
                     setFormData({ ...formData, mainConcern: "start" })
                   }
                 >
-                  🤷 Don&apos;t know where to start
+                  Don&apos;t know where to start
                 </button>
               </div>
             </div>
@@ -324,8 +385,15 @@ export default function SubmitForm() {
               </div>
             </div>
 
-            {/* Next button */}
-            <div className="mt-6 flex justify-end">
+            {/* Nav buttons */}
+            <div className="mt-6 flex justify-between">
+              <button
+                className="text-[#6B6B6B] hover:text-[#1A1A1A] rounded-full px-6 py-3 font-semibold flex items-center gap-2 transition-colors"
+                onClick={() => setCurrentStep(1)}
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Back
+              </button>
               <button
                 className="bg-[#FF6B35] text-white rounded-full px-8 py-3 font-semibold flex items-center gap-2"
                 onClick={() => setCurrentStep(3)}
@@ -396,29 +464,39 @@ export default function SubmitForm() {
               </div>
             </div>
 
-            {/* Submit button */}
-            <button
-              className="w-full bg-[#FF6B35] hover:bg-[#E85A25] text-white rounded-full py-4 font-semibold text-lg transition-colors disabled:opacity-50 mt-8"
-              disabled={
-                isSubmitting ||
-                !formData.userEmail ||
-                !emailRegex.test(formData.userEmail)
-              }
-              onClick={handleSubmit}
-            >
-              {isSubmitting ? (
-                <span className="flex items-center justify-center gap-2">
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Creating your order...
-                </span>
-              ) : (
-                "Pay $99 — Start Analysis"
-              )}
-            </button>
+            {/* Nav + Submit */}
+            <div className="mt-8 flex flex-col gap-4">
+              <button
+                className="w-full bg-[#FF6B35] hover:bg-[#E85A25] text-white rounded-full py-4 font-semibold text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={
+                  isSubmitting ||
+                  !formData.userEmail ||
+                  !emailRegex.test(formData.userEmail)
+                }
+                onClick={handleSubmit}
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Creating your order...
+                  </span>
+                ) : (
+                  "Pay $99 — Start Analysis"
+                )}
+              </button>
+
+              <button
+                className="text-[#6B6B6B] hover:text-[#1A1A1A] text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
+                onClick={() => setCurrentStep(2)}
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Back
+              </button>
+            </div>
 
             {/* Trust line */}
             <p className="text-sm text-[#9B9B9B] text-center mt-4">
-              🔒 Stripe secure payment · 72-hour refund guarantee
+              Stripe secure payment · 72-hour refund guarantee
             </p>
           </motion.div>
         )}

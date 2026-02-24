@@ -10,6 +10,7 @@ interface ReportCardProps {
   productName: string
   reportId: string
   showActions?: boolean
+  completedAt?: string
 }
 
 export default function ReportCard({
@@ -17,6 +18,7 @@ export default function ReportCard({
   productName,
   reportId,
   showActions = true,
+  completedAt,
 }: ReportCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
 
@@ -59,11 +61,14 @@ export default function ReportCard({
     }
   }
 
-  const formattedDate = new Date().toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  })
+  const formattedDate = new Date(completedAt || Date.now()).toLocaleDateString(
+    "en-US",
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  )
 
   return (
     <div className="flex flex-col items-center">

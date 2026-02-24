@@ -17,24 +17,38 @@ export default function ShareButton({
 }: ShareButtonProps) {
   const [copied, setCopied] = useState(false)
 
-  const reportUrl = `https://bottlecap.io/report/${reportId}`
+  const reportUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/report/${reportId}`
+      : `/report/${reportId}`
+
+  const trackShare = useCallback(() => {
+    fetch("/api/share", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reportId }),
+    }).catch(() => {})
+  }, [reportId])
 
   const handleShareTwitter = useCallback(() => {
+    trackShare()
     const text = `Just used @bottlecap_io to analyze my product idea "${productName}"\n\nFeasibility: ${analysis.feasibilityScore}/100\nRecommended: ${analysis.sourcingCountries[0]?.country || "TBD"}\nCost: $${analysis.costEstimate.min}-$${analysis.costEstimate.max}/unit\n\nEvery aspiring product maker should check their numbers\nbottlecap.io`
     window.open(
       `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`,
       "_blank"
     )
-  }, [productName, analysis])
+  }, [productName, analysis, trackShare])
 
   const handleShareLinkedIn = useCallback(() => {
+    trackShare()
     window.open(
       `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(reportUrl)}`,
       "_blank"
     )
-  }, [reportUrl])
+  }, [reportUrl, trackShare])
 
   const handleCopyLink = useCallback(async () => {
+    trackShare()
     try {
       await navigator.clipboard.writeText(reportUrl)
       setCopied(true)
@@ -49,27 +63,27 @@ export default function ShareButton({
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     }
-  }, [reportUrl])
+  }, [reportUrl, trackShare])
 
   return (
-    <div className="flex gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
       <button
         onClick={handleShareTwitter}
-        className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#E8E8E4] text-sm font-medium hover:bg-[#F5F5F0] transition-colors"
+        className="flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-[#E8E8E4] text-sm font-medium hover:bg-[#F5F5F0] transition-colors"
       >
         <Twitter className="w-4 h-4" />
-        Share on Twitter
+        Twitter
       </button>
       <button
         onClick={handleShareLinkedIn}
-        className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#E8E8E4] text-sm font-medium hover:bg-[#F5F5F0] transition-colors"
+        className="flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-[#E8E8E4] text-sm font-medium hover:bg-[#F5F5F0] transition-colors"
       >
         <Linkedin className="w-4 h-4" />
-        Share on LinkedIn
+        LinkedIn
       </button>
       <button
         onClick={handleCopyLink}
-        className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#E8E8E4] text-sm font-medium hover:bg-[#F5F5F0] transition-colors"
+        className="flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-[#E8E8E4] text-sm font-medium hover:bg-[#F5F5F0] transition-colors"
       >
         <Link className="w-4 h-4" />
         {copied ? "Copied!" : "Copy Link"}

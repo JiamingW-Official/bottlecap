@@ -15,5 +15,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Report not found' }, { status: 404 })
   }
 
-  return NextResponse.json({ report })
+  // Strip sensitive fields before returning
+  const { userEmail: _email, stripePaymentId: _pid, stripeSessionId: _sid, ...safeReport } = report
+
+  return NextResponse.json({ report: safeReport })
 }
