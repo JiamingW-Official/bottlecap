@@ -1,5 +1,8 @@
 import type { Metadata } from "next"
-import { getReport } from "@/lib/supabase"
+
+export function generateStaticParams() {
+  return [{ id: "demo" }]
+}
 
 export async function generateMetadata({
   params,
@@ -8,7 +11,6 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params
 
-  // Skip metadata generation for demo page
   if (id === "demo") {
     return {
       title: "Demo Report — Bottlecap",
@@ -17,7 +19,10 @@ export async function generateMetadata({
     }
   }
 
+  // For non-demo reports, return generic metadata
+  // (Supabase may not be available in static builds)
   try {
+    const { getReport } = await import("@/lib/supabase")
     const report = await getReport(id)
 
     if (!report || !report.analysisResult) {

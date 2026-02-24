@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { ChevronDown, Menu, X } from "lucide-react"
+import { useScrollProgress } from "@/lib/hooks/useScrollProgress"
 
 const toolsLinks = [
   { href: "/tools/hs-lookup", label: "HS Code Lookup" },
@@ -52,7 +53,10 @@ function DropdownMenu({
         />
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-2 w-52 bg-white rounded-xl border border-[#E8E8E4] shadow-lg py-2 z-50">
+        <div
+          data-lenis-prevent
+          className="absolute top-full left-0 mt-2 w-52 bg-white rounded-xl border border-[#E8E8E4] shadow-lg py-2 z-50"
+        >
           {links.map((link) => (
             <Link
               key={link.href}
@@ -79,9 +83,25 @@ function DropdownMenu({
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const { progress } = useScrollProgress()
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur z-50 border-b border-[#E8E8E4]">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300 ${
+        scrolled
+          ? "bg-white/95 backdrop-blur-md border-[#E8E8E4] shadow-sm"
+          : "bg-white/60 backdrop-blur border-transparent"
+      }`}
+    >
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/" className="font-bold text-lg text-[#1A1A1A]">
@@ -140,7 +160,10 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-white border-t border-[#E8E8E4] px-6 py-4 space-y-1">
+        <div
+          data-lenis-prevent
+          className="md:hidden bg-white border-t border-[#E8E8E4] px-6 py-4 space-y-1"
+        >
           <p className="text-xs font-semibold text-[#9B9B9B] uppercase tracking-wide mb-2">
             Tools
           </p>
@@ -185,6 +208,11 @@ export default function Navbar() {
           </Link>
         </div>
       )}
+      {/* Scroll progress bar */}
+      <div
+        className="absolute bottom-0 left-0 h-[2px] bg-[#FF6B35] transition-none"
+        style={{ width: `${progress * 100}%` }}
+      />
     </nav>
   )
 }

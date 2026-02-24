@@ -1,6 +1,10 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+
+gsap.registerPlugin(ScrollTrigger)
 
 interface AnimatedCounterProps {
   end: number
@@ -14,7 +18,7 @@ interface AnimatedCounterProps {
 
 export default function AnimatedCounter({
   end,
-  duration = 2000,
+  duration = 2,
   prefix = "",
   suffix = "",
   decimals = 0,
@@ -22,32 +26,30 @@ export default function AnimatedCounter({
   sublabel,
 }: AnimatedCounterProps) {
   const [count, setCount] = useState(0)
-  const [hasAnimated, setHasAnimated] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const counterObj = useRef({ value: 0 })
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          setHasAnimated(true)
-          const startTime = performance.now()
-          const animate = (now: number) => {
-            const elapsed = now - startTime
-            const progress = Math.min(elapsed / duration, 1)
-            // Ease out cubic
-            const eased = 1 - Math.pow(1 - progress, 3)
-            setCount(eased * end)
-            if (progress < 1) requestAnimationFrame(animate)
-          }
-          requestAnimationFrame(animate)
-        }
-      },
-      { threshold: 0.3 }
-    )
+    if (!ref.current) return
 
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [end, duration, hasAnimated])
+    const tween = gsap.to(counterObj.current, {
+      value: end,
+      duration,
+      ease: "power3.out",
+      onUpdate: () => {
+        setCount(counterObj.current.value)
+      },
+      scrollTrigger: {
+        trigger: ref.current,
+        start: "top 80%",
+        once: true,
+      },
+    })
+
+    return () => {
+      tween.kill()
+    }
+  }, [end, duration])
 
   return (
     <div ref={ref} className="text-center">

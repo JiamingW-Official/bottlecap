@@ -3,6 +3,8 @@ import { Inter } from "next/font/google"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import { Toaster } from "@/components/ui/sonner"
+import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider"
+import CustomCursorWrapper from "@/components/interactive/CustomCursorWrapper"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -21,10 +23,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar />
-        <div className="pt-16">{children}</div>
-        <Footer />
-        <Toaster position="top-center" richColors />
+        <SmoothScrollProvider>
+          <Navbar />
+          <div className="pt-16">{children}</div>
+          <Footer />
+          <Toaster position="top-center" richColors />
+          <CustomCursorWrapper />
+        </SmoothScrollProvider>
       </body>
     </html>
   )

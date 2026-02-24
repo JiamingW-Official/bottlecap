@@ -8,6 +8,10 @@ import ShareButton from "@/components/ShareButton"
 import RadarChart from "@/components/RadarChart"
 import CostBreakdownChart from "@/components/CostBreakdownChart"
 import { Copy, Check, ChevronDown, ChevronUp, Download, AlertTriangle, Lightbulb, TrendingUp } from "lucide-react"
+import TiltCard from "@/components/interactive/TiltCard"
+import ScrollReveal from "@/components/animations/ScrollReveal"
+import TextReveal from "@/components/animations/TextReveal"
+import MagneticButton from "@/components/interactive/MagneticButton"
 import { toast } from "sonner"
 import { AnalysisResult, Report } from "@/types"
 
@@ -315,8 +319,10 @@ function ReportContent() {
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
       {/* Top */}
-      <div className="text-center mb-12">
-        <h1 className="text-3xl font-bold">Your report is ready!</h1>
+      <ScrollReveal className="text-center mb-12">
+        <TextReveal as="h1" className="text-3xl font-bold">
+          Your report is ready!
+        </TextReveal>
         <p className="text-[#6B6B6B] mt-2">
           Generated on{" "}
           {new Date(report.completedAt!).toLocaleDateString("en-US", {
@@ -325,7 +331,7 @@ function ReportContent() {
             day: "numeric",
           })}
         </p>
-      </div>
+      </ScrollReveal>
 
       {/* Two column layout */}
       <div className="flex flex-col lg:flex-row gap-12">
@@ -349,6 +355,7 @@ function ReportContent() {
         {/* Right column - scrollable details */}
         <div className="lg:w-[60%] space-y-6">
           {/* Section: Product Classification */}
+          <ScrollReveal delay={0.1}>
           {renderSection(
             "classification",
             "Product Classification",
@@ -393,8 +400,10 @@ function ReportContent() {
               </div>
             </div>
           )}
+          </ScrollReveal>
 
           {/* Section: Cost Visualization */}
+          <ScrollReveal delay={0.15}>
           {renderSection(
             "cost-visual",
             "Cost Breakdown",
@@ -442,8 +451,10 @@ function ReportContent() {
               </div>
             </div>
           )}
+          </ScrollReveal>
 
           {/* Section: Supplier Country Comparison (card-based, all countries) */}
+          <ScrollReveal delay={0.2}>
           {renderSection(
             "countries",
             "Supplier Country Comparison",
@@ -484,8 +495,8 @@ function ReportContent() {
               {/* Country cards */}
               <div className="space-y-4">
               {analysis.sourcingCountries.map((c, i) => (
+                <TiltCard key={c.countryCode} maxTilt={5}>
                 <div
-                  key={c.countryCode}
                   className={`rounded-xl border p-5 ${
                     i === 0
                       ? "border-[#FF6B35] bg-[#FFF0EB]"
@@ -557,12 +568,15 @@ function ReportContent() {
                     Best for: {c.bestFor}
                   </p>
                 </div>
+                </TiltCard>
               ))}
               </div>
             </div>
           )}
+          </ScrollReveal>
 
           {/* Section: Materials Analysis */}
+          <ScrollReveal delay={0.1}>
           {renderSection(
             "materials",
             "Materials Analysis",
@@ -598,8 +612,10 @@ function ReportContent() {
               </div>
             </div>
           )}
+          </ScrollReveal>
 
           {/* Section: Manufacturing Specs */}
+          <ScrollReveal delay={0.1}>
           {renderSection(
             "specs",
             "Manufacturing Specs",
@@ -630,8 +646,10 @@ function ReportContent() {
               ))}
             </div>
           )}
+          </ScrollReveal>
 
           {/* Section: Optimization Tips */}
+          <ScrollReveal delay={0.1}>
           {renderSection(
             "tips",
             "Optimization Tips",
@@ -651,8 +669,10 @@ function ReportContent() {
               ))}
             </div>
           )}
+          </ScrollReveal>
 
           {/* Section: Action Checklist */}
+          <ScrollReveal delay={0.1}>
           {renderSection(
             "actions",
             "Action Checklist",
@@ -682,10 +702,12 @@ function ReportContent() {
               </div>
             </div>
           )}
+          </ScrollReveal>
 
           {/* Section: Red Flags */}
           {analysis.redFlags && analysis.redFlags.length > 0 &&
-            renderSection(
+            <ScrollReveal delay={0.1}>
+            {renderSection(
               "red-flags",
               "Red Flags & Risks",
               <div className="space-y-3">
@@ -700,9 +722,12 @@ function ReportContent() {
                 ))}
               </div>
             )}
+            </ScrollReveal>
+          }
 
           {/* Encouraging Note */}
           {analysis.encouragingNote && (
+            <ScrollReveal delay={0.1}>
             <div className="bg-[#F0FDF4] border border-[#22C55E]/20 rounded-2xl p-6">
               <div className="flex items-start gap-3">
                 <Lightbulb className="w-6 h-6 text-[#22C55E] shrink-0 mt-0.5" />
@@ -716,9 +741,11 @@ function ReportContent() {
                 </div>
               </div>
             </div>
+            </ScrollReveal>
           )}
 
           {/* Summary Stats Bar */}
+          <ScrollReveal delay={0.1}>
           <div className="bg-white rounded-2xl border border-[#E8E8E4] p-6">
             <h3 className="font-semibold text-[#1A1A1A] mb-4 flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-[#FF6B35]" />
@@ -751,22 +778,28 @@ function ReportContent() {
               </div>
             </div>
           </div>
+          </ScrollReveal>
 
           {/* PDF Export */}
+          <ScrollReveal delay={0.1}>
           <div className="flex justify-center">
-            <button
-              onClick={() => {
-                toast.info("Preparing PDF... This may take a moment.")
-                window.print()
-              }}
-              className="flex items-center gap-2 bg-white border-2 border-[#E8E8E4] rounded-full px-6 py-3 text-sm font-semibold text-[#1A1A1A] hover:border-[#FF6B35] transition-colors"
-            >
-              <Download className="w-4 h-4" />
-              Export as PDF
-            </button>
+            <MagneticButton>
+              <button
+                onClick={() => {
+                  toast.info("Preparing PDF... This may take a moment.")
+                  window.print()
+                }}
+                className="flex items-center gap-2 bg-white border-2 border-[#E8E8E4] rounded-full px-6 py-3 text-sm font-semibold text-[#1A1A1A] hover:border-[#FF6B35] transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                Export as PDF
+              </button>
+            </MagneticButton>
           </div>
+          </ScrollReveal>
 
           {/* Upsell Card */}
+          <ScrollReveal direction="scale" delay={0.15}>
           <div className="bg-gradient-to-r from-[#FF6B35] to-[#FF9F1C] rounded-2xl p-8 text-white mt-8">
             <h3 className="text-2xl font-bold mb-3">
               Want contact info for 3 verified suppliers?
@@ -787,6 +820,7 @@ function ReportContent() {
               Manually verified real suppliers, not Alibaba search results
             </p>
           </div>
+          </ScrollReveal>
         </div>
       </div>
     </div>

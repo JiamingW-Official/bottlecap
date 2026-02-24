@@ -1,6 +1,5 @@
 "use client"
 
-import { motion } from "framer-motion"
 import {
   BarChart3,
   Globe,
@@ -15,6 +14,7 @@ import {
   DollarSign,
   Clock,
 } from "lucide-react"
+import StaggerGrid from "@/components/animations/StaggerGrid"
 
 const features = [
   {
@@ -91,33 +91,12 @@ const features = [
   },
 ]
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.06,
-    },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0 },
-}
-
 export default function FeatureShowcase() {
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-50px" }}
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-    >
+    <StaggerGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {features.map((feature) => (
-        <motion.div
+        <div
           key={feature.title}
-          variants={itemVariants}
           className="bg-white rounded-2xl border border-[#E8E8E4] p-6 hover:shadow-md transition-shadow"
         >
           <div className="w-10 h-10 bg-[#FFF0EB] rounded-xl flex items-center justify-center mb-4">
@@ -129,8 +108,8 @@ export default function FeatureShowcase() {
           <p className="text-sm text-[#6B6B6B] leading-relaxed">
             {feature.description}
           </p>
-        </motion.div>
+        </div>
       ))}
-    </motion.div>
+    </StaggerGrid>
   )
 }

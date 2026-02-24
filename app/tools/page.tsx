@@ -1,4 +1,5 @@
-import type { Metadata } from "next"
+"use client"
+
 import Link from "next/link"
 import {
   Search,
@@ -6,12 +7,11 @@ import {
   Globe,
   Package,
 } from "lucide-react"
-
-export const metadata: Metadata = {
-  title: "Free Manufacturing Tools — Bottlecap",
-  description:
-    "Free tools for product makers: HS Code Lookup, Manufacturing Cost Calculator, Tariff Calculator, and MOQ Planner.",
-}
+import ScrollReveal from "@/components/animations/ScrollReveal"
+import TextReveal from "@/components/animations/TextReveal"
+import StaggerGrid from "@/components/animations/StaggerGrid"
+import MagneticButton from "@/components/interactive/MagneticButton"
+import TiltCard from "@/components/interactive/TiltCard"
 
 const tools = [
   {
@@ -55,66 +55,79 @@ const tools = [
 export default function ToolsPage() {
   return (
     <div className="max-w-5xl mx-auto px-6 py-16">
-      <div className="text-center mb-16">
-        <h1 className="text-4xl sm:text-5xl font-black text-[#1A1A1A] mb-4">
+      <ScrollReveal className="text-center mb-16">
+        <TextReveal
+          as="h1"
+          className="text-4xl sm:text-5xl font-black text-[#1A1A1A] mb-4"
+        >
           Free Manufacturing Tools
-        </h1>
-        <p className="text-lg text-[#6B6B6B] max-w-2xl mx-auto">
-          Everything you need to plan your manufacturing journey — no account
-          required. Use these tools alongside your Bottlecap report for the
-          best results.
-        </p>
-      </div>
+        </TextReveal>
+        <ScrollReveal delay={0.1}>
+          <p className="text-lg text-[#6B6B6B] max-w-2xl mx-auto">
+            Everything you need to plan your manufacturing journey — no account
+            required. Use these tools alongside your Bottlecap report for the
+            best results.
+          </p>
+        </ScrollReveal>
+      </ScrollReveal>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <StaggerGrid className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {tools.map((tool) => (
-          <Link
-            key={tool.title}
-            href={tool.href}
-            className="group bg-white rounded-2xl border border-[#E8E8E4] p-8 hover:shadow-lg hover:border-[#FF6B35]/30 transition-all"
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div
-                className={`w-12 h-12 bg-gradient-to-br ${tool.gradient} rounded-xl flex items-center justify-center`}
-              >
-                <tool.icon className="w-6 h-6 text-white" />
+          <TiltCard key={tool.title} maxTilt={4}>
+            <Link
+              href={tool.href}
+              className="group block bg-white rounded-2xl border border-[#E8E8E4] p-8 hover:shadow-lg hover:border-[#FF6B35]/30 transition-all"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div
+                  className={`w-12 h-12 bg-gradient-to-br ${tool.gradient} rounded-xl flex items-center justify-center`}
+                >
+                  <tool.icon className="w-6 h-6 text-white" />
+                </div>
+                {tool.badge && (
+                  <span className="text-xs font-semibold bg-[#FFF0EB] text-[#FF6B35] px-3 py-1 rounded-full">
+                    {tool.badge}
+                  </span>
+                )}
               </div>
-              {tool.badge && (
-                <span className="text-xs font-semibold bg-[#FFF0EB] text-[#FF6B35] px-3 py-1 rounded-full">
-                  {tool.badge}
-                </span>
-              )}
-            </div>
-            <h2 className="text-xl font-bold text-[#1A1A1A] mb-2 group-hover:text-[#FF6B35] transition-colors">
-              {tool.title}
-            </h2>
-            <p className="text-[#6B6B6B] leading-relaxed">
-              {tool.description}
-            </p>
-            <p className="text-[#FF6B35] font-semibold text-sm mt-4">
-              Use tool &rarr;
-            </p>
-          </Link>
+              <h2 className="text-xl font-bold text-[#1A1A1A] mb-2 group-hover:text-[#FF6B35] transition-colors">
+                {tool.title}
+              </h2>
+              <p className="text-[#6B6B6B] leading-relaxed">
+                {tool.description}
+              </p>
+              <p className="text-[#FF6B35] font-semibold text-sm mt-4">
+                Use tool &rarr;
+              </p>
+            </Link>
+          </TiltCard>
         ))}
-      </div>
+      </StaggerGrid>
 
       {/* CTA */}
-      <div className="mt-16 text-center bg-[#F5F5F0] rounded-2xl p-10">
-        <h2 className="text-2xl font-bold text-[#1A1A1A] mb-3">
-          Want a complete analysis?
-        </h2>
-        <p className="text-[#6B6B6B] mb-6 max-w-lg mx-auto">
-          These tools give you quick estimates. For a comprehensive
-          manufacturing feasibility report with 3-country comparison, get a
-          full Bottlecap analysis.
-        </p>
-        <Link
-          href="/analyze"
-          className="inline-block bg-[#FF6B35] text-white rounded-full px-8 py-3 font-semibold hover:bg-[#E85A25] transition-colors"
-        >
-          Get Full Report — $99
-        </Link>
-      </div>
+      <ScrollReveal className="mt-16" direction="scale">
+        <div className="text-center bg-[#F5F5F0] rounded-2xl p-10">
+          <TextReveal
+            as="h2"
+            className="text-2xl font-bold text-[#1A1A1A] mb-3"
+          >
+            Want a complete analysis?
+          </TextReveal>
+          <p className="text-[#6B6B6B] mb-6 max-w-lg mx-auto">
+            These tools give you quick estimates. For a comprehensive
+            manufacturing feasibility report with 3-country comparison, get a
+            full Bottlecap analysis.
+          </p>
+          <MagneticButton>
+            <Link
+              href="/analyze"
+              className="inline-block bg-[#FF6B35] text-white rounded-full px-8 py-3 font-semibold hover:bg-[#E85A25] transition-colors"
+            >
+              Get Full Report — $99
+            </Link>
+          </MagneticButton>
+        </div>
+      </ScrollReveal>
     </div>
   )
 }

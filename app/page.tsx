@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { motion } from "framer-motion"
+import dynamic from "next/dynamic"
 import { Check, ArrowRight } from "lucide-react"
 import AnimatedCounter from "@/components/AnimatedCounter"
 import ProcessDiagram from "@/components/ProcessDiagram"
@@ -11,13 +11,18 @@ import FeatureShowcase from "@/components/FeatureShowcase"
 import IndustryComparison from "@/components/IndustryComparison"
 import CategoryShowcase from "@/components/CategoryShowcase"
 import FAQ from "@/components/FAQ"
+import ScrollReveal from "@/components/animations/ScrollReveal"
+import TextReveal from "@/components/animations/TextReveal"
+import ParallaxLayer from "@/components/animations/ParallaxLayer"
+import MagneticButton from "@/components/interactive/MagneticButton"
+import HeroFallback from "@/components/three/HeroFallback"
+import { useWebGLCapability } from "@/lib/hooks/useWebGLCapability"
+import { useGSAPScrollTrigger } from "@/lib/hooks/useGSAPScrollTrigger"
 
-const sectionAnimation = {
-  initial: { opacity: 0, y: 24 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.5 },
-}
+const HeroScene = dynamic(() => import("@/components/three/HeroScene"), {
+  ssr: false,
+  loading: () => <HeroFallback />,
+})
 
 const singleFeatures = [
   "Full feasibility analysis",
@@ -40,6 +45,8 @@ const monthlyFeatures = [
 export default function Home() {
   const router = useRouter()
   const [heroText, setHeroText] = useState("")
+  const { supported, tier } = useWebGLCapability()
+  useGSAPScrollTrigger()
 
   const handleAnalyzeClick = () => {
     if (heroText.trim()) {
@@ -53,18 +60,22 @@ export default function Home() {
       {/* ================================================================ */}
       {/* HERO                                                             */}
       {/* ================================================================ */}
-      <motion.div
-        {...sectionAnimation}
-        className="min-h-[calc(100vh-4rem)] flex items-center"
-      >
-        <div className="max-w-6xl mx-auto px-6 w-full">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-[#1A1A1A]">
-            Your product idea
-            <br />
-            <span className="border-b-4 border-[#FF6B35]">
-              deserves to be made
-            </span>
-          </h1>
+      <div className="relative min-h-[calc(100vh-4rem)] flex items-center">
+        {/* 3D Background */}
+        {supported && tier !== "none" ? (
+          <HeroScene tier={tier} />
+        ) : (
+          <HeroFallback />
+        )}
+
+        {/* Hero Content */}
+        <ScrollReveal className="max-w-6xl mx-auto px-6 w-full relative z-10">
+          <TextReveal
+            as="h1"
+            className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-[#1A1A1A]"
+          >
+            Your product idea deserves to be made
+          </TextReveal>
           <p className="text-lg sm:text-xl text-[#6B6B6B] max-w-2xl mt-6">
             Tell me what you want to make. I&apos;ll tell you if it&apos;s
             feasible, how much it costs, and where to manufacture it — in
@@ -80,12 +91,14 @@ export default function Home() {
                 value={heroText}
                 onChange={(e) => setHeroText(e.target.value)}
               />
-              <button
-                onClick={handleAnalyzeClick}
-                className="bg-[#FF6B35] text-white rounded-xl px-6 py-3 font-semibold whitespace-nowrap hover:bg-[#E85A25] transition-colors shrink-0"
-              >
-                Analyze this idea &rarr;
-              </button>
+              <MagneticButton>
+                <button
+                  onClick={handleAnalyzeClick}
+                  className="bg-[#FF6B35] text-white rounded-xl px-6 py-3 font-semibold whitespace-nowrap hover:bg-[#E85A25] transition-colors shrink-0"
+                >
+                  Analyze this idea &rarr;
+                </button>
+              </MagneticButton>
             </div>
           </div>
 
@@ -96,8 +109,8 @@ export default function Home() {
               Money-back guarantee
             </span>
           </div>
-        </div>
-      </motion.div>
+        </ScrollReveal>
+      </div>
 
       {/* ================================================================ */}
       {/* ANIMATED STATS                                                   */}
@@ -134,153 +147,179 @@ export default function Home() {
       {/* ================================================================ */}
       {/* HOW IT WORKS                                                     */}
       {/* ================================================================ */}
-      <motion.div {...sectionAnimation} className="py-20" id="how-it-works">
+      <ScrollReveal className="py-20" id="how-it-works">
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#1A1A1A]">
+          <TextReveal
+            as="h2"
+            className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#1A1A1A]"
+          >
             How it works
-          </h2>
-          <p className="text-center text-[#6B6B6B] mb-12 max-w-2xl mx-auto">
-            From product idea to actionable manufacturing plan in 4 simple
-            steps. No factory contacts needed.
-          </p>
+          </TextReveal>
+          <ScrollReveal delay={0.1}>
+            <p className="text-center text-[#6B6B6B] mb-12 max-w-2xl mx-auto">
+              From product idea to actionable manufacturing plan in 4 simple
+              steps. No factory contacts needed.
+            </p>
+          </ScrollReveal>
           <ProcessDiagram />
         </div>
-      </motion.div>
+      </ScrollReveal>
 
       {/* ================================================================ */}
       {/* FEATURES (12-grid)                                               */}
       {/* ================================================================ */}
-      <motion.div
-        {...sectionAnimation}
-        className="py-20 bg-[#F5F5F0]"
-        id="features"
-      >
+      <ScrollReveal className="py-20 bg-[#F5F5F0]" id="features">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#1A1A1A]">
+          <TextReveal
+            as="h2"
+            className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#1A1A1A]"
+          >
             Everything in your report
-          </h2>
-          <p className="text-center text-[#6B6B6B] mb-12 max-w-2xl mx-auto">
-            Each Bottlecap report includes 12 sections of analysis across
-            feasibility, cost, materials, countries, and next steps.
-          </p>
+          </TextReveal>
+          <ScrollReveal delay={0.1}>
+            <p className="text-center text-[#6B6B6B] mb-12 max-w-2xl mx-auto">
+              Each Bottlecap report includes 12 sections of analysis across
+              feasibility, cost, materials, countries, and next steps.
+            </p>
+          </ScrollReveal>
           <FeatureShowcase />
         </div>
-      </motion.div>
+      </ScrollReveal>
 
       {/* ================================================================ */}
       {/* REPORT PREVIEW                                                   */}
       {/* ================================================================ */}
-      <motion.div {...sectionAnimation} className="py-20">
+      <ScrollReveal className="py-20" direction="scale">
         <div className="max-w-5xl mx-auto px-6">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#1A1A1A]">
+          <TextReveal
+            as="h2"
+            className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#1A1A1A]"
+          >
             See what you get
-          </h2>
-          <p className="text-center text-[#6B6B6B] mb-12 max-w-2xl mx-auto">
-            Here&apos;s a preview of a real report. Explore the full demo to
-            see every section.
-          </p>
-
-          <div className="max-w-md mx-auto bg-white rounded-3xl p-8 shadow-xl border border-[#E8E8E4] transform rotate-1 hover:rotate-0 transition-transform">
-            <div className="flex justify-between items-center mb-6">
-              <span className="text-sm text-[#9B9B9B]">Bottlecap</span>
-              <span className="text-sm text-[#9B9B9B]">
-                {new Date().toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })}
-              </span>
-            </div>
-            <h3 className="text-2xl font-bold text-[#1A1A1A] mb-4">
-              Smart Thermos
-            </h3>
-            <div className="mb-4">
-              <span className="text-6xl font-black text-[#22C55E]">87</span>
-              <span className="text-2xl text-[#9B9B9B] ml-1">/100</span>
-            </div>
-            <p className="text-sm text-[#FF6B35] font-medium mb-6">
-              Highly feasible &mdash; Vietnam is your best bet
+          </TextReveal>
+          <ScrollReveal delay={0.1}>
+            <p className="text-center text-[#6B6B6B] mb-12 max-w-2xl mx-auto">
+              Here&apos;s a preview of a real report. Explore the full demo to
+              see every section.
             </p>
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div>
-                <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">
-                  Cost/unit
-                </p>
-                <p className="font-semibold text-[#1A1A1A]">$6.2 - $8.4</p>
+          </ScrollReveal>
+
+          <ParallaxLayer speed={0.95}>
+            <div className="max-w-md mx-auto bg-white rounded-3xl p-8 shadow-xl border border-[#E8E8E4] transform rotate-1 hover:rotate-0 transition-transform">
+              <div className="flex justify-between items-center mb-6">
+                <span className="text-sm text-[#9B9B9B]">Bottlecap</span>
+                <span className="text-sm text-[#9B9B9B]">
+                  {new Date().toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
               </div>
-              <div>
-                <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">
-                  Sourcing
-                </p>
-                <p className="font-semibold text-[#1A1A1A]">Vietnam</p>
+              <h3 className="text-2xl font-bold text-[#1A1A1A] mb-4">
+                Smart Thermos
+              </h3>
+              <div className="mb-4">
+                <span className="text-6xl font-black text-[#22C55E]">87</span>
+                <span className="text-2xl text-[#9B9B9B] ml-1">/100</span>
               </div>
-              <div>
-                <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">
-                  Min. Order
-                </p>
-                <p className="font-semibold text-[#1A1A1A]">500 units</p>
+              <p className="text-sm text-[#FF6B35] font-medium mb-6">
+                Highly feasible &mdash; Vietnam is your best bet
+              </p>
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                  <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">
+                    Cost/unit
+                  </p>
+                  <p className="font-semibold text-[#1A1A1A]">$6.2 - $8.4</p>
+                </div>
+                <div>
+                  <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">
+                    Sourcing
+                  </p>
+                  <p className="font-semibold text-[#1A1A1A]">Vietnam</p>
+                </div>
+                <div>
+                  <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">
+                    Min. Order
+                  </p>
+                  <p className="font-semibold text-[#1A1A1A]">500 units</p>
+                </div>
+                <div>
+                  <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">
+                    Lead Time
+                  </p>
+                  <p className="font-semibold text-[#1A1A1A]">32 days</p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">
-                  Lead Time
-                </p>
-                <p className="font-semibold text-[#1A1A1A]">32 days</p>
-              </div>
+              <Link
+                href="/report/demo"
+                className="block text-center bg-[#FF6B35] text-white rounded-full py-2.5 text-sm font-semibold hover:bg-[#E85A25] transition-colors"
+              >
+                Explore full demo report &rarr;
+              </Link>
             </div>
-            <Link
-              href="/report/demo"
-              className="block text-center bg-[#FF6B35] text-white rounded-full py-2.5 text-sm font-semibold hover:bg-[#E85A25] transition-colors"
-            >
-              Explore full demo report &rarr;
-            </Link>
-          </div>
+          </ParallaxLayer>
         </div>
-      </motion.div>
+      </ScrollReveal>
 
       {/* ================================================================ */}
       {/* INDUSTRY COMPARISON TABLE                                        */}
       {/* ================================================================ */}
-      <motion.div {...sectionAnimation} className="py-20 bg-[#F5F5F0]">
+      <ScrollReveal className="py-20 bg-[#F5F5F0]">
         <div className="max-w-5xl mx-auto px-6">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#1A1A1A]">
+          <TextReveal
+            as="h2"
+            className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#1A1A1A]"
+          >
             How Bottlecap compares
-          </h2>
-          <p className="text-center text-[#6B6B6B] mb-12 max-w-2xl mx-auto">
-            Traditional manufacturing research takes weeks and costs thousands.
-            Bottlecap delivers more detail in minutes.
-          </p>
+          </TextReveal>
+          <ScrollReveal delay={0.1}>
+            <p className="text-center text-[#6B6B6B] mb-12 max-w-2xl mx-auto">
+              Traditional manufacturing research takes weeks and costs thousands.
+              Bottlecap delivers more detail in minutes.
+            </p>
+          </ScrollReveal>
           <div className="bg-white rounded-2xl border border-[#E8E8E4] p-6 sm:p-8">
             <IndustryComparison />
           </div>
         </div>
-      </motion.div>
+      </ScrollReveal>
 
       {/* ================================================================ */}
       {/* CATEGORIES WE COVER                                              */}
       {/* ================================================================ */}
-      <motion.div {...sectionAnimation} className="py-20">
+      <ScrollReveal className="py-20">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#1A1A1A]">
+          <TextReveal
+            as="h2"
+            className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#1A1A1A]"
+          >
             20 product categories covered
-          </h2>
-          <p className="text-center text-[#6B6B6B] mb-12 max-w-2xl mx-auto">
-            From consumer electronics to apparel, Bottlecap analyzes
-            products across every major manufacturing category.
-          </p>
+          </TextReveal>
+          <ScrollReveal delay={0.1}>
+            <p className="text-center text-[#6B6B6B] mb-12 max-w-2xl mx-auto">
+              From consumer electronics to apparel, Bottlecap analyzes
+              products across every major manufacturing category.
+            </p>
+          </ScrollReveal>
           <CategoryShowcase />
         </div>
-      </motion.div>
+      </ScrollReveal>
 
       {/* ================================================================ */}
       {/* FREE TOOLS CTA                                                   */}
       {/* ================================================================ */}
-      <motion.div {...sectionAnimation} className="py-16 bg-[#F5F5F0]">
+      <ScrollReveal className="py-16 bg-[#F5F5F0]">
         <div className="max-w-5xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-[#1A1A1A] mb-4">
+              <TextReveal
+                as="h2"
+                className="text-3xl font-bold text-[#1A1A1A] mb-4"
+              >
                 Free manufacturing tools
-              </h2>
+              </TextReveal>
               <p className="text-[#6B6B6B] mb-6">
                 Use our free tools to start your research before committing
                 to a full analysis. No account needed.
@@ -343,100 +382,118 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </ScrollReveal>
 
       {/* ================================================================ */}
       {/* PRICING                                                          */}
       {/* ================================================================ */}
-      <motion.div {...sectionAnimation} className="py-20" id="pricing">
+      <ScrollReveal className="py-20" id="pricing">
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#1A1A1A]">
+          <TextReveal
+            as="h2"
+            className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#1A1A1A]"
+          >
             Simple, transparent pricing
-          </h2>
-          <p className="text-center text-[#6B6B6B] mb-12 max-w-lg mx-auto">
-            Pay once and own your report forever. Not satisfied? Full refund
-            within 72 hours.
-          </p>
+          </TextReveal>
+          <ScrollReveal delay={0.1}>
+            <p className="text-center text-[#6B6B6B] mb-12 max-w-lg mx-auto">
+              Pay once and own your report forever. Not satisfied? Full refund
+              within 72 hours.
+            </p>
+          </ScrollReveal>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Single Report */}
-            <div className="relative bg-white rounded-2xl p-8 border border-[#E8E8E4] shadow-sm">
-              <span className="absolute top-4 right-4 bg-[#FF6B35] text-white text-xs px-3 py-1 rounded-full">
-                Most popular
-              </span>
-              <h3 className="text-xl font-bold text-[#1A1A1A] mb-4">
-                Single Report
-              </h3>
-              <div className="mb-1">
-                <span className="text-5xl font-black text-[#1A1A1A]">$99</span>
-              </div>
-              <p className="text-[#6B6B6B] mb-6">one-time</p>
-              <ul className="space-y-3 mb-8">
-                {singleFeatures.map((feature) => (
-                  <li
-                    key={feature}
-                    className="flex items-center gap-2 text-[#1A1A1A]"
+            <ScrollReveal direction="left" delay={0.1}>
+              <div className="relative bg-white rounded-2xl p-8 border border-[#E8E8E4] shadow-sm">
+                <span className="absolute top-4 right-4 bg-[#FF6B35] text-white text-xs px-3 py-1 rounded-full">
+                  Most popular
+                </span>
+                <h3 className="text-xl font-bold text-[#1A1A1A] mb-4">
+                  Single Report
+                </h3>
+                <div className="mb-1">
+                  <span className="text-5xl font-black text-[#1A1A1A]">$99</span>
+                </div>
+                <p className="text-[#6B6B6B] mb-6">one-time</p>
+                <ul className="space-y-3 mb-8">
+                  {singleFeatures.map((feature) => (
+                    <li
+                      key={feature}
+                      className="flex items-center gap-2 text-[#1A1A1A]"
+                    >
+                      <Check className="w-5 h-5 text-[#22C55E] shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <MagneticButton className="w-full">
+                  <Link
+                    href="/analyze"
+                    className="block text-center bg-[#FF6B35] text-white w-full rounded-full py-3 font-semibold hover:bg-[#E85A25] transition-colors"
                   >
-                    <Check className="w-5 h-5 text-[#22C55E] shrink-0" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/analyze"
-                className="block text-center bg-[#FF6B35] text-white w-full rounded-full py-3 font-semibold hover:bg-[#E85A25] transition-colors"
-              >
-                Get your report
-              </Link>
-            </div>
+                    Get your report
+                  </Link>
+                </MagneticButton>
+              </div>
+            </ScrollReveal>
 
             {/* Monthly */}
-            <div className="relative bg-white rounded-2xl p-8 border border-[#E8E8E4] shadow-sm">
-              <h3 className="text-xl font-bold text-[#1A1A1A] mb-4">
-                Monthly
-              </h3>
-              <div className="mb-1">
-                <span className="text-5xl font-black text-[#1A1A1A]">
-                  $199
-                </span>
-              </div>
-              <p className="text-[#6B6B6B] mb-6">/month</p>
-              <ul className="space-y-3 mb-8">
-                {monthlyFeatures.map((feature) => (
-                  <li
-                    key={feature}
-                    className="flex items-center gap-2 text-[#1A1A1A]"
+            <ScrollReveal direction="right" delay={0.2}>
+              <div className="relative bg-white rounded-2xl p-8 border border-[#E8E8E4] shadow-sm">
+                <h3 className="text-xl font-bold text-[#1A1A1A] mb-4">
+                  Monthly
+                </h3>
+                <div className="mb-1">
+                  <span className="text-5xl font-black text-[#1A1A1A]">
+                    $199
+                  </span>
+                </div>
+                <p className="text-[#6B6B6B] mb-6">/month</p>
+                <ul className="space-y-3 mb-8">
+                  {monthlyFeatures.map((feature) => (
+                    <li
+                      key={feature}
+                      className="flex items-center gap-2 text-[#1A1A1A]"
+                    >
+                      <Check className="w-5 h-5 text-[#22C55E] shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <MagneticButton className="w-full">
+                  <Link
+                    href="/analyze"
+                    className="block text-center border-2 border-[#FF6B35] text-[#FF6B35] w-full rounded-full py-3 font-semibold hover:bg-[#FFF0EB] transition-colors"
                   >
-                    <Check className="w-5 h-5 text-[#22C55E] shrink-0" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/analyze"
-                className="block text-center border-2 border-[#FF6B35] text-[#FF6B35] w-full rounded-full py-3 font-semibold hover:bg-[#FFF0EB] transition-colors"
-              >
-                Subscribe
-              </Link>
-            </div>
+                    Subscribe
+                  </Link>
+                </MagneticButton>
+              </div>
+            </ScrollReveal>
           </div>
           <p className="text-sm text-[#6B6B6B] text-center mt-8">
             Not satisfied? Full refund within 72 hours.
           </p>
         </div>
-      </motion.div>
+      </ScrollReveal>
 
       {/* ================================================================ */}
       {/* GUIDES CTA                                                       */}
       {/* ================================================================ */}
-      <motion.div {...sectionAnimation} className="py-16 bg-[#F5F5F0]">
+      <ScrollReveal className="py-16 bg-[#F5F5F0]">
         <div className="max-w-5xl mx-auto px-6 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4">
+          <TextReveal
+            as="h2"
+            className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4"
+          >
             New to manufacturing?
-          </h2>
-          <p className="text-[#6B6B6B] mb-8 max-w-lg mx-auto">
-            Read our free guides to learn the fundamentals before you start.
-            Written for first-time founders.
-          </p>
+          </TextReveal>
+          <ScrollReveal delay={0.1}>
+            <p className="text-[#6B6B6B] mb-8 max-w-lg mx-auto">
+              Read our free guides to learn the fundamentals before you start.
+              Written for first-time founders.
+            </p>
+          </ScrollReveal>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
             {[
               { href: "/guide/manufacturing-101", label: "Manufacturing 101", icon: "📖" },
@@ -457,27 +514,32 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </motion.div>
+      </ScrollReveal>
 
       {/* ================================================================ */}
       {/* FAQ                                                              */}
       {/* ================================================================ */}
-      <motion.div {...sectionAnimation} className="py-20" id="faq">
+      <ScrollReveal className="py-20" id="faq">
         <div className="max-w-3xl mx-auto px-6">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#1A1A1A]">
+          <TextReveal
+            as="h2"
+            className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#1A1A1A]"
+          >
             Frequently asked questions
-          </h2>
-          <p className="text-center text-[#6B6B6B] mb-12">
-            Everything you need to know about Bottlecap reports.
-          </p>
+          </TextReveal>
+          <ScrollReveal delay={0.1}>
+            <p className="text-center text-[#6B6B6B] mb-12">
+              Everything you need to know about Bottlecap reports.
+            </p>
+          </ScrollReveal>
           <FAQ />
         </div>
-      </motion.div>
+      </ScrollReveal>
 
       {/* ================================================================ */}
       {/* TRUST / SECURITY                                                 */}
       {/* ================================================================ */}
-      <motion.div {...sectionAnimation} className="py-16 bg-[#F5F5F0]">
+      <ScrollReveal className="py-16 bg-[#F5F5F0]">
         <div className="max-w-4xl mx-auto px-6">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
             <div>
@@ -510,36 +572,45 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </ScrollReveal>
 
       {/* ================================================================ */}
       {/* FINAL CTA                                                        */}
       {/* ================================================================ */}
-      <motion.div {...sectionAnimation} className="py-24 text-center">
+      <ScrollReveal className="py-24 text-center" direction="scale">
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-4xl sm:text-5xl font-black text-[#1A1A1A] mb-4">
+          <TextReveal
+            as="h2"
+            className="text-4xl sm:text-5xl font-black text-[#1A1A1A] mb-4"
+          >
             Your next product starts here
-          </h2>
-          <p className="text-lg text-[#6B6B6B] mb-10 max-w-xl mx-auto">
-            Join founders who are turning ideas into real products. Get your
-            manufacturing feasibility report in minutes.
-          </p>
+          </TextReveal>
+          <ScrollReveal delay={0.1}>
+            <p className="text-lg text-[#6B6B6B] mb-10 max-w-xl mx-auto">
+              Join founders who are turning ideas into real products. Get your
+              manufacturing feasibility report in minutes.
+            </p>
+          </ScrollReveal>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link
-              href="/report/demo"
-              className="border-2 border-[#FF6B35] text-[#FF6B35] rounded-full px-8 py-4 font-semibold hover:bg-[#FFF0EB] transition-colors"
-            >
-              See an example
-            </Link>
-            <Link
-              href="/analyze"
-              className="bg-[#FF6B35] text-white rounded-full px-8 py-4 font-semibold hover:bg-[#E85A25] transition-colors"
-            >
-              Analyze my idea — $99
-            </Link>
+            <MagneticButton>
+              <Link
+                href="/report/demo"
+                className="border-2 border-[#FF6B35] text-[#FF6B35] rounded-full px-8 py-4 font-semibold hover:bg-[#FFF0EB] transition-colors inline-block"
+              >
+                See an example
+              </Link>
+            </MagneticButton>
+            <MagneticButton>
+              <Link
+                href="/analyze"
+                className="bg-[#FF6B35] text-white rounded-full px-8 py-4 font-semibold hover:bg-[#E85A25] transition-colors inline-block"
+              >
+                Analyze my idea — $99
+              </Link>
+            </MagneticButton>
           </div>
         </div>
-      </motion.div>
+      </ScrollReveal>
     </main>
   )
 }
