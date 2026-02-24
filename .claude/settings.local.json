@@ -25,7 +25,15 @@
       "Bash(cd \"C:/Users/Jwmon/OneDrive/文档/Github/bottlecap\" && npm run lint 2>&1)",
       "WebFetch(domain:film.ai)",
       "WebSearch",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(cd:*)",
+      "Bash(grep:*)",
+      "mcp__claude_ai_Vercel__deploy_to_vercel",
+      "Bash(cd /c/Users/Jwmon/OneDrive/文档/Github/bottlecap && npx vercel --prod --yes 2>&1)",
+      "mcp__claude_ai_Vercel__list_teams",
+      "mcp__claude_ai_Vercel__list_projects",
+      "Bash(python3:*)",
+      "Bash(node:*)"
     ]
   }
 }

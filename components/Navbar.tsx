@@ -19,6 +19,14 @@ const guideLinks = [
   { href: "/guide/sourcing", label: "Sourcing Guide" },
 ]
 
+const resourceLinks = [
+  { href: "/cost-to-manufacture", label: "Cost Guides" },
+  { href: "/manufacturers", label: "Country Profiles" },
+  { href: "/compare", label: "Comparisons" },
+  { href: "/glossary", label: "Glossary" },
+  { href: "/trends", label: "Trending Products" },
+]
+
 function DropdownMenu({
   label,
   links,
@@ -120,6 +128,11 @@ export default function Navbar() {
               links={guideLinks}
               allHref="/guide"
             />
+            <DropdownMenu
+              label="Resources"
+              links={resourceLinks}
+              allHref="/glossary"
+            />
             <Link
               href="/report/demo"
               className="text-sm text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
@@ -182,6 +195,20 @@ export default function Navbar() {
             Guides
           </p>
           {guideLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMobileOpen(false)}
+              className="block py-2 text-sm text-[#1A1A1A]"
+            >
+              {link.label}
+            </Link>
+          ))}
+          <div className="h-px bg-[#E8E8E4] my-3" />
+          <p className="text-xs font-semibold text-[#9B9B9B] uppercase tracking-wide mb-2">
+            Resources
+          </p>
+          {resourceLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}

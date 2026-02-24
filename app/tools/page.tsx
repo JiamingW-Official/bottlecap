@@ -6,6 +6,11 @@ import {
   Calculator,
   Globe,
   Package,
+  ClipboardList,
+  TrendingUp,
+  MapPin,
+  DollarSign,
+  BarChart3,
 } from "lucide-react"
 import ScrollReveal from "@/components/animations/ScrollReveal"
 import TextReveal from "@/components/animations/TextReveal"
@@ -47,8 +52,53 @@ const tools = [
     description:
       "Plan your minimum order quantity based on budget, storage, and cash flow. See how MOQ affects per-unit cost.",
     href: "/tools/moq-calculator",
-    badge: "New",
+    badge: null,
     gradient: "from-[#F59E0B] to-[#EF4444]",
+  },
+  {
+    icon: ClipboardList,
+    title: "Manufacturing Quiz",
+    description:
+      "Answer 5 quick questions and get a personalized manufacturing recommendation — country, method, cost estimate, and next steps.",
+    href: "/tools/quiz",
+    badge: "New",
+    gradient: "from-[#EC4899] to-[#F43F5E]",
+  },
+  {
+    icon: TrendingUp,
+    title: "Margin Calculator",
+    description:
+      "Input your costs, fees, and selling price to see your true margins. Includes a visual cost waterfall breakdown.",
+    href: "/tools/margin-calculator",
+    badge: "New",
+    gradient: "from-[#6366F1] to-[#A855F7]",
+  },
+  {
+    icon: MapPin,
+    title: "Supplier Finder",
+    description:
+      "Filter by product category, priority, and MOQ to discover the best manufacturing regions for your product.",
+    href: "/tools/supplier-finder",
+    badge: null,
+    gradient: "from-[#14B8A6] to-[#06B6D4]",
+  },
+  {
+    icon: DollarSign,
+    title: "ROI Calculator",
+    description:
+      "Estimate how much you could save by optimizing your manufacturing — country, volume, and sourcing improvements.",
+    href: "/tools/roi-calculator",
+    badge: null,
+    gradient: "from-[#84CC16] to-[#22C55E]",
+  },
+  {
+    icon: BarChart3,
+    title: "Country Compare",
+    description:
+      "Select 2-4 countries and see a side-by-side comparison on cost, quality, lead time, IP protection, and more.",
+    href: "/tools/country-compare",
+    badge: null,
+    gradient: "from-[#F97316] to-[#DC2626]",
   },
 ]
 
