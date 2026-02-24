@@ -45,7 +45,30 @@ export async function POST(request: Request) {
 
       await markReportPaid(reportId, paymentIntentId)
 
-      // Trigger analysis asynchronously
+      // Try Python FastAPI backend first, fallback to local /api/analyze
+      const backendUrl = process.env.PYTHON_BACKEND_URL
+
+      if (backendUrl) {
+        try {
+          const res = await fetch(`${backendUrl}/api/v1/analyze`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${process.env.BACKEND_API_KEY}`,
+            },
+            body: JSON.stringify({ report_id: reportId }),
+          })
+          if (res.ok) {
+            console.log('Analysis dispatched to FastAPI backend')
+            return NextResponse.json({ received: true })
+          }
+          console.error('FastAPI returned non-ok:', res.status, await res.text())
+        } catch (e) {
+          console.error('FastAPI unreachable, falling back to local:', e)
+        }
+      }
+
+      // Fallback: existing local analysis
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
       fetch(`${baseUrl}/api/analyze`, {
         method: 'POST',
