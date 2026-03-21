@@ -9,17 +9,58 @@ import {
   Check,
   ChevronRight,
   ChevronLeft,
+  X,
 } from "lucide-react"
 import { toast } from "sonner"
 import type { ProductInput } from "@/types"
+import FormInsightPanel from "@/components/FormInsightPanel"
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
+
+const PLACEHOLDER_IDEAS = [
+  "A bamboo toothbrush with charcoal bristles and compostable packaging...",
+  "A wireless phone charger shaped like a pebble, made from recycled ABS...",
+  "A reusable silicone food wrap — replaces cling film, dishwasher safe...",
+  "A smart pet collar with GPS tracking, silicone shell, 7-day battery...",
+  "A portable espresso maker — aluminum body, manual pump, Nespresso pods...",
+  "A modular desk organizer — Baltic birch plywood, magnetic connections...",
+]
+
+const QUICK_IDEAS = [
+  "Smart water bottle",
+  "Custom phone case",
+  "Pet toy subscription box",
+  "Bamboo sunglasses",
+  "Fitness tracker band",
+]
+
+const PRICE_OPTIONS = [
+  { value: "under_30", label: "Under $30", desc: "Impulse buy range" },
+  { value: "30_100", label: "$30–$100", desc: "Mid-range consumer" },
+  { value: "100_300", label: "$100–$300", desc: "Premium positioning" },
+  { value: "unsure", label: "Not sure yet", desc: "We'll estimate for you" },
+] as const
+
+const CONCERN_OPTIONS = [
+  { value: "cost", label: "Cost too high", desc: "Need competitive pricing" },
+  { value: "factory", label: "Can't find a factory", desc: "Don't know where to start" },
+  { value: "quality", label: "Quality worries", desc: "Afraid of bad batches" },
+  { value: "start", label: "Don't know where to start", desc: "First-time founder" },
+] as const
+
+const QUANTITY_OPTIONS = [
+  { value: "under_100", label: "Under 100", desc: "Prototype / test run" },
+  { value: "100_1000", label: "100–1,000", desc: "First production run" },
+  { value: "over_1000", label: "Over 1,000", desc: "Scale production" },
+  { value: "unsure", label: "Not decided yet", desc: "Still exploring" },
+] as const
 
 export default function SubmitForm() {
   const [currentStep, setCurrentStep] = useState<number>(1)
   const [formData, setFormData] = useState<Partial<ProductInput>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [placeholderIndex, setPlaceholderIndex] = useState(0)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -36,6 +77,14 @@ export default function SubmitForm() {
     }
   }, [])
 
+  // Cycle placeholders
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex((p) => (p + 1) % PLACEHOLDER_IDEAS.length)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -46,7 +95,6 @@ export default function SubmitForm() {
       return
     }
 
-    // Convert to base64 for API submission
     const reader = new FileReader()
     reader.onloadend = () => {
       const base64 = reader.result as string
@@ -93,28 +141,47 @@ export default function SubmitForm() {
     <div>
       {/* Progress bar */}
       <div
-        className="flex items-center gap-2 mb-10"
+        className="flex items-center gap-3 mb-10"
         role="progressbar"
         aria-valuenow={currentStep}
         aria-valuemin={1}
         aria-valuemax={3}
         aria-label={`Step ${currentStep} of 3`}
       >
-        <div
-          className={`h-1.5 rounded-full transition-all duration-300 ${
-            currentStep >= 1 ? "bg-[#FF6B35] w-16" : "bg-[#E8E8E4] w-8"
-          }`}
-        />
-        <div
-          className={`h-1.5 rounded-full transition-all duration-300 ${
-            currentStep >= 2 ? "bg-[#FF6B35] w-16" : "bg-[#E8E8E4] w-8"
-          }`}
-        />
-        <div
-          className={`h-1.5 rounded-full transition-all duration-300 ${
-            currentStep >= 3 ? "bg-[#FF6B35] w-16" : "bg-[#E8E8E4] w-8"
-          }`}
-        />
+        {[1, 2, 3].map((step) => (
+          <div key={step} className="flex items-center gap-2 flex-1">
+            <motion.div
+              className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold shrink-0 transition-colors duration-300 ${
+                currentStep > step
+                  ? "bg-[#FF6B35] text-white"
+                  : currentStep === step
+                    ? "bg-[#FF6B35] text-white"
+                    : "bg-[#E8E8E4] text-[#9B9B9B]"
+              }`}
+              layout
+            >
+              {currentStep > step ? (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
+                  <Check className="w-4 h-4" />
+                </motion.div>
+              ) : (
+                step
+              )}
+            </motion.div>
+            <div
+              className={`h-1.5 rounded-full flex-1 transition-all duration-300 ${
+                currentStep > step ? "bg-[#FF6B35]" : currentStep === step ? "bg-[#FF6B35]/40" : "bg-[#E8E8E4]"
+              }`}
+            />
+          </div>
+        ))}
+        <span className="text-xs text-[#9B9B9B] ml-1 shrink-0">
+          Step {currentStep}/3
+        </span>
       </div>
 
       {/* Step content */}
@@ -128,13 +195,16 @@ export default function SubmitForm() {
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
           >
-            <h2 className="text-2xl sm:text-3xl font-bold mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2">
               What product do you want to make?
             </h2>
+            <p className="text-sm text-[#9B9B9B] mb-6">
+              The more detail you add, the better your report will be.
+            </p>
 
             <textarea
               className="w-full bg-white border-2 border-[#E8E8E4] focus:border-[#FF6B35] rounded-2xl p-5 text-base resize-none outline-none min-h-[160px]"
-              placeholder={`For example:\nA smart pet collar that tracks location,\nsilicone shell, built-in GPS module,\nwaterproof, 7-day battery life...`}
+              placeholder={PLACEHOLDER_IDEAS[placeholderIndex]}
               value={formData.productDescription || ""}
               onChange={(e) =>
                 setFormData({ ...formData, productDescription: e.target.value })
@@ -146,7 +216,7 @@ export default function SubmitForm() {
               <p
                 className={`text-xs ${
                   descriptionLength > 0 && !descriptionValid
-                    ? "text-[#EF4444]"
+                    ? "text-[#FF6B35]"
                     : "text-[#9B9B9B]"
                 }`}
               >
@@ -154,8 +224,43 @@ export default function SubmitForm() {
                   ? `${20 - descriptionLength} more characters needed`
                   : "Minimum 20 characters"}
               </p>
-              <p className="text-xs text-[#9B9B9B]">{descriptionLength}/20</p>
+              <p className={`text-xs text-right mt-1 ${descriptionLength > 0 && descriptionLength < 20 ? "text-[#FF6B35]" : "text-[#9B9B9B]"}`}>
+                {descriptionLength}/2000
+              </p>
             </div>
+
+            {/* Quick idea chips */}
+            {!formData.productDescription && (
+              <motion.div
+                className="mt-4"
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: {},
+                  visible: { transition: { staggerChildren: 0.06 } },
+                }}
+              >
+                <p className="text-xs text-[#9B9B9B] mb-2">Popular ideas to try:</p>
+                <div className="flex flex-wrap gap-2">
+                  {QUICK_IDEAS.map((idea) => (
+                    <motion.button
+                      key={idea}
+                      variants={{
+                        hidden: { opacity: 0, y: 8 },
+                        visible: { opacity: 1, y: 0 },
+                      }}
+                      transition={{ duration: 0.25 }}
+                      onClick={() =>
+                        setFormData({ ...formData, productDescription: idea })
+                      }
+                      className="text-xs bg-[#F5F5F0] border border-[#E8E8E4] rounded-full px-3 py-1.5 text-[#6B6B6B] hover:border-[#FF6B35] hover:text-[#FF6B35] transition-colors"
+                    >
+                      {idea}
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
 
             {/* Image upload area */}
             <div className="mt-4">
@@ -169,14 +274,30 @@ export default function SubmitForm() {
                   </div>
                 ) : (
                   <div className="flex flex-col items-center gap-2">
-                    <Image
-                      src={imagePreview}
-                      alt="Product preview"
-                      width={200}
-                      height={160}
-                      className="object-cover rounded-lg max-h-40"
-                      unoptimized
-                    />
+                    <div className="relative inline-block">
+                      <Image
+                        src={imagePreview}
+                        alt="Product preview"
+                        width={200}
+                        height={160}
+                        className="object-cover rounded-lg max-h-40"
+                        unoptimized
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          setImagePreview(null)
+                          setFormData((prev) => ({ ...prev, imageUrl: undefined }))
+                          if (fileInputRef.current) fileInputRef.current.value = ""
+                        }}
+                        className="absolute -top-2 -right-2 w-6 h-6 bg-[#1A1A1A] hover:bg-[#EF4444] text-white rounded-full flex items-center justify-center shadow-md transition-colors"
+                        aria-label="Remove image"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                     <div className="flex items-center gap-1 text-[#22C55E] text-sm">
                       <Check className="w-4 h-4" />
                       <span>Image selected</span>
@@ -192,6 +313,12 @@ export default function SubmitForm() {
                 />
               </label>
             </div>
+
+            {/* AI Preview Panel */}
+            <FormInsightPanel
+              productDescription={formData.productDescription || ""}
+              isVisible={descriptionValid}
+            />
 
             {/* Next button */}
             <div className="mt-6 flex justify-end">
@@ -218,170 +345,77 @@ export default function SubmitForm() {
           >
             {/* Q1: Target Price */}
             <div className="mb-8">
-              <h3 className="text-xl font-semibold mb-4">
+              <h3 className="text-xl font-semibold mb-1">
                 How much do you plan to sell it for?
               </h3>
+              <p className="text-sm text-[#9B9B9B] mb-4">Helps us estimate margins and sourcing strategy.</p>
               <div className="grid grid-cols-2 gap-3">
-                <button
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                    formData.targetPrice === "under_30"
-                      ? "border-[#FF6B35] bg-[#FFF0EB]"
-                      : "border-[#E8E8E4] bg-white hover:border-[#D0D0C8]"
-                  }`}
-                  onClick={() =>
-                    setFormData({ ...formData, targetPrice: "under_30" })
-                  }
-                >
-                  Under $30
-                </button>
-                <button
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                    formData.targetPrice === "30_100"
-                      ? "border-[#FF6B35] bg-[#FFF0EB]"
-                      : "border-[#E8E8E4] bg-white hover:border-[#D0D0C8]"
-                  }`}
-                  onClick={() =>
-                    setFormData({ ...formData, targetPrice: "30_100" })
-                  }
-                >
-                  $30–$100
-                </button>
-                <button
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                    formData.targetPrice === "100_300"
-                      ? "border-[#FF6B35] bg-[#FFF0EB]"
-                      : "border-[#E8E8E4] bg-white hover:border-[#D0D0C8]"
-                  }`}
-                  onClick={() =>
-                    setFormData({ ...formData, targetPrice: "100_300" })
-                  }
-                >
-                  $100–$300
-                </button>
-                <button
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                    formData.targetPrice === "unsure"
-                      ? "border-[#FF6B35] bg-[#FFF0EB]"
-                      : "border-[#E8E8E4] bg-white hover:border-[#D0D0C8]"
-                  }`}
-                  onClick={() =>
-                    setFormData({ ...formData, targetPrice: "unsure" })
-                  }
-                >
-                  Not sure yet
-                </button>
+                {PRICE_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+                      formData.targetPrice === opt.value
+                        ? "border-[#FF6B35] bg-[#FFF0EB]"
+                        : "border-[#E8E8E4] bg-white hover:border-[#D0D0C8]"
+                    }`}
+                    onClick={() =>
+                      setFormData({ ...formData, targetPrice: opt.value })
+                    }
+                  >
+                    <span className="font-medium text-[#1A1A1A]">{opt.label}</span>
+                    <p className="text-xs text-[#9B9B9B] mt-0.5">{opt.desc}</p>
+                  </button>
+                ))}
               </div>
             </div>
 
             {/* Q2: Main Concern */}
             <div className="mb-8">
-              <h3 className="text-xl font-semibold mb-4">
+              <h3 className="text-xl font-semibold mb-1">
                 What&apos;s your biggest concern?
               </h3>
+              <p className="text-sm text-[#9B9B9B] mb-4">We&apos;ll focus the report on what matters to you.</p>
               <div className="grid grid-cols-2 gap-3">
-                <button
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                    formData.mainConcern === "cost"
-                      ? "border-[#FF6B35] bg-[#FFF0EB]"
-                      : "border-[#E8E8E4] bg-white hover:border-[#D0D0C8]"
-                  }`}
-                  onClick={() =>
-                    setFormData({ ...formData, mainConcern: "cost" })
-                  }
-                >
-                  Cost too high
-                </button>
-                <button
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                    formData.mainConcern === "factory"
-                      ? "border-[#FF6B35] bg-[#FFF0EB]"
-                      : "border-[#E8E8E4] bg-white hover:border-[#D0D0C8]"
-                  }`}
-                  onClick={() =>
-                    setFormData({ ...formData, mainConcern: "factory" })
-                  }
-                >
-                  Can&apos;t find a factory
-                </button>
-                <button
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                    formData.mainConcern === "quality"
-                      ? "border-[#FF6B35] bg-[#FFF0EB]"
-                      : "border-[#E8E8E4] bg-white hover:border-[#D0D0C8]"
-                  }`}
-                  onClick={() =>
-                    setFormData({ ...formData, mainConcern: "quality" })
-                  }
-                >
-                  Quality worries
-                </button>
-                <button
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                    formData.mainConcern === "start"
-                      ? "border-[#FF6B35] bg-[#FFF0EB]"
-                      : "border-[#E8E8E4] bg-white hover:border-[#D0D0C8]"
-                  }`}
-                  onClick={() =>
-                    setFormData({ ...formData, mainConcern: "start" })
-                  }
-                >
-                  Don&apos;t know where to start
-                </button>
+                {CONCERN_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+                      formData.mainConcern === opt.value
+                        ? "border-[#FF6B35] bg-[#FFF0EB]"
+                        : "border-[#E8E8E4] bg-white hover:border-[#D0D0C8]"
+                    }`}
+                    onClick={() =>
+                      setFormData({ ...formData, mainConcern: opt.value })
+                    }
+                  >
+                    <span className="font-medium text-[#1A1A1A]">{opt.label}</span>
+                    <p className="text-xs text-[#9B9B9B] mt-0.5">{opt.desc}</p>
+                  </button>
+                ))}
               </div>
             </div>
 
             {/* Q3: Quantity */}
             <div className="mb-8">
-              <h3 className="text-xl font-semibold mb-4">How many units?</h3>
+              <h3 className="text-xl font-semibold mb-1">How many units?</h3>
+              <p className="text-sm text-[#9B9B9B] mb-4">Affects MOQ requirements and per-unit pricing.</p>
               <div className="grid grid-cols-2 gap-3">
-                <button
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                    formData.quantity === "under_100"
-                      ? "border-[#FF6B35] bg-[#FFF0EB]"
-                      : "border-[#E8E8E4] bg-white hover:border-[#D0D0C8]"
-                  }`}
-                  onClick={() =>
-                    setFormData({ ...formData, quantity: "under_100" })
-                  }
-                >
-                  Under 100
-                </button>
-                <button
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                    formData.quantity === "100_1000"
-                      ? "border-[#FF6B35] bg-[#FFF0EB]"
-                      : "border-[#E8E8E4] bg-white hover:border-[#D0D0C8]"
-                  }`}
-                  onClick={() =>
-                    setFormData({ ...formData, quantity: "100_1000" })
-                  }
-                >
-                  100–1,000
-                </button>
-                <button
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                    formData.quantity === "over_1000"
-                      ? "border-[#FF6B35] bg-[#FFF0EB]"
-                      : "border-[#E8E8E4] bg-white hover:border-[#D0D0C8]"
-                  }`}
-                  onClick={() =>
-                    setFormData({ ...formData, quantity: "over_1000" })
-                  }
-                >
-                  Over 1,000
-                </button>
-                <button
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                    formData.quantity === "unsure"
-                      ? "border-[#FF6B35] bg-[#FFF0EB]"
-                      : "border-[#E8E8E4] bg-white hover:border-[#D0D0C8]"
-                  }`}
-                  onClick={() =>
-                    setFormData({ ...formData, quantity: "unsure" })
-                  }
-                >
-                  Not decided yet
-                </button>
+                {QUANTITY_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+                      formData.quantity === opt.value
+                        ? "border-[#FF6B35] bg-[#FFF0EB]"
+                        : "border-[#E8E8E4] bg-white hover:border-[#D0D0C8]"
+                    }`}
+                    onClick={() =>
+                      setFormData({ ...formData, quantity: opt.value })
+                    }
+                  >
+                    <span className="font-medium text-[#1A1A1A]">{opt.label}</span>
+                    <p className="text-xs text-[#9B9B9B] mt-0.5">{opt.desc}</p>
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -405,7 +439,7 @@ export default function SubmitForm() {
           </motion.div>
         )}
 
-        {/* Step 3 — One last thing */}
+        {/* Step 3 — Email + order summary */}
         {currentStep === 3 && (
           <motion.div
             key={3}
@@ -414,9 +448,12 @@ export default function SubmitForm() {
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
           >
-            <h2 className="text-2xl font-bold mb-6">
+            <h2 className="text-2xl font-bold mb-2">
               Your report will be sent to your email
             </h2>
+            <p className="text-sm text-[#9B9B9B] mb-6">
+              You&apos;ll also get a permanent link to view it anytime.
+            </p>
 
             <input
               type="email"
@@ -428,40 +465,58 @@ export default function SubmitForm() {
               }
             />
 
+            {/* Order summary */}
+            <div className="mt-6 bg-[#F5F5F0] rounded-xl p-5">
+              <p className="text-xs text-[#9B9B9B] uppercase tracking-wide font-semibold mb-3">
+                Order summary
+              </p>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-[#6B6B6B]">Product</span>
+                  <span className="text-[#1A1A1A] font-medium truncate max-w-[200px]">
+                    {formData.productDescription?.slice(0, 40) || "—"}
+                    {(formData.productDescription?.length || 0) > 40 ? "..." : ""}
+                  </span>
+                </div>
+                {formData.targetPrice && (
+                  <div className="flex justify-between">
+                    <span className="text-[#6B6B6B]">Target price</span>
+                    <span className="text-[#1A1A1A]">
+                      {PRICE_OPTIONS.find((o) => o.value === formData.targetPrice)?.label || "—"}
+                    </span>
+                  </div>
+                )}
+                {formData.quantity && (
+                  <div className="flex justify-between">
+                    <span className="text-[#6B6B6B]">Quantity</span>
+                    <span className="text-[#1A1A1A]">
+                      {QUANTITY_OPTIONS.find((o) => o.value === formData.quantity)?.label || "—"}
+                    </span>
+                  </div>
+                )}
+                <div className="h-px bg-[#E8E8E4] my-2" />
+                <div className="flex justify-between font-semibold">
+                  <span className="text-[#1A1A1A]">Total</span>
+                  <span className="text-[#FF6B35]">$99</span>
+                </div>
+              </div>
+            </div>
+
             {/* Report contents checklist */}
-            <div className="mt-6 space-y-3">
-              <div className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-[#22C55E] flex-shrink-0" />
-                <span className="text-base">
-                  Manufacturing feasibility score (0-100)
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-[#22C55E] flex-shrink-0" />
-                <span className="text-base">Per-unit cost breakdown</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-[#22C55E] flex-shrink-0" />
-                <span className="text-base">
-                  3-country supplier comparison
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-[#22C55E] flex-shrink-0" />
-                <span className="text-base">
-                  Tariff impact calculation
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-[#22C55E] flex-shrink-0" />
-                <span className="text-base">
-                  10 manufacturing optimization tips
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-[#22C55E] flex-shrink-0" />
-                <span className="text-base">Shareable report card</span>
-              </div>
+            <div className="mt-6 space-y-2.5">
+              {[
+                "Manufacturing feasibility score (0-100)",
+                "Per-unit cost breakdown",
+                "3-country supplier comparison",
+                "Tariff impact calculation",
+                "10 manufacturing optimization tips",
+                "Shareable report card",
+              ].map((item) => (
+                <div key={item} className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-[#22C55E] flex-shrink-0" />
+                  <span className="text-sm text-[#1A1A1A]">{item}</span>
+                </div>
+              ))}
             </div>
 
             {/* Nav + Submit */}

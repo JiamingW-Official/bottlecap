@@ -88,6 +88,175 @@ body {
   background-color: var(--brand-background);
   color: var(--brand-foreground);
   font-family: 'Inter', -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Custom selection color */
+::selection {
+  background-color: #FF6B35;
+  color: white;
+}
+
+::-moz-selection {
+  background-color: #FF6B35;
+  color: white;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D0D0C8;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9B9B9B;
+}
+
+/* Focus visible ring */
+*:focus-visible {
+  outline: 2px solid #FF6B35;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Smooth focus transition */
+a, button, input, textarea, select {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Skip to content (accessibility) */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 0.5rem 1rem;
+  background: #FF6B35;
+  color: white;
+  font-weight: 600;
+  border-radius: 0 0 8px 0;
+}
+.skip-to-content:focus {
+  left: 0;
+  top: 0;
+}
+
+/* Print styles */
+@media print {
+  nav, footer, .no-print { display: none !important; }
+  body { background: white !important; }
+  * { box-shadow: none !important; }
+  a[href]::after { content: " (" attr(href) ")"; font-size: 0.8em; color: #6B6B6B; }
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(135deg, #FF6B35, #FF9F1C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animated shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,107,53,0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+
+/* Subtle float animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Pulse ring animation */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Glow effect for brand elements */
+.glow-brand {
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.15), 0 0 40px rgba(255, 107, 53, 0.05);
+}
+
+/* ── Premium typography system ──────────────────────────────────── */
+
+/* Section eyebrow / overline */
+.eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #FF6B35;
+  display: block;
+}
+
+/* Display headings — tight tracking for large text */
+h1, h2, h3 {
+  letter-spacing: -0.015em;
+}
+
+/* Gradient underline link */
+.link-gradient {
+  background: linear-gradient(90deg, #FF6B35, #FF9F1C);
+  background-size: 0% 1.5px;
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  transition: background-size 0.3s ease;
+  text-decoration: none;
+}
+.link-gradient:hover {
+  background-size: 100% 1.5px;
+}
+
+/* Feather separator */
+.separator-feather {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #E8E8E4 20%, #E8E8E4 80%, transparent 100%);
+  border: none;
+}
+
+/* Number display (large stats) */
+.stat-number {
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Balanced text wrapping (Chrome 114+) */
+h1, h2, h3, h4 {
+  text-wrap: balance;
+}
+
+/* Line clamp utilities */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 @theme inline {
@@ -163,4 +332,51 @@ body {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* Keyboard navigation mode - show focus rings only for keyboard users */
+body:not(.keyboard-nav) *:focus {
+  outline: none;
+}
+
+/* Smooth image loading */
+img {
+  content-visibility: auto;
+}
+
+/* Hidden text for screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Respect user motion preferences for custom animations */
+@media (prefers-reduced-motion: reduce) {
+  .float,
+  .shimmer {
+    animation: none !important;
+  }
+}
+
+/* High contrast mode adjustments */
+@media (forced-colors: active) {
+  .gradient-text {
+    -webkit-text-fill-color: initial;
+    background: none;
+  }
+}
+
+/* Touch-friendly tap targets */
+@media (pointer: coarse) {
+  a, button {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }

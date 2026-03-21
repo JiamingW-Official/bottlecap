@@ -1,15 +1,17 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { PenTool, Cpu, BarChart3, Rocket } from "lucide-react"
+import GlossaryTooltip from "@/components/GlossaryTooltip"
 
 interface ProcessStep {
   number: number
   title: string
   description: string
   duration: string
-  icon: string
-  details: string[]
+  Icon: React.ComponentType<{ className?: string }>
+  details: React.ReactNode[]
 }
 
 const STEPS: ProcessStep[] = [
@@ -19,7 +21,7 @@ const STEPS: ProcessStep[] = [
     description:
       "Tell us about your product idea. Include materials, features, target price, and any images or sketches.",
     duration: "2 min",
-    icon: "💡",
+    Icon: PenTool,
     details: [
       "Write a detailed product description",
       "Upload reference images or sketches",
@@ -34,9 +36,13 @@ const STEPS: ProcessStep[] = [
     description:
       "Our AI analyzes your product across 50+ manufacturing dimensions including cost, materials, suppliers, and tariffs.",
     duration: "2-5 min",
-    icon: "🤖",
+    Icon: Cpu,
     details: [
-      "HS code classification & tariff lookup",
+      <>
+        <GlossaryTooltip term="hs-code">HS code</GlossaryTooltip>{" "}
+        classification &{" "}
+        <GlossaryTooltip term="tariff">tariff</GlossaryTooltip> lookup
+      </>,
       "Cost estimation across 3+ countries",
       "Material selection & alternatives",
       "Manufacturing process identification",
@@ -50,7 +56,7 @@ const STEPS: ProcessStep[] = [
     description:
       "Receive a comprehensive manufacturing feasibility report with actionable next steps and supplier recommendations.",
     duration: "Instant",
-    icon: "📊",
+    Icon: BarChart3,
     details: [
       "Feasibility score (0-100)",
       "Per-unit cost breakdown",
@@ -67,7 +73,7 @@ const STEPS: ProcessStep[] = [
     description:
       "Use your report to contact suppliers, refine your product, and start your manufacturing journey with confidence.",
     duration: "Your pace",
-    icon: "🚀",
+    Icon: Rocket,
     details: [
       "Follow the prioritized action checklist",
       "Contact verified suppliers (optional add-on)",
@@ -78,18 +84,61 @@ const STEPS: ProcessStep[] = [
   },
 ]
 
+const AUTO_ADVANCE_DELAY = 5000 // 5 seconds
+
 export default function ProcessDiagram() {
   const [activeStep, setActiveStep] = useState(0)
+  const lastInteractionRef = useRef<number>(Date.now())
+  const intervalRef = useRef<ReturnType<typeof setInterval>>(undefined)
+
+  // Reset last interaction timestamp whenever user manually navigates
+  const handleManualStep = useCallback((step: number) => {
+    lastInteractionRef.current = Date.now()
+    setActiveStep(step)
+  }, [])
+
+  // Auto-advance timer
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      const elapsed = Date.now() - lastInteractionRef.current
+      if (elapsed >= AUTO_ADVANCE_DELAY) {
+        setActiveStep((prev) => (prev + 1) % STEPS.length)
+        lastInteractionRef.current = Date.now()
+      }
+    }, AUTO_ADVANCE_DELAY)
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [])
+
+  // Keyboard navigation (left/right arrow keys)
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "ArrowLeft") {
+        lastInteractionRef.current = Date.now()
+        setActiveStep((prev) => Math.max(0, prev - 1))
+      } else if (e.key === "ArrowRight") {
+        lastInteractionRef.current = Date.now()
+        setActiveStep((prev) => Math.min(STEPS.length - 1, prev + 1))
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [])
 
   return (
     <div>
       {/* Step indicators */}
-      <div className="flex items-center justify-center gap-0 mb-10">
+      <div className="flex items-center justify-center gap-0 mb-4">
         {STEPS.map((step, i) => (
           <div key={i} className="flex items-center">
             <button
-              onClick={() => setActiveStep(i)}
-              className={`relative w-14 h-14 rounded-full flex items-center justify-center text-2xl transition-all duration-300 ${
+              onClick={() => handleManualStep(i)}
+              className={`relative w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
                 i === activeStep
                   ? "bg-[#FF6B35] shadow-lg shadow-[#FF6B35]/30 scale-110"
                   : i < activeStep
@@ -97,7 +146,7 @@ export default function ProcessDiagram() {
                     : "bg-[#E8E8E4]"
               }`}
             >
-              {step.icon}
+              <step.Icon className={`w-6 h-6 ${i <= activeStep || i < activeStep ? "text-white" : "text-[#9B9B9B]"}`} />
             </button>
             {i < STEPS.length - 1 && (
               <div
@@ -108,6 +157,17 @@ export default function ProcessDiagram() {
             )}
           </div>
         ))}
+      </div>
+
+      {/* Progress bar showing time until auto-advance */}
+      <div className="w-full h-0.5 bg-[#E8E8E4] rounded-full mb-8 overflow-hidden">
+        <motion.div
+          className="h-full bg-[#FF6B35]"
+          initial={{ width: "0%" }}
+          animate={{ width: "100%" }}
+          transition={{ duration: 5, ease: "linear" }}
+          key={activeStep}
+        />
       </div>
 
       {/* Step content */}
@@ -124,7 +184,7 @@ export default function ProcessDiagram() {
             <span className="text-sm font-bold text-[#FF6B35]">
               Step {STEPS[activeStep].number}
             </span>
-            <span className="text-xs bg-[#F5F5F0] px-3 py-1 rounded-full text-[#6B6B6B]">
+            <span className="text-xs px-3 py-1 rounded-full bg-[#FFF0EB] text-[#FF6B35] shadow-[0_0_8px_rgba(255,107,53,0.3)] transition-all duration-300">
               {STEPS[activeStep].duration}
             </span>
           </div>
@@ -156,7 +216,7 @@ export default function ProcessDiagram() {
         {STEPS.map((_, i) => (
           <button
             key={i}
-            onClick={() => setActiveStep(i)}
+            onClick={() => handleManualStep(i)}
             className={`w-2.5 h-2.5 rounded-full transition-all ${
               i === activeStep
                 ? "bg-[#FF6B35] w-8"

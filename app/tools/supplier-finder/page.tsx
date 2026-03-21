@@ -207,7 +207,7 @@ export default function SupplierFinderPage() {
         matchScore: computeMatchScore(r, priority),
       }))
       .sort((a, b) => b.matchScore - a.matchScore)
-  }, [category, priority, moqRange, selectedMoq.floor])
+  }, [category, priority, selectedMoq.floor]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const metrics: { key: keyof Region; label: string }[] = [
     { key: "cost", label: "Cost Competitiveness" },

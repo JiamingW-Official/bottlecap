@@ -9,6 +9,9 @@ const nextConfig = {
     images: { unoptimized: true },
   }),
   transpilePackages: ["three"],
+  poweredByHeader: false,
+  compress: true,
+  reactStrictMode: true,
   webpack: (config) => {
     config.module.rules.push({
       test: /\.(glsl|vert|frag)$/,

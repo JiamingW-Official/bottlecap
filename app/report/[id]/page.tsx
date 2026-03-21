@@ -17,6 +17,71 @@ import { AnalysisResult, Report } from "@/types"
 
 const MAX_POLL_MS = 10 * 60 * 1000 // 10 minutes
 
+const PROGRESS_STEPS = [
+  "Classifying your product",
+  "Looking up tariff codes",
+  "Comparing sourcing countries",
+  "Estimating per-unit costs",
+  "Analyzing materials & specs",
+  "Building optimization tips",
+  "Almost there — finalizing report",
+] as const
+
+function ProcessingState() {
+  const [step, setStep] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStep((prev) => (prev < PROGRESS_STEPS.length - 1 ? prev + 1 : prev))
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Progress caps at 85% (step 6 of 7)
+  const progress = Math.min(85, Math.round(((step + 1) / PROGRESS_STEPS.length) * 85))
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center px-6">
+      <div className="w-full max-w-md">
+        {/* Spinner */}
+        <div className="flex justify-center mb-8">
+          <svg className="w-12 h-12 animate-spin" viewBox="0 0 50 50">
+            <circle cx="25" cy="25" r="20" fill="none" stroke="#E8E8E4" strokeWidth="4" />
+            <circle cx="25" cy="25" r="20" fill="none" stroke="#FF6B35" strokeWidth="4" strokeDasharray="80" strokeDashoffset="60" strokeLinecap="round" />
+          </svg>
+        </div>
+
+        {/* Step counter */}
+        <p className="text-xs text-[#9B9B9B] text-center mb-2 uppercase tracking-wide font-medium">
+          Step {step + 1} of {PROGRESS_STEPS.length}
+        </p>
+
+        {/* Current step label */}
+        <h2 className="text-xl font-bold text-[#1A1A1A] text-center mb-6">
+          {PROGRESS_STEPS[step]}
+        </h2>
+
+        {/* Progress bar */}
+        <div className="w-full h-2 bg-[#E8E8E4] rounded-full overflow-hidden mb-2">
+          <div
+            className="h-full bg-[#FF6B35] rounded-full transition-all duration-700 ease-out"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <p className="text-xs text-[#9B9B9B] text-right">{progress}%</p>
+
+        {/* Reassurance */}
+        <div className="mt-8 bg-[#F5F5F0] rounded-xl p-4 text-center">
+          <p className="text-sm text-[#6B6B6B]">
+            This page auto-updates &mdash; no need to refresh.
+          </p>
+          <p className="text-xs text-[#9B9B9B] mt-1">Usually takes 2&ndash;5 minutes</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function ReportContent() {
   const params = useParams()
   const searchParams = useSearchParams()
@@ -258,20 +323,31 @@ function ReportContent() {
   if (report.status === "failed") {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
-        <div className="w-16 h-16 bg-[#FEE2E2] rounded-full flex items-center justify-center mb-6">
-          <span className="text-3xl">!</span>
+        <div className="w-16 h-16 bg-[#FEF2F2] rounded-full flex items-center justify-center mb-6">
+          <AlertTriangle className="w-8 h-8 text-[#EF4444]" />
         </div>
-        <h2 className="text-2xl font-bold">Something went wrong</h2>
-        <p className="text-[#6B6B6B] mt-2 max-w-md">
-          We hit an issue generating your report. Our team has been notified
-          and will look into it.
+        <h2 className="text-2xl font-bold text-[#1A1A1A]">
+          Your report hit an issue
+        </h2>
+        <p className="text-[#6B6B6B] mt-3 max-w-md leading-relaxed">
+          Something went wrong during analysis. We owe you a working report or
+          a full refund &mdash; no questions asked. Reach out and we&apos;ll
+          make it right.
         </p>
-        <a
-          href="mailto:hello@bottlecap.io"
-          className="mt-4 bg-[#FF6B35] text-white rounded-full px-6 py-2 text-sm font-semibold hover:bg-[#E85A25] transition-colors"
-        >
-          Email support
-        </a>
+        <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+          <a
+            href={`mailto:hello@bottlecap.io?subject=Report issue — ${id}&body=Hi, my report (${id}) failed to generate. Can you help?`}
+            className="bg-[#FF6B35] text-white rounded-full px-6 py-2.5 text-sm font-semibold hover:bg-[#E85A25] transition-colors"
+          >
+            Email us about this report
+          </a>
+          <a
+            href="/"
+            className="border border-[#E8E8E4] rounded-full px-6 py-2.5 text-sm font-semibold text-[#6B6B6B] hover:border-[#FF6B35] hover:text-[#FF6B35] transition-colors"
+          >
+            Return home
+          </a>
+        </div>
       </div>
     )
   }
@@ -280,35 +356,7 @@ function ReportContent() {
   // Processing / pending state (report exists but not yet complete)
   // -------------------------------------------------------------------------
   if (report.status !== "complete" || !report.analysisResult) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center">
-        <svg className="w-16 h-16 animate-spin" viewBox="0 0 50 50">
-          <circle
-            cx="25"
-            cy="25"
-            r="20"
-            fill="none"
-            stroke="#E8E8E4"
-            strokeWidth="4"
-          />
-          <circle
-            cx="25"
-            cy="25"
-            r="20"
-            fill="none"
-            stroke="#FF6B35"
-            strokeWidth="4"
-            strokeDasharray="80"
-            strokeDashoffset="60"
-            strokeLinecap="round"
-          />
-        </svg>
-        <h2 className="text-2xl font-bold mt-6">
-          Your report is being generated...
-        </h2>
-        <p className="text-[#6B6B6B] mt-2">Usually takes 2-5 minutes</p>
-      </div>
-    )
+    return <ProcessingState />
   }
 
   // -------------------------------------------------------------------------
