@@ -445,9 +445,42 @@ export default function SubmitForm() {
                   </>
                 )}
               </button>
-              <p className="text-xs text-[#9B9B9B] text-center mt-3">
-                Stripe secure · 72-hour money-back guarantee
-              </p>
+
+              {/* Trust strip */}
+              <div className="mt-4 flex items-center justify-center gap-1.5 flex-wrap">
+                {/* Stripe badge */}
+                <span className="inline-flex items-center gap-1 text-[10px] text-[#9B9B9B] bg-[#F5F5F0] rounded-full px-2.5 py-1 font-medium">
+                  <svg className="w-3 h-3" viewBox="0 0 24 24" fill="#635BFF">
+                    <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C4.502 22.914 7.232 24 10.734 24c2.654 0 4.88-.61 6.417-1.76 1.695-1.254 2.554-3.082 2.554-5.528 0-4.208-2.497-5.941-5.729-7.562z"/>
+                  </svg>
+                  Stripe secure
+                </span>
+                <span className="text-[#D0D0C8]">·</span>
+                <span className="text-[10px] text-[#9B9B9B]">72-hour money-back</span>
+                <span className="text-[#D0D0C8]">·</span>
+                <span className="text-[10px] text-[#9B9B9B]">Report in 2–5 min</span>
+              </div>
+
+              {/* Card icons */}
+              <div className="mt-3 flex items-center justify-center gap-2">
+                <span className="text-[9px] text-[#C0C0BC]">Accepts:</span>
+                {/* Visa */}
+                <svg className="h-4 opacity-40" viewBox="0 0 48 16" fill="none">
+                  <rect width="48" height="16" rx="2" fill="#1A1F71"/>
+                  <text x="6" y="12" fill="white" fontSize="10" fontWeight="bold" fontFamily="Arial">VISA</text>
+                </svg>
+                {/* Mastercard */}
+                <svg className="h-4 opacity-40" viewBox="0 0 36 24" fill="none">
+                  <circle cx="13" cy="12" r="10" fill="#EB001B"/>
+                  <circle cx="23" cy="12" r="10" fill="#F79E1B"/>
+                  <path d="M18 4.8a10 10 0 0 1 0 14.4A10 10 0 0 1 18 4.8z" fill="#FF5F00"/>
+                </svg>
+                {/* Amex */}
+                <svg className="h-4 opacity-40" viewBox="0 0 48 16" fill="none">
+                  <rect width="48" height="16" rx="2" fill="#2E77BC"/>
+                  <text x="4" y="12" fill="white" fontSize="8" fontWeight="bold" fontFamily="Arial">AMEX</text>
+                </svg>
+              </div>
             </div>
 
             {/* Edit back */}

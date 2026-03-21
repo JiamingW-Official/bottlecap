@@ -17,22 +17,49 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Bottlecap — Your product idea deserves to be made",
+  title: "Bottlecap — Manufacturing Feasibility Analysis in 5 Minutes",
   description:
-    "AI-powered manufacturing analysis. Describe your product idea and get a complete feasibility report in minutes — can it be made, how much it costs, and where to manufacture it.",
+    "Describe your product idea and get a full 12-section manufacturing feasibility report in 2–5 minutes. Costs, countries, materials, HS codes, tariffs — all for $99. Powered by Claude AI.",
+  keywords: [
+    "manufacturing feasibility",
+    "product analysis",
+    "sourcing report",
+    "manufacturing cost calculator",
+    "HS code lookup",
+    "MOQ planning",
+    "product startup",
+    "factory sourcing",
+    "China manufacturing",
+    "Vietnam manufacturing",
+    "product development",
+    "supply chain analysis",
+  ],
   openGraph: {
-    title: "Bottlecap — Your product idea deserves to be made",
+    title: "Bottlecap — Manufacturing Feasibility in 5 Minutes",
     description:
-      "AI-powered manufacturing feasibility analysis. Full report in 2-5 minutes for $99.",
+      "AI-powered manufacturing feasibility analysis. Full 12-section report — costs, countries, materials, tariffs — in 2–5 minutes for $99.",
     siteName: "Bottlecap",
     type: "website",
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Bottlecap — Your product idea deserves to be made",
+    title: "Bottlecap — Manufacturing Feasibility in 5 Minutes",
     description:
-      "AI-powered manufacturing feasibility analysis. Full report in 2-5 minutes for $99.",
+      "AI-powered manufacturing feasibility analysis. Full 12-section report in 2–5 minutes for $99.",
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+      "max-snippet": -1,
+    },
+  },
+  category: "business",
 }
 
 const jsonLd = {

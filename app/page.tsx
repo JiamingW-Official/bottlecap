@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import dynamic from "next/dynamic"
-import { Check, ArrowRight, Lock, EyeOff, RotateCcw, Cpu, BookOpen, Globe2, FlaskConical, Factory } from "lucide-react"
+import { Check, ArrowRight, Lock, EyeOff, RotateCcw, Cpu, BookOpen, Globe2, FlaskConical, Factory, Zap, DollarSign, BarChart3 } from "lucide-react"
 import AgenticHero from "@/components/AgenticHero"
 import AnimatedCounter from "@/components/AnimatedCounter"
 import DataExplorer from "@/components/DataExplorer"
@@ -66,18 +66,64 @@ export default function Home() {
       {/* ================================================================ */}
       {/* VALUE CONTRAST STRIP                                             */}
       {/* ================================================================ */}
-      <div className="py-16 bg-[#F5F5F0] border-y border-[#E8E8E4]">
+      <div className="py-14 bg-white border-y border-[#E8E8E4]">
         <div className="max-w-5xl mx-auto px-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#E8E8E4]">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
-              { label: "Time to report", value: "2–5 min", note: "vs. weeks of research" },
-              { label: "Cost", value: "$99", note: "vs. $2,000–$8,000 sourcing agent" },
-              { label: "Analysis depth", value: "12 sections", note: "cost, countries, materials, tariffs" },
+              {
+                label: "Time to report",
+                value: "2–5",
+                unit: "min",
+                sub: "vs. weeks of research",
+                color: "#22C55E",
+                Icon: Zap,
+              },
+              {
+                label: "One-time cost",
+                value: "$99",
+                unit: "",
+                sub: "vs. $2K–$8K sourcing agents",
+                color: "#FF6B35",
+                Icon: DollarSign,
+              },
+              {
+                label: "Report sections",
+                value: "12",
+                unit: "sections",
+                sub: "cost · countries · materials · tariffs",
+                color: "#3B82F6",
+                Icon: BarChart3,
+              },
             ].map((item) => (
-              <div key={item.value} className="px-8 py-8 text-center sm:text-left">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9B9B9B] mb-2">{item.label}</p>
-                <p className="text-3xl font-black tracking-tight text-[#1A1A1A] mb-1">{item.value}</p>
-                <p className="text-sm text-[#9B9B9B]">{item.note}</p>
+              <div
+                key={item.label}
+                className="relative bg-[#FAFAF8] rounded-2xl border border-[#E8E8E4] p-6 overflow-hidden hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:border-[#D0D0C8] transition-all group"
+              >
+                {/* Left color bar */}
+                <div
+                  className="absolute left-0 inset-y-0 w-[3px] rounded-l-2xl"
+                  style={{ backgroundColor: item.color }}
+                />
+                <div className="pl-3">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div
+                      className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                      style={{ backgroundColor: `${item.color}18` }}
+                    >
+                      <item.Icon className="w-3.5 h-3.5" style={{ color: item.color }} />
+                    </div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9B9B9B]">
+                      {item.label}
+                    </p>
+                  </div>
+                  <div className="flex items-baseline gap-1.5 mb-1">
+                    <p className="text-4xl font-black tracking-tight text-[#1A1A1A]">{item.value}</p>
+                    {item.unit && (
+                      <p className="text-base font-medium text-[#9B9B9B]">{item.unit}</p>
+                    )}
+                  </div>
+                  <p className="text-sm text-[#9B9B9B]">{item.sub}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -176,31 +222,56 @@ export default function Home() {
               <p className="text-sm text-[#FF6B35] font-medium mb-6">
                 Highly feasible &mdash; Vietnam is your best bet
               </p>
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                  <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">
+              <div className="grid grid-cols-2 gap-3 mb-5">
+                <div className="bg-[#F5F5F0] rounded-xl p-3">
+                  <p className="text-[10px] text-[#9B9B9B] uppercase tracking-wide mb-0.5">
                     Cost/unit
                   </p>
-                  <p className="font-semibold text-[#1A1A1A]">$6.2 - $8.4</p>
+                  <p className="font-bold text-[#1A1A1A]">$6.20–$8.40</p>
                 </div>
-                <div>
-                  <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">
-                    Sourcing
+                <div className="bg-[#F5F5F0] rounded-xl p-3">
+                  <p className="text-[10px] text-[#9B9B9B] uppercase tracking-wide mb-0.5">
+                    Best country
                   </p>
-                  <p className="font-semibold text-[#1A1A1A]">Vietnam</p>
+                  <p className="font-bold text-[#1A1A1A]">Vietnam 🇻🇳</p>
                 </div>
-                <div>
-                  <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">
-                    Min. Order
+                <div className="bg-[#F5F5F0] rounded-xl p-3">
+                  <p className="text-[10px] text-[#9B9B9B] uppercase tracking-wide mb-0.5">
+                    Min. order
                   </p>
-                  <p className="font-semibold text-[#1A1A1A]">500 units</p>
+                  <p className="font-bold text-[#1A1A1A]">500 units</p>
                 </div>
-                <div>
-                  <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">
-                    Lead Time
+                <div className="bg-[#F5F5F0] rounded-xl p-3">
+                  <p className="text-[10px] text-[#9B9B9B] uppercase tracking-wide mb-0.5">
+                    Lead time
                   </p>
-                  <p className="font-semibold text-[#1A1A1A]">32 days</p>
+                  <p className="font-bold text-[#1A1A1A]">32 days</p>
                 </div>
+              </div>
+
+              {/* Cost breakdown mini chart */}
+              <div className="mb-5">
+                <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#9B9B9B] mb-2">
+                  Cost breakdown
+                </p>
+                {[
+                  { label: "Materials", pct: 38, color: "#FF6B35" },
+                  { label: "Labor",     pct: 32, color: "#3B82F6" },
+                  { label: "Overhead",  pct: 15, color: "#8B5CF6" },
+                  { label: "Packaging", pct: 10, color: "#22C55E" },
+                  { label: "Shipping",  pct: 5,  color: "#F59E0B" },
+                ].map((row) => (
+                  <div key={row.label} className="flex items-center gap-2 mb-1.5">
+                    <span className="text-[9px] text-[#9B9B9B] w-14 shrink-0 text-right">{row.label}</span>
+                    <div className="flex-1 h-1.5 bg-[#F0F0EC] rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${row.pct}%`, backgroundColor: row.color }}
+                      />
+                    </div>
+                    <span className="text-[9px] font-medium text-[#6B6B6B] w-5 shrink-0">{row.pct}%</span>
+                  </div>
+                ))}
               </div>
               <Link
                 href="/report/demo"
@@ -376,13 +447,23 @@ export default function Home() {
             </div>
             <div className="text-center">
               <div className="inline-block bg-white rounded-2xl border border-[#E8E8E4] p-8 shadow-sm">
-                <p className="text-6xl font-black text-[#FF6B35]">4</p>
+                <p className="text-6xl font-black text-[#FF6B35]">9</p>
                 <p className="text-lg font-semibold text-[#1A1A1A] mt-2">
                   Free Tools
                 </p>
                 <p className="text-sm text-[#6B6B6B] mt-1">
                   No signup required
                 </p>
+                <div className="mt-4 space-y-1.5">
+                  {[
+                    "HS Code Lookup",
+                    "Cost Calculator",
+                    "Tariff Calculator",
+                    "+ 6 more",
+                  ].map(t => (
+                    <p key={t} className="text-xs text-[#9B9B9B]">{t}</p>
+                  ))}
+                </div>
                 <Link
                   href="/tools"
                   className="inline-block mt-4 text-[#FF6B35] font-semibold text-sm hover:underline"
@@ -582,20 +663,23 @@ export default function Home() {
       <ScrollReveal className="py-14 bg-[#F5F5F0]">
         <div className="max-w-4xl mx-auto px-6">
           <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#FF6B35] mb-6 text-center">Built on trust</p>
-          <div className="flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-[#E8E8E4]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
-              { Icon: Lock, title: "Stripe Secured", sub: "PCI compliant payments" },
-              { Icon: EyeOff, title: "Confidential", sub: "Your ideas stay yours" },
-              { Icon: RotateCcw, title: "Money Back", sub: "72-hour refund policy" },
-              { Icon: Cpu, title: "Claude AI", sub: "By Anthropic" },
+              { Icon: Lock, title: "Stripe Secured", sub: "PCI compliant payments", color: "#3B82F6" },
+              { Icon: EyeOff, title: "Confidential", sub: "Your ideas stay yours", color: "#8B5CF6" },
+              { Icon: RotateCcw, title: "72-hr Refund", sub: "No questions asked", color: "#22C55E" },
+              { Icon: Cpu, title: "Claude AI", sub: "Powered by Anthropic", color: "#FF6B35" },
             ].map((item) => (
-              <div key={item.title} className="group flex-1 flex items-center gap-3 px-6 py-4 sm:py-0 sm:first:pl-0 sm:last:pr-0 hover:bg-white rounded-xl transition-all">
-                <div className="w-9 h-9 rounded-lg bg-[#E8E8E4] flex items-center justify-center shrink-0">
-                  <item.Icon className="w-4 h-4 text-[#6B6B6B] group-hover:text-[#FF6B35] transition-colors" />
+              <div key={item.title} className="group flex items-center gap-3 bg-white rounded-xl border border-[#E8E8E4] p-4 hover:border-[#D0D0C8] hover:shadow-sm transition-all">
+                <div
+                  className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: `${item.color}12` }}
+                >
+                  <item.Icon className="w-4 h-4" style={{ color: item.color }} />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[#1A1A1A]">{item.title}</p>
-                  <p className="text-xs text-[#9B9B9B]">{item.sub}</p>
+                  <p className="text-sm font-semibold text-[#1A1A1A] leading-tight">{item.title}</p>
+                  <p className="text-xs text-[#9B9B9B] mt-0.5">{item.sub}</p>
                 </div>
               </div>
             ))}

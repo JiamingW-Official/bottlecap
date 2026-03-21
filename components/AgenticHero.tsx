@@ -16,6 +16,7 @@ import {
 } from "lucide-react"
 import TextReveal from "@/components/animations/TextReveal"
 import MagneticButton from "@/components/interactive/MagneticButton"
+import LiveActivityTicker from "@/components/LiveActivityTicker"
 import { classifyProduct, type ClassificationResult } from "@/lib/classifyProduct"
 
 const INSIGHT_CARDS = [
@@ -280,6 +281,11 @@ export default function AgenticHero() {
             {item.text}
           </span>
         ))}
+      </div>
+
+      {/* Live activity ticker */}
+      <div className="mt-4 max-w-2xl">
+        <LiveActivityTicker />
       </div>
     </>
   )
