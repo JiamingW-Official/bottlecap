@@ -122,9 +122,9 @@ export default function AgenticHero() {
           <MagneticButton>
             <button
               onClick={handleAnalyzeClick}
-              className="bg-[#FF6B35] text-white rounded-xl px-6 py-3 font-semibold whitespace-nowrap hover:bg-[#E85A25] transition-colors shrink-0"
+              className="bg-[#FF6B35] text-white rounded-xl px-6 py-3 font-semibold whitespace-nowrap hover:bg-[#E85A25] transition-all shadow-[0_2px_8px_rgba(255,107,53,0.25)] hover:shadow-[0_4px_14px_rgba(255,107,53,0.35)] shrink-0"
             >
-              Analyze this idea &rarr;
+              {heroText.trim().length > 10 ? "Analyze this →" : "Start for $99 →"}
             </button>
           </MagneticButton>
         </div>
@@ -269,10 +269,17 @@ export default function AgenticHero() {
       </div>
 
       {/* Trust badges */}
-      <div className="flex flex-wrap gap-8 mt-8">
-        <span className="text-sm text-[#6B6B6B]">Powered by Claude AI</span>
-        <span className="text-sm text-[#6B6B6B]">Results in 2-5 min</span>
-        <span className="text-sm text-[#6B6B6B]">Money-back guarantee</span>
+      <div className="flex flex-wrap gap-x-8 gap-y-2 mt-8">
+        {[
+          { dot: "#22C55E", text: "Ready in 2–5 minutes" },
+          { dot: "#9B9B9B", text: "Powered by Claude AI" },
+          { dot: "#9B9B9B", text: "72-hour money-back guarantee" },
+        ].map(item => (
+          <span key={item.text} className="flex items-center gap-2 text-sm text-[#6B6B6B]">
+            <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: item.dot }} />
+            {item.text}
+          </span>
+        ))}
       </div>
     </>
   )
