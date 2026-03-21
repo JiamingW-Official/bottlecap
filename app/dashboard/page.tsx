@@ -149,7 +149,7 @@ export default function DashboardPage() {
           </MagneticButton>
         </div>
         <p className="text-[#6B6B6B] mb-8">
-          Enter your email to find all reports associated with your account.
+          Enter the email you used at checkout to see all your reports.
         </p>
       </ScrollReveal>
 
@@ -162,6 +162,7 @@ export default function DashboardPage() {
               type="email"
               placeholder="your@email.com"
               value={email}
+              autoFocus
               onChange={(e) => setEmail(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleLookup()}
               className="w-full bg-white border-2 border-[#E8E8E4] focus:border-[#FF6B35] rounded-xl pl-12 pr-4 py-3 outline-none"
@@ -348,36 +349,13 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Info */}
-      <ScrollReveal delay={0.2}>
-        <div className="mt-16 bg-[#F5F5F0] rounded-xl p-6">
-          <h3 className="font-semibold text-[#1A1A1A] mb-3">How it works</h3>
-          <ul className="space-y-2 text-sm text-[#6B6B6B]">
-            <li className="flex items-start gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#FF6B35] mt-1.5 shrink-0" />
-              Reports are linked to the email you provided during checkout.
-            </li>
-            <li className="flex items-start gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#FF6B35] mt-1.5 shrink-0" />
-              Each report has a unique URL — bookmark it for easy access.
-            </li>
-            <li className="flex items-start gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#FF6B35] mt-1.5 shrink-0" />
-              Completed reports are available indefinitely. Processing reports refresh automatically.
-            </li>
-            <li className="flex items-start gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#FF6B35] mt-1.5 shrink-0" />
-              Need help?{" "}
-              <a
-                href="mailto:hello@bottlecap.io"
-                className="text-[#FF6B35] hover:underline"
-              >
-                Contact support
-              </a>
-            </li>
-          </ul>
-        </div>
-      </ScrollReveal>
+      {/* Footer help hint — minimal */}
+      <p className="mt-12 text-xs text-center text-[#C0C0BC]">
+        Reports are linked to your checkout email.{" "}
+        <a href="mailto:hello@bottlecap.io" className="text-[#FF6B35] hover:underline">
+          Need help?
+        </a>
+      </p>
     </div>
   )
 }

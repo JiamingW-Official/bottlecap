@@ -247,64 +247,72 @@ export default function Navbar() {
           >
             <div
               data-lenis-prevent
-              className="bg-white border-t border-[#E8E8E4] px-6 py-4 space-y-1"
+              className="bg-white border-t border-[#E8E8E4] px-6 py-5"
             >
-              <p className="text-xs font-semibold text-[#9B9B9B] uppercase tracking-wide mb-2">
-                Tools
-              </p>
-              {toolsLinks.map((link) => (
+              {/* Primary actions */}
+              <div className="space-y-1 mb-4">
                 <Link
-                  key={link.href}
-                  href={link.href}
+                  href="/analyze"
                   onClick={() => setMobileOpen(false)}
-                  className="block py-2 text-sm text-[#1A1A1A]"
+                  className="flex items-center justify-between bg-[#FF6B35] text-white rounded-xl px-4 py-3 font-semibold text-sm"
                 >
-                  {link.label}
+                  Analyze my product
+                  <span className="text-white/80">$99 →</span>
                 </Link>
-              ))}
-              <div className="h-px bg-[#E8E8E4] my-3" />
-              <p className="text-xs font-semibold text-[#9B9B9B] uppercase tracking-wide mb-2">
-                Guides
-              </p>
-              {guideLinks.map((link) => (
                 <Link
-                  key={link.href}
-                  href={link.href}
+                  href="/report/demo"
                   onClick={() => setMobileOpen(false)}
-                  className="block py-2 text-sm text-[#1A1A1A]"
+                  className="flex items-center justify-between bg-[#F5F5F0] text-[#1A1A1A] rounded-xl px-4 py-3 text-sm font-medium"
                 >
-                  {link.label}
+                  See sample report
+                  <span className="text-[#9B9B9B]">→</span>
                 </Link>
-              ))}
-              <div className="h-px bg-[#E8E8E4] my-3" />
-              <p className="text-xs font-semibold text-[#9B9B9B] uppercase tracking-wide mb-2">
-                Resources
-              </p>
-              {resourceLinks.map((link) => (
+              </div>
+
+              <div className="h-px bg-[#F0F0EC] mb-4" />
+
+              {/* Tools — top 4 */}
+              <p className="text-[10px] font-bold text-[#9B9B9B] uppercase tracking-widest mb-2">Tools</p>
+              <div className="grid grid-cols-2 gap-1 mb-4">
+                {toolsLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="py-2 px-3 text-sm text-[#4B4B4B] rounded-lg hover:bg-[#F5F5F0] transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
                 <Link
-                  key={link.href}
-                  href={link.href}
+                  href="/tools"
                   onClick={() => setMobileOpen(false)}
-                  className="block py-2 text-sm text-[#1A1A1A]"
+                  className="py-2 px-3 text-sm text-[#FF6B35] font-medium rounded-lg"
                 >
-                  {link.label}
+                  All tools →
                 </Link>
-              ))}
-              <div className="h-px bg-[#E8E8E4] my-3" />
-              <Link
-                href="/report/demo"
-                onClick={() => setMobileOpen(false)}
-                className="block py-2 text-sm text-[#1A1A1A]"
-              >
-                Demo Report
-              </Link>
-              <Link
-                href="/dashboard"
-                onClick={() => setMobileOpen(false)}
-                className="block py-2 text-sm text-[#1A1A1A]"
-              >
-                My Reports
-              </Link>
+              </div>
+
+              <div className="h-px bg-[#F0F0EC] mb-4" />
+
+              {/* Secondary */}
+              <div className="grid grid-cols-2 gap-1">
+                {[
+                  { href: "/guide", label: "Guides" },
+                  { href: "/pricing", label: "Pricing" },
+                  { href: "/dashboard", label: "My Reports" },
+                  { href: "/about", label: "About" },
+                ].map(link => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="py-2 px-3 text-sm text-[#6B6B6B] rounded-lg hover:bg-[#F5F5F0] transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
             </div>
           </motion.div>
         )}
