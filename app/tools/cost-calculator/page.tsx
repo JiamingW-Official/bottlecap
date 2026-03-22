@@ -21,7 +21,6 @@ const PRODUCT_TYPES = [
   { id: "toy",                   label: "Toy / Game",                 baseCost: 2,   complexity: 1.0  },
   { id: "cosmetic_container",    label: "Cosmetic Container",         baseCost: 1.5, complexity: 0.9  },
   { id: "sports_equipment",      label: "Sports Equipment",           baseCost: 6,   complexity: 1.2  },
-  // New product types
   { id: "wearable_device",       label: "Wearable Device",           baseCost: 22,  complexity: 1.9  },
   { id: "kitchen_gadget",        label: "Kitchen Gadget",            baseCost: 7,   complexity: 1.2  },
   { id: "pet_product",           label: "Pet Product",               baseCost: 4,   complexity: 1.1  },
@@ -41,7 +40,6 @@ const COUNTRIES = [
   { id: "indonesia",   label: "Indonesia",    laborMult: 0.7,  qualityMult: 1.08 },
   { id: "turkey",      label: "Turkey",       laborMult: 1.05, qualityMult: 0.98 },
   { id: "bangladesh",  label: "Bangladesh",   laborMult: 0.6,  qualityMult: 1.12 },
-  // New countries
   { id: "south_korea", label: "South Korea",  laborMult: 1.3,  qualityMult: 0.95 },
   { id: "taiwan",      label: "Taiwan",       laborMult: 1.2,  qualityMult: 0.95 },
   { id: "philippines", label: "Philippines",  laborMult: 0.72, qualityMult: 1.07 },
@@ -56,6 +54,47 @@ const MATERIALS = [
 
 // Stepped quantity values for the slider
 const QTY_STEPS = [100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000] as const
+
+// ─── Product category presets ─────────────────────────────────────────────────
+
+interface Preset {
+  label: string
+  productType: string
+  material: string
+  qtyIndex: number
+  country: string
+}
+
+const PRESETS: Preset[] = [
+  {
+    label: "Electronics",
+    productType: "electronics_simple",
+    material: "standard",
+    qtyIndex: 2, // 500
+    country: "china",
+  },
+  {
+    label: "Apparel",
+    productType: "textile",
+    material: "standard",
+    qtyIndex: 3, // 1000
+    country: "china",
+  },
+  {
+    label: "Beauty",
+    productType: "cosmetic_container",
+    material: "mid_range",
+    qtyIndex: 2, // 500
+    country: "china",
+  },
+  {
+    label: "Home Goods",
+    productType: "kitchen_gadget",
+    material: "standard",
+    qtyIndex: 2, // 500
+    country: "china",
+  },
+]
 
 // ─── Volume discount ──────────────────────────────────────────────────────────
 
@@ -113,19 +152,62 @@ function computePerUnit(
 
 const TIPS = [
   {
-    id: "moq",
-    title: "Optimize your MOQ",
-    body: `Volume break points dramatically change your unit economics. The biggest jumps occur at 500 units (−8%), 1,000 units (−15%), 5,000 units (−28%), and 10,000 units (−35%). If you're sitting just below a threshold — say at 900 units — consider whether you can afford to order 100 more to unlock the 15% discount. On a $10 product that's often a net saving even after the extra inventory cost.`,
+    id: "negotiate",
+    title: "How to negotiate a lower unit cost",
+    body: `Three levers move the needle fastest: MOQ commitments, payment terms, and material substitution. Offer to pre-pay 50% (vs the standard 30%) in exchange for a 3-5% price reduction — most factories accept. Ask for a tiered quote at 500, 1,000, and 5,000 units even if you only intend to order 500 now; it signals scale and anchors the relationship. On materials, request the factory suggest a lower-cost alternative that still meets your functional spec — they often know options you don't.`,
   },
   {
-    id: "material",
-    title: "Material substitution",
-    body: `Switching from Premium to Mid-Range materials typically reduces unit cost by 20–22% while maintaining 80–90% of the perceived quality. For most consumer products, a Mid-Range material with a Premium finish (anodizing, coating, silkscreen) outperforms full-Premium in customer perception per dollar spent. Always request material samples before committing to a production run.`,
+    id: "sea_vs_air",
+    title: "When sea freight beats air freight",
+    body: `Sea freight wins on cost when your shipment weighs more than 5 kg, your order value exceeds $500, and you can absorb a 4+ week lead time. For a typical 500-unit run, air freight can cost 4-6x more per kg and erase a substantial portion of your margin. The exception: time-sensitive launches, products with a short shelf life, or when holding inventory costs more than the freight premium. As a rule of thumb, if your goods are not urgent and are dense or bulky, sea is almost always the right call.`,
   },
   {
-    id: "arbitrage",
-    title: "Country arbitrage",
-    body: `China remains the default for electronics and complex assemblies due to its deep supply chain. However, Vietnam and Indonesia beat China on cost for textiles, simple plastics, and light assembly — often by 15–30%. India excels for labor-intensive stitching, leather goods, and mid-complexity metal work. If your product doesn't need proximity to China's electronics ecosystem, run this calculator across countries before locking a factory.`,
+    id: "not_included",
+    title: "What is typically NOT included in factory quotes",
+    body: `Factory FOB quotes routinely exclude three cost buckets that can surprise first-time importers: (1) Tooling and mold costs — a new injection mold can run $800-$8,000 depending on complexity, amortized over your first few runs. (2) Third-party QC inspection — budget $300-$500 per inspection day; one pre-shipment inspection is the minimum for any order over $3,000. (3) Inland freight from factory to port, US customs brokerage fees ($150-$400), and drayage from port to your warehouse. Always ask for a full landed-cost breakdown, not just EXW or FOB pricing.`,
+  },
+  {
+    id: "sourcing_agent",
+    title: "Should I use a sourcing agent?",
+    body: `A sourcing agent earns their fee (typically 5-10% of order value) when your annual sourcing volume exceeds $50,000 or your product is technically complex. Below that threshold, direct factory relationships — found through Alibaba, Canton Fair, or referrals — often yield better unit economics because you eliminate the agent margin. Where agents shine: finding factories outside Tier-1 cities, managing QC across multiple suppliers, navigating language barriers on complex specs, and handling the social relationship-building (guanxi) that Chinese manufacturing culture prizes. If your product involves multi-component assembly or strict tolerances, a good agent pays for itself in defect reduction alone.`,
+  },
+] as const
+
+// ─── Margin scenarios data ────────────────────────────────────────────────────
+
+const MARGIN_SCENARIOS = [
+  { qty: 100,  costMult: 1.20, label: "100" },
+  { qty: 500,  costMult: 1.00, label: "500 (base)" },
+  { qty: 1000, costMult: 0.92, label: "1,000" },
+  { qty: 5000, costMult: 0.82, label: "5,000" },
+] as const
+
+// ─── Country comparison strip data ───────────────────────────────────────────
+
+const COMPARISON_COUNTRIES = [
+  {
+    id: "china",
+    label: "China",
+    flag: "🇨🇳",
+    costMult: 1.0,
+    tariffPct: 0.145, // ~14.5% avg US tariff on Chinese goods
+    bestFor: "Supply chain depth",
+  },
+  {
+    id: "vietnam",
+    label: "Vietnam",
+    flag: "🇻🇳",
+    costMult: 1.12,
+    tariffPct: 0.09, // lower tariff vs China
+    bestFor: "Tariff savings vs China",
+  },
+  {
+    id: "mexico",
+    label: "Mexico",
+    flag: "🇲🇽",
+    costMult: 1.25,
+    tariffPct: 0.0, // USMCA = 0 tariff
+    bestFor: "Zero tariff (USMCA)",
   },
 ] as const
 
@@ -206,6 +288,7 @@ export default function CostCalculatorPage() {
       .sort((a, b) => a.perUnit - b.perUnit)
   }, [productType, material, quantity, hasElectronics, needsCertification, customPackaging])
 
+  // ── Cost breakdown bar segments ────────────────────────────────────────────
   const chartSegments = [
     { label: "Materials", value: calc.materialCost,  color: "#FF6B35" },
     { label: "Labor",     value: calc.laborCost,     color: "#3B82F6" },
@@ -216,6 +299,43 @@ export default function CostCalculatorPage() {
       ? [{ label: "Extras", value: calc.extras, color: "#EF4444" }]
       : []),
   ]
+
+  // ── Stacked bar segments for new visualization ─────────────────────────────
+  const stackedBarSegments = [
+    { label: "Materials", value: calc.materialCost,  color: "#3B82F6" },
+    { label: "Labor",     value: calc.laborCost,     color: "#FF6B35" },
+    { label: "Shipping",  value: calc.shippingCost,  color: "#22C55E" },
+    { label: "Duty",      value: calc.extras,        color: "#EF4444" },
+    { label: "Overhead",  value: calc.overheadCost,  color: "#8B5CF6" },
+  ]
+  const stackedTotal = stackedBarSegments.reduce((s, seg) => s + seg.value, 0) || 1
+
+  // ── Country comparison strip ────────────────────────────────────────────────
+  const countryStripRows = useMemo(() => {
+    return COMPARISON_COUNTRIES.map((cc) => {
+      const baseUnit = calc.perUnit * cc.costMult
+      const tariff   = baseUnit * cc.tariffPct
+      const landed   = baseUnit + tariff
+      return { ...cc, baseUnit, tariff, landed }
+    })
+  }, [calc.perUnit])
+
+  const lowestLandedId = useMemo(() => {
+    return countryStripRows.reduce(
+      (best, row) => (row.landed < best.landed ? row : best),
+      countryStripRows[0],
+    ).id
+  }, [countryStripRows])
+
+  // ── Margin scenarios ────────────────────────────────────────────────────────
+  const marginRows = useMemo(() => {
+    return MARGIN_SCENARIOS.map((s) => {
+      const unitCost    = calc.perUnit * s.costMult
+      const retailPrice = unitCost * 3
+      const grossMargin = ((retailPrice - unitCost) / retailPrice) * 100
+      return { ...s, unitCost, retailPrice, grossMargin }
+    })
+  }, [calc.perUnit])
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">
@@ -229,11 +349,34 @@ export default function CostCalculatorPage() {
       <h1 className="text-3xl sm:text-4xl font-black text-[#1A1A1A] mb-3">
         Manufacturing Cost Calculator
       </h1>
-      <p className="text-[#6B6B6B] mb-10 max-w-2xl">
+      <p className="text-[#6B6B6B] mb-6 max-w-2xl">
         Estimate your per-unit manufacturing cost based on product type,
         materials, country, and volume. Adjust the parameters below to see how
         each factor affects your total cost.
       </p>
+
+      {/* ── Category presets ──────────────────────────────────────────────── */}
+      <div className="mb-8">
+        <p className="text-xs font-semibold text-[#9B9B9B] uppercase tracking-wider mb-3">
+          Quick-fill presets
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {PRESETS.map((preset) => (
+            <button
+              key={preset.label}
+              onClick={() => {
+                setProductType(preset.productType)
+                setMaterial(preset.material)
+                setQtyIndex(preset.qtyIndex)
+                setCountry(preset.country)
+              }}
+              className="px-4 py-1.5 rounded-full text-sm font-medium border-2 border-[#E8E8E4] bg-white text-[#1A1A1A] hover:border-[#FF6B35] hover:text-[#FF6B35] transition-colors"
+            >
+              {preset.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* ── Main grid ─────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -433,6 +576,177 @@ export default function CostCalculatorPage() {
         </div>
       </div>
 
+      {/* ── Cost breakdown stacked bar ────────────────────────────────────── */}
+      <section className="mt-16">
+        <h2 className="text-2xl font-bold text-[#1A1A1A] mb-1">
+          Cost Component Breakdown
+        </h2>
+        <p className="text-sm text-[#6B6B6B] mb-6">
+          Proportional split of your per-unit cost across each component.
+        </p>
+
+        <div className="bg-white rounded-2xl border border-[#E8E8E4] p-6">
+          {/* Stacked bar */}
+          <div className="flex h-10 rounded-xl overflow-hidden w-full mb-4">
+            {stackedBarSegments
+              .filter((seg) => seg.value > 0)
+              .map((seg) => {
+                const widthPct = (seg.value / stackedTotal) * 100
+                return (
+                  <motion.div
+                    key={seg.label}
+                    layout
+                    animate={{ width: `${widthPct}%` }}
+                    transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] as const }}
+                    style={{ backgroundColor: seg.color, minWidth: widthPct > 0 ? 4 : 0 }}
+                    title={`${seg.label}: $${seg.value.toFixed(2)}`}
+                    className="h-full"
+                  />
+                )
+              })}
+          </div>
+
+          {/* Legend */}
+          <div className="flex flex-wrap gap-4">
+            {stackedBarSegments
+              .filter((seg) => seg.value > 0)
+              .map((seg) => (
+                <div key={seg.label} className="flex items-center gap-2 text-sm">
+                  <span
+                    className="inline-block w-3 h-3 rounded-sm shrink-0"
+                    style={{ backgroundColor: seg.color }}
+                  />
+                  <span className="text-[#6B6B6B]">{seg.label}</span>
+                  <span className="font-semibold text-[#1A1A1A]">
+                    ${seg.value.toFixed(2)}
+                  </span>
+                  <span className="text-[#9B9B9B] text-xs">
+                    ({((seg.value / stackedTotal) * 100).toFixed(0)}%)
+                  </span>
+                </div>
+              ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Margin scenarios table ────────────────────────────────────────── */}
+      <section className="mt-16">
+        <h2 className="text-2xl font-bold text-[#1A1A1A] mb-1">
+          Margin at Different Order Quantities
+        </h2>
+        <p className="text-sm text-[#6B6B6B] mb-6">
+          How your gross margin changes as you scale — assuming a 3x retail markup on cost.
+        </p>
+
+        <div className="overflow-x-auto rounded-2xl border border-[#E8E8E4]">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-[#FAFAF8] border-b border-[#E8E8E4]">
+                <th className="text-left px-5 py-3 font-semibold text-[#1A1A1A]">Qty</th>
+                <th className="text-right px-5 py-3 font-semibold text-[#1A1A1A]">Unit Cost</th>
+                <th className="text-right px-5 py-3 font-semibold text-[#1A1A1A]">Rev (at 3x retail)</th>
+                <th className="text-right px-5 py-3 font-semibold text-[#1A1A1A]">Gross Margin</th>
+              </tr>
+            </thead>
+            <tbody>
+              {marginRows.map((row, i) => {
+                const isCurrentQty = row.qty === quantity
+                return (
+                  <tr
+                    key={row.qty}
+                    className={[
+                      "border-b border-[#E8E8E4] last:border-0 transition-colors",
+                      isCurrentQty
+                        ? "bg-[#FFF0EB]"
+                        : i % 2 === 0 ? "bg-white" : "bg-[#FAFAF8]",
+                    ].join(" ")}
+                    style={isCurrentQty ? { outline: "2px solid #FF6B35", outlineOffset: "-2px" } : undefined}
+                  >
+                    <td className="px-5 py-3 font-medium text-[#1A1A1A]">
+                      {isCurrentQty && (
+                        <span className="inline-block w-2 h-2 rounded-full bg-[#FF6B35] mr-2" />
+                      )}
+                      {row.label}
+                    </td>
+                    <td className="px-5 py-3 text-right text-[#1A1A1A]">
+                      ${row.unitCost.toFixed(2)}
+                    </td>
+                    <td className="px-5 py-3 text-right text-[#1A1A1A]">
+                      ${row.retailPrice.toFixed(2)}/unit
+                    </td>
+                    <td className="px-5 py-3 text-right">
+                      <span className={`font-semibold ${row.grossMargin >= 60 ? "text-[#22C55E]" : row.grossMargin >= 50 ? "text-[#F59E0B]" : "text-[#EF4444]"}`}>
+                        {row.grossMargin.toFixed(1)}%
+                      </span>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-xs text-[#9B9B9B] mt-3">
+          Highlighted row = your current quantity. Margin is colored green (&ge;60%), amber (&ge;50%), or red (&lt;50%).
+        </p>
+      </section>
+
+      {/* ── Country comparison strip ──────────────────────────────────────── */}
+      <section className="mt-16">
+        <h2 className="text-2xl font-bold text-[#1A1A1A] mb-1">
+          Country Comparison
+        </h2>
+        <p className="text-sm text-[#6B6B6B] mb-6">
+          Same product across three manufacturing regions — factoring in US import tariffs.
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {countryStripRows.map((row) => {
+            const isBest = row.id === lowestLandedId
+            return (
+              <div
+                key={row.id}
+                className={[
+                  "bg-white rounded-2xl border-2 p-5 transition-all",
+                  isBest ? "border-[#FF6B35]" : "border-[#E8E8E4]",
+                ].join(" ")}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-lg">{row.flag}</span>
+                  <span className="text-sm font-bold text-[#1A1A1A]">{row.label}</span>
+                  {isBest && (
+                    <span className="text-xs font-semibold bg-[#FF6B35] text-white px-2 py-0.5 rounded-full">
+                      Recommended
+                    </span>
+                  )}
+                </div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-[#6B6B6B]">Unit cost</span>
+                    <span className="font-semibold text-[#1A1A1A]">${row.baseUnit.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#6B6B6B]">Import tariff</span>
+                    <span className="font-semibold text-[#EF4444]">
+                      {row.tariffPct === 0 ? "None (USMCA)" : `+$${row.tariff.toFixed(2)}`}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-t border-[#E8E8E4] pt-2">
+                    <span className="font-semibold text-[#1A1A1A]">Landed cost</span>
+                    <span className="font-bold text-[#1A1A1A]">${row.landed.toFixed(2)}</span>
+                  </div>
+                </div>
+                <div className="mt-3 text-xs text-[#6B6B6B] bg-[#FAFAF8] rounded-lg px-3 py-2">
+                  Best for: <span className="font-medium text-[#1A1A1A]">{row.bestFor}</span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        <p className="text-xs text-[#9B9B9B] mt-3">
+          Tariff rates are approximate averages. Actual duties depend on HS code and current trade policy.
+        </p>
+      </section>
+
       {/* ── All-countries comparison table ─────────────────────────────────── */}
       <section className="mt-16">
         <h2 className="text-2xl font-bold text-[#1A1A1A] mb-1">
@@ -508,10 +822,10 @@ export default function CostCalculatorPage() {
         </p>
       </section>
 
-      {/* ── Cost optimization tips ──────────────────────────────────────────── */}
+      {/* ── Sourcing tips accordion ──────────────────────────────────────────── */}
       <section className="mt-16">
         <h2 className="text-2xl font-bold text-[#1A1A1A] mb-1">
-          Cost Optimization Tips
+          Sourcing Tips
         </h2>
         <p className="text-sm text-[#6B6B6B] mb-6">
           Practical strategies sourced from thousands of sourcing engagements.

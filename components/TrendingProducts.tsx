@@ -1,104 +1,193 @@
 "use client"
 
-const TRENDING = [
-  { emoji: "💧", name: "Smart water bottle", score: 88, country: "🇻🇳 Vietnam", time: "3 min ago" },
-  { emoji: "🎧", name: "Wireless earbuds", score: 79, country: "🇨🇳 China", time: "7 min ago" },
-  { emoji: "🧴", name: "Skincare serum kit", score: 91, country: "🇰🇷 Korea", time: "12 min ago" },
-  { emoji: "🐕", name: "Smart pet feeder", score: 74, country: "🇨🇳 China", time: "18 min ago" },
-  { emoji: "🏕️", name: "Portable solar charger", score: 82, country: "🇨🇳 China", time: "24 min ago" },
-  { emoji: "👟", name: "Custom sneaker line", score: 68, country: "🇻🇳 Vietnam", time: "31 min ago" },
-  { emoji: "🔑", name: "RFID blocking wallet", score: 93, country: "🇨🇳 China", time: "38 min ago" },
-  { emoji: "🌿", name: "Bamboo cutlery set", score: 87, country: "🇮🇳 India", time: "45 min ago" },
-  { emoji: "💡", name: "Smart home sensor", score: 76, country: "🇨🇳 China", time: "52 min ago" },
-  { emoji: "🎒", name: "Anti-theft backpack", score: 85, country: "🇻🇳 Vietnam", time: "1 hr ago" },
-  { emoji: "🍳", name: "Ceramic cookware set", score: 72, country: "🇨🇳 China", time: "1.2 hr ago" },
-  { emoji: "🚲", name: "E-bike accessories kit", score: 81, country: "🇨🇳 China", time: "1.5 hr ago" },
-  { emoji: "👶", name: "Baby monitor camera", score: 77, country: "🇨🇳 China", time: "2 hr ago" },
-  { emoji: "🎮", name: "Gaming controller grip", score: 89, country: "🇨🇳 China", time: "2.3 hr ago" },
-  { emoji: "🌙", name: "LED night light orb", score: 84, country: "🇻🇳 Vietnam", time: "2.7 hr ago" },
-  { emoji: "🧘", name: "Cork yoga mat", score: 90, country: "🇮🇳 India", time: "3 hr ago" },
+import { useRef } from "react"
+import { motion, useInView } from "framer-motion"
+import { useRouter } from "next/navigation"
+
+const EASE = [0.25, 0.1, 0.25, 1] as [number, number, number, number]
+
+interface Product {
+  name: string
+  category: string
+  categoryColor: string
+  categoryBg: string
+  costRange: string
+  growth: string
+  emoji: string
+}
+
+const PRODUCTS: Product[] = [
+  {
+    name: "Insulated Water Bottle",
+    category: "Consumer Goods",
+    categoryColor: "#3B82F6",
+    categoryBg: "rgba(59,130,246,0.10)",
+    costRange: "$4–8/unit",
+    growth: "+34%",
+    emoji: "💧",
+  },
+  {
+    name: "LED Desk Lamp",
+    category: "Electronics",
+    categoryColor: "#F59E0B",
+    categoryBg: "rgba(245,158,11,0.10)",
+    costRange: "$6–12/unit",
+    growth: "+28%",
+    emoji: "💡",
+  },
+  {
+    name: "Bamboo Toothbrush Set",
+    category: "Beauty",
+    categoryColor: "#EC4899",
+    categoryBg: "rgba(236,72,153,0.10)",
+    costRange: "$0.80–2/unit",
+    growth: "+51%",
+    emoji: "🌿",
+  },
+  {
+    name: "Pet Collar with GPS",
+    category: "Pet Products",
+    categoryColor: "#8B5CF6",
+    categoryBg: "rgba(139,92,246,0.10)",
+    costRange: "$18–35/unit",
+    growth: "+62%",
+    emoji: "🐾",
+  },
+  {
+    name: "Portable Phone Charger",
+    category: "Electronics",
+    categoryColor: "#F59E0B",
+    categoryBg: "rgba(245,158,11,0.10)",
+    costRange: "$8–15/unit",
+    growth: "+19%",
+    emoji: "🔋",
+  },
+  {
+    name: "Yoga Mat",
+    category: "Sports",
+    categoryColor: "#22C55E",
+    categoryBg: "rgba(34,197,94,0.10)",
+    costRange: "$5–10/unit",
+    growth: "+41%",
+    emoji: "🧘",
+  },
+  {
+    name: "Reusable Produce Bags",
+    category: "Packaging",
+    categoryColor: "#10B981",
+    categoryBg: "rgba(16,185,129,0.10)",
+    costRange: "$0.60–1.20/unit",
+    growth: "+77%",
+    emoji: "🛍️",
+  },
+  {
+    name: "Silicone Kitchen Utensils Set",
+    category: "Home & Kitchen",
+    categoryColor: "#FF6B35",
+    categoryBg: "rgba(255,107,53,0.10)",
+    costRange: "$3–6/unit",
+    growth: "+23%",
+    emoji: "🍳",
+  },
 ]
 
-function scoreColor(score: number): string {
-  if (score >= 80) return "#22C55E"
-  if (score >= 65) return "#F59E0B"
-  return "#EF4444"
-}
+function ProductCard({ product, index }: { product: Product; index: number }) {
+  const router = useRouter()
 
-function scoreBg(score: number): string {
-  if (score >= 80) return "rgba(34,197,94,0.12)"
-  if (score >= 65) return "rgba(245,158,11,0.12)"
-  return "rgba(239,68,68,0.12)"
-}
+  function handleAnalyze() {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("bottlecap_hero_text", product.name)
+    }
+    router.push("/analyze")
+  }
 
-// Duplicate for seamless loop
-const ITEMS = [...TRENDING, ...TRENDING]
-
-export default function TrendingProducts() {
   return (
-    <section className="py-16 bg-white border-t border-[#E8E8E4] overflow-hidden">
-      <style>{`
-        @keyframes ticker-scroll {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .ticker-track {
-          display: flex;
-          width: max-content;
-          animation: ticker-scroll 48s linear infinite;
-        }
-        .ticker-track:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
-
-      {/* Header */}
-      <div className="max-w-6xl mx-auto px-6 mb-8">
-        <div className="flex items-center gap-3">
-          {/* Pulsing green dot */}
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#22C55E]" />
-          </span>
-          <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#6B6B6B]">
-            What founders are analyzing right now
-          </p>
-        </div>
+    <motion.div
+      initial={{ opacity: 0, y: 28 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, delay: 0.1 + index * 0.07, ease: EASE }}
+      className="flex flex-col bg-white border border-[#E8E8E4] rounded-2xl p-5 hover:border-[#FF6B35] hover:shadow-md transition-all duration-200 group"
+    >
+      {/* Top row: emoji + growth badge */}
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-2xl">{product.emoji}</span>
+        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#22C55E] bg-[rgba(34,197,94,0.10)] px-2 py-0.5 rounded-full">
+          ↑ {product.growth}
+        </span>
       </div>
 
-      {/* Ticker */}
-      <div className="w-full overflow-hidden">
-        <div className="ticker-track">
-          {ITEMS.map((item, idx) => (
-            <div
-              key={`${item.name}-${idx}`}
-              className="flex-shrink-0 mx-2 bg-[#FAFAF8] border border-[#E8E8E4] rounded-xl px-4 py-3 w-[220px]
-                         hover:border-[#D0D0C8] hover:shadow-sm transition-all duration-200 cursor-default"
-            >
-              {/* Top row: emoji + score */}
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl">{item.emoji}</span>
-                <span
-                  className="text-xs font-bold px-2 py-0.5 rounded-full"
-                  style={{ color: scoreColor(item.score), backgroundColor: scoreBg(item.score) }}
-                >
-                  {item.score}
-                </span>
-              </div>
+      {/* Category pill */}
+      <span
+        className="self-start text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 tracking-wide"
+        style={{ color: product.categoryColor, backgroundColor: product.categoryBg }}
+      >
+        {product.category}
+      </span>
 
-              {/* Product name */}
-              <p className="text-sm font-semibold text-[#1A1A1A] leading-tight mb-1 truncate">
-                {item.name}
-              </p>
+      {/* Product name */}
+      <p className="text-sm font-bold text-[#1A1A1A] leading-snug mb-1">
+        {product.name}
+      </p>
 
-              {/* Country + time */}
-              <div className="flex items-center justify-between mt-1">
-                <span className="text-xs text-[#6B6B6B]">{item.country}</span>
-                <span className="text-[10px] text-[#9B9B9B]">{item.time}</span>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* Cost range */}
+      <p className="text-xs text-[#6B6B6B] mb-4">
+        Est. unit cost:{" "}
+        <span className="font-semibold text-[#1A1A1A]">{product.costRange}</span>
+      </p>
+
+      {/* CTA */}
+      <button
+        onClick={handleAnalyze}
+        className="mt-auto text-xs font-semibold text-[#FF6B35] group-hover:underline text-left transition-colors duration-150"
+      >
+        Analyze this →
+      </button>
+    </motion.div>
+  )
+}
+
+export default function TrendingProducts() {
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true, margin: "-60px" })
+
+  return (
+    <section ref={ref} className="py-20 bg-[#FAFAF8] border-t border-[#E8E8E4]">
+      <div className="max-w-6xl mx-auto px-6">
+
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, ease: EASE }}
+          className="mb-10"
+        >
+          {/* Subtitle badge */}
+          <div className="flex items-center gap-2 mb-3">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22C55E]" />
+            </span>
+            <span className="text-[10px] font-bold tracking-[0.16em] uppercase text-[#6B6B6B] bg-[#F0F0EC] border border-[#E8E8E4] px-3 py-1 rounded-full">
+              Updated monthly based on our analysis patterns
+            </span>
+          </div>
+
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A]">
+            What founders are analyzing right now
+          </h2>
+          <p className="text-sm text-[#6B6B6B] mt-2 max-w-xl">
+            Click any product to pre-fill the analyzer and get your report in under 5 minutes.
+          </p>
+        </motion.div>
+
+        {/* Grid */}
+        {isInView && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {PRODUCTS.map((product, i) => (
+              <ProductCard key={product.name} product={product} index={i} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )
