@@ -1,125 +1,539 @@
-import type { Metadata } from "next"
-import Link from "next/link"
-import { MANUFACTURING_COUNTRIES } from "@/lib/data/countries"
+"use client"
 
-export const metadata: Metadata = {
-  title: "Manufacturing Countries — Find the Best Country for Your Product | Bottlecap",
-  description:
-    "Compare 12+ manufacturing countries on cost, quality, lead time, IP protection, and specializations. Find the best country to manufacture your product.",
+import { useState } from "react"
+import Link from "next/link"
+import { motion, AnimatePresence } from "framer-motion"
+import {
+  Globe2,
+  Filter,
+  BarChart3,
+  ArrowRight,
+  ChevronRight,
+  Clock,
+  DollarSign,
+  Shield,
+} from "lucide-react"
+import { MANUFACTURING_COUNTRIES, type ManufacturingCountry } from "@/lib/data/countries"
+
+// ── Helpers ────────────────────────────────────────────────────────────
+
+function toSlug(name: string): string {
+  return name.toLowerCase().replace(/\s+/g, "-")
 }
 
-export default function ManufacturersPage() {
-  const regions = Array.from(
-    new Set(MANUFACTURING_COUNTRIES.map((c) => c.region))
+function laborColor(cost: number): string {
+  if (cost < 3) return "#22C55E"
+  if (cost <= 6) return "#F59E0B"
+  return "#FF6B35"
+}
+
+function qualityColor(rating: number): string {
+  if (rating > 7) return "#22C55E"
+  if (rating >= 5) return "#F59E0B"
+  return "#EF4444"
+}
+
+// ── Constants ──────────────────────────────────────────────────────────
+
+const EASE = [0.25, 0.46, 0.45, 0.94] as const
+
+const ALL_REGIONS = [
+  "All",
+  "East Asia",
+  "Southeast Asia",
+  "South Asia",
+  "Americas",
+  "Europe",
+] as const
+
+// Normalise the region values from the data to match the filter pills
+function normaliseRegion(region: string): string {
+  if (region === "North America") return "Americas"
+  if (region.startsWith("Central Europe") || region.startsWith("Europe")) return "Europe"
+  if (region === "Europe / Middle East") return "Europe"
+  return region
+}
+
+// ── Sub-components ─────────────────────────────────────────────────────
+
+function StatChip({ label }: { label: string }) {
+  return (
+    <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white rounded-full px-4 py-2 text-sm font-medium backdrop-blur-sm">
+      {label}
+    </div>
   )
+}
+
+function RegionPill({
+  region,
+  active,
+  onClick,
+}: {
+  region: string
+  active: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all duration-200 ${
+        active
+          ? "bg-[#FF6B35] border-[#FF6B35] text-white shadow-sm"
+          : "bg-white border-[#E8E8E4] text-[#6B6B6B] hover:border-[#FF6B35] hover:text-[#FF6B35]"
+      }`}
+    >
+      {region}
+    </button>
+  )
+}
+
+function CountryCard({ country }: { country: ManufacturingCountry }) {
+  const slug = toSlug(country.name)
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.96 }}
+      transition={{ duration: 0.28, ease: EASE }}
+      whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(0,0,0,0.10)" }}
+      className="bg-white rounded-2xl border border-[#E8E8E4] hover:border-[#FF6B35] transition-colors duration-200 flex flex-col overflow-hidden cursor-pointer"
+    >
+      <Link href={`/manufacturers/${slug}`} className="flex flex-col h-full p-6">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <span className="text-4xl leading-none">{country.emoji}</span>
+            <div>
+              <h3 className="font-black text-[#1A1A1A] text-lg leading-tight">{country.name}</h3>
+              <span className="inline-block mt-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-[#FFF3EE] text-[#FF6B35] border border-[#FFD8C8]">
+                {normaliseRegion(country.region)}
+              </span>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-[#C8C8C4] flex-shrink-0 mt-1" />
+        </div>
+
+        {/* Best-for tags */}
+        <div className="flex flex-wrap gap-1.5 mb-5">
+          {country.specializations.slice(0, 3).map((spec) => (
+            <span
+              key={spec}
+              className="text-xs bg-[#F5F5F0] text-[#6B6B6B] px-2.5 py-1 rounded-full"
+            >
+              {spec}
+            </span>
+          ))}
+        </div>
+
+        {/* Stat blocks */}
+        <div className="grid grid-cols-2 gap-3 mt-auto">
+          {/* Labor */}
+          <div className="bg-[#FAFAF8] rounded-xl p-3">
+            <div className="flex items-center gap-1.5 mb-1">
+              <DollarSign className="w-3.5 h-3.5 text-[#9B9B9B]" />
+              <span className="text-[10px] font-semibold text-[#9B9B9B] uppercase tracking-wide">
+                Labor/hr
+              </span>
+            </div>
+            <span
+              className="text-base font-black"
+              style={{ color: laborColor(country.laborCostPerHour) }}
+            >
+              ${country.laborCostPerHour.toFixed(2)}
+            </span>
+          </div>
+
+          {/* Quality */}
+          <div className="bg-[#FAFAF8] rounded-xl p-3">
+            <div className="flex items-center gap-1.5 mb-1">
+              <BarChart3 className="w-3.5 h-3.5 text-[#9B9B9B]" />
+              <span className="text-[10px] font-semibold text-[#9B9B9B] uppercase tracking-wide">
+                Quality
+              </span>
+            </div>
+            <span
+              className="text-base font-black"
+              style={{ color: qualityColor(country.qualityRating) }}
+            >
+              {country.qualityRating}/10
+            </span>
+          </div>
+
+          {/* Lead Time */}
+          <div className="bg-[#FAFAF8] rounded-xl p-3">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Clock className="w-3.5 h-3.5 text-[#9B9B9B]" />
+              <span className="text-[10px] font-semibold text-[#9B9B9B] uppercase tracking-wide">
+                Lead Time
+              </span>
+            </div>
+            <span className="text-base font-black text-[#1A1A1A]">
+              {country.avgLeadTimeDays}d
+            </span>
+          </div>
+
+          {/* Tariff */}
+          <div className="bg-[#FAFAF8] rounded-xl p-3">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Shield className="w-3.5 h-3.5 text-[#9B9B9B]" />
+              <span className="text-[10px] font-semibold text-[#9B9B9B] uppercase tracking-wide">
+                Tariff
+              </span>
+            </div>
+            <span className="text-base font-black text-[#1A1A1A]">
+              {country.avgTariffToUS}%
+            </span>
+          </div>
+        </div>
+
+        {/* Footer link */}
+        <div className="mt-4 pt-4 border-t border-[#F0F0EC]">
+          <span className="text-sm font-semibold text-[#FF6B35] flex items-center gap-1 group-hover:gap-2 transition-all">
+            View Full Guide
+            <ArrowRight className="w-3.5 h-3.5" />
+          </span>
+        </div>
+      </Link>
+    </motion.div>
+  )
+}
+
+function TableView({ countries }: { countries: readonly ManufacturingCountry[] }) {
+  return (
+    <div className="overflow-x-auto rounded-2xl border border-[#E8E8E4] bg-white">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-[#E8E8E4] bg-[#FAFAF8]">
+            <th className="text-left px-5 py-4 font-bold text-[#1A1A1A] whitespace-nowrap">Country</th>
+            <th className="text-left px-5 py-4 font-bold text-[#1A1A1A] whitespace-nowrap">Labor/hr</th>
+            <th className="text-left px-5 py-4 font-bold text-[#1A1A1A] whitespace-nowrap">Quality</th>
+            <th className="text-left px-5 py-4 font-bold text-[#1A1A1A] whitespace-nowrap">Lead Time</th>
+            <th className="text-left px-5 py-4 font-bold text-[#1A1A1A] whitespace-nowrap">Tariff</th>
+            <th className="text-left px-5 py-4 font-bold text-[#1A1A1A]">Specializations</th>
+            <th className="px-5 py-4" />
+          </tr>
+        </thead>
+        <tbody>
+          {countries.map((country, i) => (
+            <tr
+              key={country.code}
+              className={`border-b border-[#F0F0EC] hover:bg-[#FFF8F5] transition-colors ${
+                i === countries.length - 1 ? "border-b-0" : ""
+              }`}
+            >
+              <td className="px-5 py-4 whitespace-nowrap">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-xl">{country.emoji}</span>
+                  <span className="font-bold text-[#1A1A1A]">{country.name}</span>
+                </div>
+              </td>
+              <td className="px-5 py-4 whitespace-nowrap">
+                <span className="font-bold" style={{ color: laborColor(country.laborCostPerHour) }}>
+                  ${country.laborCostPerHour.toFixed(2)}
+                </span>
+              </td>
+              <td className="px-5 py-4 whitespace-nowrap">
+                <span className="font-bold" style={{ color: qualityColor(country.qualityRating) }}>
+                  {country.qualityRating}/10
+                </span>
+              </td>
+              <td className="px-5 py-4 whitespace-nowrap text-[#1A1A1A] font-semibold">
+                {country.avgLeadTimeDays} days
+              </td>
+              <td className="px-5 py-4 whitespace-nowrap text-[#1A1A1A] font-semibold">
+                {country.avgTariffToUS}%
+              </td>
+              <td className="px-5 py-4">
+                <div className="flex flex-wrap gap-1">
+                  {country.specializations.slice(0, 3).map((spec) => (
+                    <span
+                      key={spec}
+                      className="text-xs bg-[#F5F5F0] text-[#6B6B6B] px-2 py-0.5 rounded-full whitespace-nowrap"
+                    >
+                      {spec}
+                    </span>
+                  ))}
+                </div>
+              </td>
+              <td className="px-5 py-4 whitespace-nowrap">
+                <Link
+                  href={`/manufacturers/${toSlug(country.name)}`}
+                  className="text-[#FF6B35] font-semibold hover:underline flex items-center gap-1 text-xs"
+                >
+                  Guide <ArrowRight className="w-3 h-3" />
+                </Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+// ── Page ────────────────────────────────────────────────────────────────
+
+export default function ManufacturersPage() {
+  const [activeRegion, setActiveRegion] = useState<string>("All")
+  const [viewMode, setViewMode] = useState<"grid" | "table">("grid")
+
+  const filteredCountries =
+    activeRegion === "All"
+      ? MANUFACTURING_COUNTRIES
+      : MANUFACTURING_COUNTRIES.filter(
+          (c) => normaliseRegion(c.region) === activeRegion
+        )
 
   return (
     <main className="min-h-screen bg-[#FAFAF8]">
-      <section className="py-20 sm:py-28">
-        <div className="max-w-5xl mx-auto px-6">
-          <nav className="flex items-center gap-2 text-sm text-[#6B6B6B] mb-10">
-            <Link href="/" className="hover:text-[#FF6B35] transition-colors">
-              Home
-            </Link>
-            <span>/</span>
-            <span className="text-[#1A1A1A]">Manufacturing Countries</span>
-          </nav>
+      {/* ── Hero ────────────────────────────────────────────────────── */}
+      <section className="bg-[#1A1A1A] pt-20 pb-24 relative overflow-hidden">
+        {/* Subtle grid texture */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        />
 
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-[#1A1A1A]">
-            Manufacturing Countries
-          </h1>
-          <p className="text-lg sm:text-xl text-[#6B6B6B] max-w-2xl mt-6 leading-relaxed">
-            In-depth guides to the world&apos;s top manufacturing countries.
-            Compare labor costs, quality ratings, lead times, and
-            specializations to find the right fit for your product.
-          </p>
-        </div>
-      </section>
-
-      <section className="pb-20">
-        <div className="max-w-5xl mx-auto px-6">
-          {regions.map((region) => {
-            const countries = MANUFACTURING_COUNTRIES.filter(
-              (c) => c.region === region
-            )
-            return (
-              <div key={region} className="mb-12">
-                <h2 className="text-2xl font-bold text-[#1A1A1A] mb-6">
-                  {region}
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {countries.map((country) => (
-                    <Link
-                      key={country.code}
-                      href={`/manufacturers/${country.name.toLowerCase().replace(/\s+/g, "-")}`}
-                      className="group bg-white rounded-2xl p-6 border border-[#E8E8E4] hover:border-[#FF6B35] hover:shadow-md transition-all"
-                    >
-                      <div className="flex items-center gap-3 mb-3">
-                        <span className="text-3xl">{country.emoji}</span>
-                        <h3 className="font-bold text-[#1A1A1A] group-hover:text-[#FF6B35] transition-colors">
-                          {country.name}
-                        </h3>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2 mb-3">
-                        <div className="text-xs">
-                          <span className="text-[#9B9B9B]">Quality</span>
-                          <div className="font-semibold text-[#1A1A1A]">
-                            {country.qualityRating}/10
-                          </div>
-                        </div>
-                        <div className="text-xs">
-                          <span className="text-[#9B9B9B]">Labor/hr</span>
-                          <div className="font-semibold text-[#1A1A1A]">
-                            ${country.laborCostPerHour}
-                          </div>
-                        </div>
-                        <div className="text-xs">
-                          <span className="text-[#9B9B9B]">Lead Time</span>
-                          <div className="font-semibold text-[#1A1A1A]">
-                            {country.avgLeadTimeDays} days
-                          </div>
-                        </div>
-                        <div className="text-xs">
-                          <span className="text-[#9B9B9B]">US Tariff</span>
-                          <div className="font-semibold text-[#1A1A1A]">
-                            {country.avgTariffToUS}%
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {country.specializations.slice(0, 3).map((spec) => (
-                          <span
-                            key={spec}
-                            className="text-xs bg-[#F5F5F0] text-[#6B6B6B] px-2 py-0.5 rounded-full"
-                          >
-                            {spec}
-                          </span>
-                        ))}
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </section>
-
-      <section className="py-20 bg-white border-t border-[#E8E8E4]">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-[#1A1A1A] mb-4">
-            Not sure which country is right?
-          </h2>
-          <p className="text-[#6B6B6B] mb-8 max-w-xl mx-auto">
-            Get a personalized country comparison based on your specific product,
-            budget, and timeline. Our AI analyzes the best manufacturing fit.
-          </p>
-          <Link
-            href="/analyze"
-            className="inline-block bg-[#FF6B35] text-white rounded-full px-8 py-4 font-semibold hover:bg-[#E85A25] transition-colors"
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
+          {/* Eyebrow */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: EASE }}
+            className="flex items-center gap-2 mb-5"
           >
-            Get Country Recommendation — $99
-          </Link>
+            <Globe2 className="w-4 h-4 text-[#FF6B35]" />
+            <span className="text-[#FF6B35] text-sm font-bold uppercase tracking-widest">
+              Manufacturing Regions
+            </span>
+          </motion.div>
+
+          {/* H1 */}
+          <motion.h1
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.06, ease: EASE }}
+            className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.08] max-w-3xl"
+          >
+            Find Your Perfect Manufacturing Country
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.12, ease: EASE }}
+            className="mt-6 text-lg sm:text-xl text-[#A8A8A4] max-w-2xl leading-relaxed"
+          >
+            Compare 12 countries across 20+ dimensions. Real data on labor costs, quality ratings,
+            IP protection, and lead times.
+          </motion.p>
+
+          {/* Stat chips */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.2, ease: EASE }}
+            className="flex flex-wrap gap-3 mt-10"
+          >
+            <StatChip label="12 Countries" />
+            <StatChip label="$0.95–$8.50/hr Labor" />
+            <StatChip label="14–55 Day Lead Times" />
+            <StatChip label="0–25% Tariff Range" />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Filters + Toggle ─────────────────────────────────────────── */}
+      <section className="sticky top-0 z-20 bg-[#FAFAF8] border-b border-[#E8E8E4] shadow-sm">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+          {/* Region pills */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <Filter className="w-4 h-4 text-[#9B9B9B] flex-shrink-0" />
+            {ALL_REGIONS.map((region) => (
+              <RegionPill
+                key={region}
+                region={region}
+                active={activeRegion === region}
+                onClick={() => setActiveRegion(region)}
+              />
+            ))}
+          </div>
+
+          {/* View toggle */}
+          <button
+            onClick={() => setViewMode(viewMode === "grid" ? "table" : "grid")}
+            className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#E8E8E4] bg-white text-sm font-semibold text-[#6B6B6B] hover:border-[#FF6B35] hover:text-[#FF6B35] transition-all"
+          >
+            <BarChart3 className="w-3.5 h-3.5" />
+            {viewMode === "grid" ? "Switch to Table" : "Switch to Grid"}
+          </button>
+        </div>
+      </section>
+
+      {/* ── Main Content ─────────────────────────────────────────────── */}
+      <section className="py-14">
+        <div className="max-w-6xl mx-auto px-6">
+          {/* Result count */}
+          <p className="text-sm text-[#9B9B9B] mb-6 font-medium">
+            Showing{" "}
+            <span className="text-[#1A1A1A] font-bold">{filteredCountries.length}</span>{" "}
+            {filteredCountries.length === 1 ? "country" : "countries"}
+            {activeRegion !== "All" && (
+              <>
+                {" "}in <span className="text-[#FF6B35] font-bold">{activeRegion}</span>
+              </>
+            )}
+          </p>
+
+          {viewMode === "grid" ? (
+            <AnimatePresence mode="popLayout">
+              <motion.div
+                key={activeRegion}
+                layout
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+              >
+                {filteredCountries.map((country) => (
+                  <CountryCard key={country.code} country={country} />
+                ))}
+              </motion.div>
+            </AnimatePresence>
+          ) : (
+            <motion.div
+              key="table"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.28, ease: EASE }}
+            >
+              <TableView countries={filteredCountries} />
+            </motion.div>
+          )}
+        </div>
+      </section>
+
+      {/* ── How to Choose ─────────────────────────────────────────────── */}
+      <section className="py-16 border-t border-[#E8E8E4]">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex items-center gap-2 mb-8">
+            <Globe2 className="w-5 h-5 text-[#FF6B35]" />
+            <h2 className="text-2xl font-black text-[#1A1A1A]">How to Choose</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* Lowest Cost */}
+            <motion.div
+              whileHover={{ y: -3 }}
+              transition={{ duration: 0.2, ease: EASE }}
+              className="bg-white rounded-2xl border border-[#E8E8E4] p-6"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#F0FDF4] flex items-center justify-center mb-4">
+                <DollarSign className="w-5 h-5 text-[#22C55E]" />
+              </div>
+              <h3 className="font-black text-[#1A1A1A] text-lg mb-2">Lowest Cost</h3>
+              <p className="text-[#6B6B6B] text-sm leading-relaxed mb-4">
+                Bangladesh, India, and Vietnam offer the lowest labor costs for high-volume,
+                labor-intensive products like apparel, footwear, and home textiles.
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {["🇧🇩 Bangladesh", "🇮🇳 India", "🇻🇳 Vietnam"].map((c) => (
+                  <span
+                    key={c}
+                    className="text-xs bg-[#F5F5F0] text-[#6B6B6B] px-2.5 py-1 rounded-full font-medium"
+                  >
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Best Quality */}
+            <motion.div
+              whileHover={{ y: -3 }}
+              transition={{ duration: 0.2, ease: EASE }}
+              className="bg-white rounded-2xl border border-[#E8E8E4] p-6"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#FFF3EE] flex items-center justify-center mb-4">
+                <BarChart3 className="w-5 h-5 text-[#FF6B35]" />
+              </div>
+              <h3 className="font-black text-[#1A1A1A] text-lg mb-2">Best Quality</h3>
+              <p className="text-[#6B6B6B] text-sm leading-relaxed mb-4">
+                South Korea, Taiwan, and Poland lead on quality ratings, IP protection, and
+                engineering precision — ideal for technical or premium products.
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {["🇰🇷 South Korea", "🇹🇼 Taiwan", "🇵🇱 Poland"].map((c) => (
+                  <span
+                    key={c}
+                    className="text-xs bg-[#F5F5F0] text-[#6B6B6B] px-2.5 py-1 rounded-full font-medium"
+                  >
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Fastest to US */}
+            <motion.div
+              whileHover={{ y: -3 }}
+              transition={{ duration: 0.2, ease: EASE }}
+              className="bg-white rounded-2xl border border-[#E8E8E4] p-6"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#EFF6FF] flex items-center justify-center mb-4">
+                <Clock className="w-5 h-5 text-[#3B82F6]" />
+              </div>
+              <h3 className="font-black text-[#1A1A1A] text-lg mb-2">Fastest to US</h3>
+              <p className="text-[#6B6B6B] text-sm leading-relaxed mb-4">
+                Mexico wins on speed — USMCA enables duty-free overland shipping to US buyers in
+                as little as 2 weeks, no ocean freight required.
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {["🇲🇽 Mexico (USMCA)", "~14–18 day lead time"].map((c) => (
+                  <span
+                    key={c}
+                    className="text-xs bg-[#F5F5F0] text-[#6B6B6B] px-2.5 py-1 rounded-full font-medium"
+                  >
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ──────────────────────────────────────────────────────── */}
+      <section className="py-20 bg-[#1A1A1A]">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.45, ease: EASE }}
+          >
+            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-[#FF6B35] rounded-full px-4 py-2 text-sm font-bold mb-6">
+              <Shield className="w-4 h-4" />
+              AI-Powered Analysis
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 leading-tight">
+              Not sure which country is right for your product?
+            </h2>
+            <p className="text-[#A8A8A4] text-lg mb-8 leading-relaxed">
+              Our AI analyzes your product category, target price, and volume to recommend the
+              optimal manufacturing country — with a full cost breakdown.
+            </p>
+            <Link
+              href="/analyze"
+              className="inline-flex items-center gap-2 bg-[#FF6B35] hover:bg-[#E85A25] text-white font-bold rounded-full px-8 py-4 text-base transition-colors duration-200 shadow-lg shadow-[#FF6B35]/25"
+            >
+              Get Country Recommendation
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
         </div>
       </section>
     </main>
