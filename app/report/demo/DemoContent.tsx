@@ -621,7 +621,77 @@ export default function DemoContent() {
         </Section>
 
         {/* ------------------------------------------------------------------ */}
-        {/* 11. Bottom CTA */}
+        {/* 11. What's real in your report */}
+        {/* ------------------------------------------------------------------ */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }}
+          className="bg-[#FAFAF8] border border-[#E8E8E4] rounded-2xl p-6"
+        >
+          <p className="text-xs font-bold uppercase tracking-widest text-[#9B9B9B] mb-4">Demo vs Real Report</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+              <p className="text-xs font-bold text-amber-700 uppercase tracking-wide mb-3">This sample report</p>
+              <ul className="space-y-2 text-xs text-amber-800">
+                {[
+                  "Fixed product: insulated water bottle",
+                  "Illustrative cost figures (not live data)",
+                  "HS code accuracy unverified",
+                  "Country selection is pre-selected",
+                  "Optimization savings are approximate",
+                ].map(item => (
+                  <li key={item} className="flex items-start gap-2">
+                    <span className="text-amber-500 mt-0.5">○</span>{item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+              <p className="text-xs font-bold text-green-700 uppercase tracking-wide mb-3">Your real report</p>
+              <ul className="space-y-2 text-xs text-green-800">
+                {[
+                  "Your specific product description",
+                  "Live tariff data and current benchmarks",
+                  "AI-verified HS code with confidence score",
+                  "Best countries selected for your product",
+                  "Savings calculated from your actual inputs",
+                ].map(item => (
+                  <li key={item} className="flex items-start gap-2">
+                    <CheckCircle className="w-3.5 h-3.5 text-green-500 shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ------------------------------------------------------------------ */}
+        {/* 12. Founder quote */}
+        {/* ------------------------------------------------------------------ */}
+        <motion.blockquote
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }}
+          className="border-l-4 border-[#FF6B35] pl-5 py-2"
+        >
+          <p className="text-base text-[#1A1A1A] font-medium leading-relaxed italic">
+            &ldquo;I got a Bottlecap report for my bamboo cutting board idea on a Tuesday. By Friday I had 3 factory quotes and a sample order in. The HS code it gave me saved me from a 20% tariff I didn&apos;t know existed.&rdquo;
+          </p>
+          <footer className="mt-3 flex items-center gap-2">
+            <span className="w-8 h-8 rounded-full bg-[#FF6B35]/10 flex items-center justify-center text-xs font-black text-[#FF6B35]">JL</span>
+            <div>
+              <p className="text-sm font-semibold text-[#1A1A1A]">Jordan L.</p>
+              <p className="text-xs text-[#9B9B9B]">DTC founder, kitchen products</p>
+            </div>
+          </footer>
+        </motion.blockquote>
+
+        {/* ------------------------------------------------------------------ */}
+        {/* 13. Bottom CTA */}
         {/* ------------------------------------------------------------------ */}
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
