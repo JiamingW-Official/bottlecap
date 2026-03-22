@@ -1,7 +1,8 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
-import { Twitter, Github, ArrowRight, Shield, Zap, Clock } from "lucide-react"
+import { Twitter, Github, ArrowRight, Shield, Zap, Cpu, Lock } from "lucide-react"
 
 const stats = [
   { value: "14", label: "free guides" },
@@ -10,9 +11,66 @@ const stats = [
   { value: "60+", label: "glossary terms" },
 ]
 
+const trustBadges = [
+  { icon: Shield, label: "72-hour money-back guarantee" },
+  { icon: Zap,    label: "2-5 min delivery" },
+  { icon: Cpu,    label: "Powered by Claude AI" },
+  { icon: Lock,   label: "Secure checkout via Stripe" },
+]
+
+const productLinks = [
+  { href: "/analyze",     label: "Analyze My Product", highlight: true },
+  { href: "/report/demo", label: "Sample Report" },
+  { href: "/dashboard",   label: "Dashboard" },
+  { href: "/pricing",     label: "Pricing" },
+]
+
+const toolLinks = [
+  { href: "/tools/hs-lookup",          label: "HS Code Lookup" },
+  { href: "/tools/cost-calculator",    label: "Cost Calculator" },
+  { href: "/tools/tariff-calculator",  label: "Tariff Calculator" },
+  { href: "/tools/country-compare",    label: "Country Compare" },
+  { href: "/tools/moq-calculator",     label: "MOQ Planner" },
+  { href: "/tools/margin-calculator",  label: "Margin Calculator" },
+  { href: "/tools/roi-calculator",     label: "ROI Calculator" },
+  { href: "/tools/sourcing-quiz",      label: "Sourcing Quiz" },
+]
+
+const learnLinks = [
+  { href: "/guide/manufacturing-101",  label: "Manufacturing 101" },
+  { href: "/guide/sourcing",           label: "Sourcing Guide" },
+  { href: "/guide/country-comparison", label: "Country Comparison" },
+  { href: "/guide/materials",          label: "Materials Guide" },
+  { href: "/guide/shipping-logistics", label: "Shipping & Logistics" },
+  { href: "/guide/quality-control",    label: "Quality Control" },
+  { href: "/guide/ip-protection",      label: "IP Protection" },
+  { href: "/guide/certifications",     label: "Certifications" },
+]
+
+const resourceLinks = [
+  { href: "/glossary",            label: "Glossary" },
+  { href: "/comparisons",         label: "Comparisons" },
+  { href: "/manufacturers",       label: "Manufacturer Profiles" },
+  { href: "/trending",            label: "Trending Products" },
+  { href: "/suppliers",           label: "Verified Suppliers" },
+  { href: "/cost-guides",         label: "Cost Guides" },
+  { href: "/about",               label: "About" },
+  { href: "#",                    label: "Blog (coming soon)", disabled: true },
+]
+
 export default function Footer() {
+  const [email, setEmail] = useState("")
+  const [subscribed, setSubscribed] = useState(false)
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (email.trim()) {
+      setSubscribed(true)
+    }
   }
 
   return (
@@ -32,27 +90,35 @@ export default function Footer() {
             </div>
             <div className="flex items-center gap-4 text-xs text-[#9B9B9B]">
               <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> 72-hr money-back</span>
-              <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> 2–5 min delivery</span>
-              <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> Stripe secure</span>
+              <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> 2-5 min delivery</span>
+              <span className="flex items-center gap-1"><Lock className="w-3 h-3" /> Stripe secure</span>
             </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-6 py-16">
-        {/* Newsletter signup */}
-        <div className="mb-12 pb-12 border-b border-[#E8E8E4]">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="max-w-md">
-              <p className="font-bold text-[#1A1A1A] mb-1">Stay updated</p>
-              <p className="text-sm text-[#6B6B6B] mb-4">
-                Manufacturing tips, product updates, and new guides. No spam — unsubscribe any time.
+
+        {/* Newsletter strip */}
+        <div className="bg-[#F5F5F0] rounded-2xl p-5 mb-12">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="flex-1">
+              <p className="font-bold text-[#1A1A1A] text-sm mb-0.5">Get sourcing trend updates</p>
+              <p className="text-xs text-[#6B6B6B]">Manufacturing tips and new guides. No spam.</p>
+            </div>
+            {subscribed ? (
+              <p className="text-sm font-semibold text-[#FF6B35] shrink-0">
+                Thanks — we&apos;ll be in touch
               </p>
-              <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
+            ) : (
+              <form onSubmit={handleSubscribe} className="flex gap-2 w-full sm:w-auto">
                 <input
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
-                  className="flex-1 bg-white border border-[#E8E8E4] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#FF6B35] transition-colors"
+                  required
+                  className="flex-1 sm:w-52 bg-white border border-[#E8E8E4] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#FF6B35] transition-colors"
                 />
                 <button
                   type="submit"
@@ -62,31 +128,18 @@ export default function Footer() {
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </form>
-            </div>
-            <div className="hidden md:block">
-              <div className="bg-[#F5F5F0] rounded-xl p-4 inline-block">
-                <p className="text-xs text-[#9B9B9B] mb-2 font-medium">Recent topics</p>
-                {[
-                  "How to choose between China and Vietnam",
-                  "HS code changes for 2025",
-                  "MOQ negotiation tactics that work",
-                ].map((t) => (
-                  <p key={t} className="text-xs text-[#4B4B4B] py-1.5 border-b border-[#E8E8E4] last:border-0">
-                    → {t}
-                  </p>
-                ))}
-              </div>
-            </div>
+            )}
           </div>
         </div>
 
+        {/* 4-column nav grid + brand */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
-          {/* Brand — wider */}
-          <div className="lg:col-span-2">
+
+          {/* Brand — spans 1 col on lg */}
+          <div className="lg:col-span-1">
             <p className="font-black text-xl text-[#1A1A1A] mb-2">Bottlecap</p>
             <p className="text-sm text-[#6B6B6B] leading-relaxed mb-3">
-              Manufacturing feasibility analysis for founders who are serious
-              about making their product real. $99. 2–5 minutes. No guessing.
+              Manufacturing feasibility analysis for founders. $99. 2-5 minutes. No guessing.
             </p>
             <p className="text-xs text-[#9B9B9B] mb-4">Powered by Claude AI · Made in San Francisco</p>
             <div className="flex items-center gap-2">
@@ -117,14 +170,7 @@ export default function Footer() {
               Product
             </p>
             <ul className="space-y-2.5">
-              {[
-                { href: "/analyze",     label: "Start Analysis",   highlight: true },
-                { href: "/report/demo", label: "Demo Report" },
-                { href: "/dashboard",   label: "My Reports" },
-                { href: "/pricing",     label: "Pricing" },
-                { href: "/about",       label: "About" },
-                { href: "/#faq",        label: "FAQ" },
-              ].map(({ href, label, highlight }) => (
+              {productLinks.map(({ href, label, highlight }) => (
                 <li key={href}>
                   <Link
                     href={href}
@@ -141,20 +187,13 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Free Tools */}
+          {/* Tools */}
           <div>
             <p className="text-xs font-bold text-[#9B9B9B] uppercase tracking-widest mb-4">
-              Free Tools
+              Tools
             </p>
             <ul className="space-y-2.5">
-              {[
-                { href: "/tools/hs-lookup",       label: "HS Code Lookup" },
-                { href: "/tools/cost-calculator",  label: "Cost Calculator" },
-                { href: "/tools/tariff-calculator",label: "Tariff Calculator" },
-                { href: "/tools/moq-calculator",   label: "MOQ Planner" },
-                { href: "/tools/country-compare",  label: "Country Compare" },
-                { href: "/tools",                  label: "All Tools →" },
-              ].map(({ href, label }) => (
+              {toolLinks.map(({ href, label }) => (
                 <li key={href}>
                   <Link href={href} className="text-sm text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors">
                     {label}
@@ -170,14 +209,7 @@ export default function Footer() {
               Learn
             </p>
             <ul className="space-y-2.5">
-              {[
-                { href: "/guide/manufacturing-101",  label: "Manufacturing 101" },
-                { href: "/guide/country-comparison", label: "Country Comparison" },
-                { href: "/guide/materials",          label: "Materials Guide" },
-                { href: "/guide/sourcing",           label: "Sourcing Guide" },
-                { href: "/glossary",                 label: "Glossary" },
-                { href: "/guide",                    label: "All Guides →" },
-              ].map(({ href, label }) => (
+              {learnLinks.map(({ href, label }) => (
                 <li key={href}>
                   <Link href={href} className="text-sm text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors">
                     {label}
@@ -186,18 +218,56 @@ export default function Footer() {
               ))}
             </ul>
           </div>
+
+          {/* Resources */}
+          <div>
+            <p className="text-xs font-bold text-[#9B9B9B] uppercase tracking-widest mb-4">
+              Resources
+            </p>
+            <ul className="space-y-2.5">
+              {resourceLinks.map(({ href, label, disabled }) => (
+                <li key={label}>
+                  {disabled ? (
+                    <span className="text-sm text-[#C0C0C0] cursor-default">{label}</span>
+                  ) : (
+                    <Link href={href} className="text-sm text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors">
+                      {label}
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
-        {/* Bottom strip */}
-        <div className="pt-8 border-t border-[#E8E8E4] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-[#9B9B9B]">
-            &copy; {new Date().getFullYear()} Bottlecap. All rights reserved.
-          </p>
+        {/* Trust badges row */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-8 pb-8 border-b border-[#E8E8E4]">
+          {trustBadges.map(({ icon: Icon, label }) => (
+            <span
+              key={label}
+              className="inline-flex items-center gap-1.5 bg-white border border-[#E8E8E4] rounded-full px-3.5 py-1.5 text-xs text-[#6B6B6B] font-medium"
+            >
+              <Icon className="w-3.5 h-3.5 text-[#FF6B35]" />
+              {label}
+            </span>
+          ))}
+        </div>
+
+        {/* Bottom bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <p className="text-xs text-[#9B9B9B]">
+              &copy; {new Date().getFullYear()} Bottlecap. All rights reserved.
+            </p>
+            <p className="text-xs text-[#C0C0C0] mt-1">
+              Manufacturing intelligence for founders, by founders. Not affiliated with any supplier or factory.
+            </p>
+          </div>
           <div className="flex items-center gap-5 flex-wrap justify-center">
-            <Link href="/privacy"          className="text-xs text-[#9B9B9B] hover:text-[#6B6B6B] transition-colors">Privacy Policy</Link>
-            <Link href="/terms"            className="text-xs text-[#9B9B9B] hover:text-[#6B6B6B] transition-colors">Terms of Service</Link>
+            <Link href="/privacy"           className="text-xs text-[#9B9B9B] hover:text-[#6B6B6B] transition-colors">Privacy Policy</Link>
+            <Link href="/terms"             className="text-xs text-[#9B9B9B] hover:text-[#6B6B6B] transition-colors">Terms of Service</Link>
             <a href="mailto:hello@bottlecap.io" className="text-xs text-[#9B9B9B] hover:text-[#6B6B6B] transition-colors">hello@bottlecap.io</a>
-            <button onClick={scrollToTop}  className="text-xs text-[#9B9B9B] hover:text-[#6B6B6B] transition-colors">Back to top ↑</button>
+            <button onClick={scrollToTop}   className="text-xs text-[#9B9B9B] hover:text-[#6B6B6B] transition-colors">Back to top ↑</button>
           </div>
         </div>
       </div>

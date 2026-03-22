@@ -178,6 +178,72 @@ const FAQ_DATA: FAQItem[] = [
       "Run two separate analyses — one for each product idea — and compare the results side by side. Focus on the feasibility score (higher is easier to manufacture), the per-unit cost breakdown, and the country recommendation (some products manufacture better in Vietnam vs. China vs. Mexico). The optimization tips section will also surface specific tradeoffs unique to each product. Monthly subscribers can do this unlimited times at no extra cost, making it ideal for product discovery and validation.",
     relatedLink: { label: "See full pricing →", href: "/pricing" },
   },
+  // Product & Sourcing
+  {
+    category: "Product & Sourcing",
+    question: "What kinds of products can Bottlecap analyze?",
+    answer:
+      "We handle 23+ industries: electronics, apparel, home goods, beauty, outdoor gear, pet products, food supplements, furniture, medical devices, packaging, toys, and more. If it can be manufactured, we can analyze it. The only products we skip are those requiring export licenses or controlled-substance manufacturing.",
+  },
+  {
+    category: "Product & Sourcing",
+    question: "What if my product is still in the idea stage?",
+    answer:
+      "Perfect. Bottlecap is designed for early validation. You don&apos;t need a finished spec — just describe what you want to make. The report will help you understand whether it&apos;s feasible and what it would cost to produce.",
+  },
+  {
+    category: "Product & Sourcing",
+    question: "Can Bottlecap help me find manufacturers directly?",
+    answer:
+      "Yes, via our Supplier Add-on ($199). After your report, you can request a curated list of 3 manually verified factories with WhatsApp contacts, email, and past-work samples. See /suppliers for details.",
+    relatedLink: { label: "Supplier Add-on →", href: "/tools/supplier-finder" },
+  },
+  {
+    category: "Product & Sourcing",
+    question: "How accurate are the cost estimates?",
+    answer:
+      "Our cost benchmarks are built from real manufacturing data and updated quarterly. We target ±15–20% accuracy for materials and labor. For precise quotes, use the report&apos;s factory spec sheet to get RFQs from 3 suppliers.",
+    relatedLink: { label: "Free Cost Calculator →", href: "/tools/cost-calculator" },
+  },
+  // Technical & Data
+  {
+    category: "Technical & Data",
+    question: "What data sources does Bottlecap use?",
+    answer:
+      "Five live sources: US CBP HTS tariff schedules, WCO harmonized system codes, manufacturing benchmark databases, freight rate indices, and material commodity pricing. Claude AI synthesizes these with general manufacturing knowledge.",
+  },
+  {
+    category: "Technical & Data",
+    question: "Does Bottlecap use my data to train AI models?",
+    answer:
+      "No. Your product descriptions and reports are not used for training. Reports are stored privately and only accessible via your unique link. See our Privacy Policy for details.",
+  },
+  {
+    category: "Technical & Data",
+    question: "How does the HS code classification work?",
+    answer:
+      "Claude AI classifies your product based on its materials, function, and manufacturing process, then cross-references with the 5,000+ entry HTS schedule. The report includes a confidence score and the specific chapter/heading rationale.",
+    relatedLink: { label: "Free HS Code Lookup →", href: "/tools/hs-lookup" },
+  },
+  // Process
+  {
+    category: "Process",
+    question: "What happens after I submit payment?",
+    answer:
+      "You&apos;re redirected to a processing page while Claude generates your report (2–5 minutes). You&apos;ll receive an email with your report link when it&apos;s ready. Reports don&apos;t expire.",
+  },
+  {
+    category: "Process",
+    question: "Can I share my report?",
+    answer:
+      "Yes — every report has a permanent, shareable URL. No login required to view. Pro subscribers also get PDF export.",
+  },
+  {
+    category: "Process",
+    question: "What if I need a report in a language other than English?",
+    answer:
+      "Reports are currently English-only. If you describe your product in another language, we&apos;ll do our best — but accuracy is highest in English.",
+  },
 ]
 
 // The "most asked" featured question — always shown, pinned above the list
@@ -189,7 +255,7 @@ const FEATURED_QUESTION: FAQItem = {
   relatedLink: { label: "See sample report →", href: "/report/demo" },
 }
 
-const CATEGORIES = ["All", "Getting Started", "Product", "Report", "Pricing", "Technical"]
+const CATEGORIES = ["All", "Getting Started", "Product", "Product & Sourcing", "Report", "Pricing", "Technical", "Technical & Data", "Process"]
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
