@@ -12,6 +12,9 @@ import {
   DollarSign,
   Clock,
   Package,
+  Layers,
+  Calculator,
+  ChevronDown,
 } from "lucide-react"
 import { PRODUCT_COSTS } from "@/lib/data/product-costs"
 
@@ -39,6 +42,115 @@ const SORT_OPTIONS: { label: string; value: SortKey }[] = [
 const CARD_EASE = [0.25, 0.46, 0.45, 0.94] as const
 
 const FEATURED_SLUGS = ["smart-watches", "bamboo-water-bottle", "wireless-earbuds"]
+
+// ─── Category Cost Explorer data ─────────────────────────────────────────────
+
+interface CategoryExplorerEntry {
+  category: string
+  emoji: string
+  costMin: number
+  costMax: number
+  moq: string
+  costDrivers: string[]
+  bestCountry: string
+  bestCountryEmoji: string
+}
+
+const CATEGORY_EXPLORER: CategoryExplorerEntry[] = [
+  {
+    category: "Consumer Electronics",
+    emoji: "📱",
+    costMin: 3,
+    costMax: 55,
+    moq: "300–3,000 units",
+    costDrivers: ["Chipset & PCB selection", "Display & battery quality", "Certification (FCC, CE, UN38.3)"],
+    bestCountry: "China (Shenzhen)",
+    bestCountryEmoji: "🇨🇳",
+  },
+  {
+    category: "Apparel & Textiles",
+    emoji: "👕",
+    costMin: 1.5,
+    costMax: 22,
+    moq: "200–1,000 units",
+    costDrivers: ["Fabric weight & composition", "Cut & sew complexity", "MOQ penalties on custom prints"],
+    bestCountry: "Bangladesh",
+    bestCountryEmoji: "🇧🇩",
+  },
+  {
+    category: "Home & Garden",
+    emoji: "🏡",
+    costMin: 2,
+    costMax: 40,
+    moq: "500–2,000 units",
+    costDrivers: ["Raw material costs (wood, metal, plastic)", "Surface finish & packaging", "Shipping volume/weight ratio"],
+    bestCountry: "Vietnam",
+    bestCountryEmoji: "🇻🇳",
+  },
+  {
+    category: "Sports & Outdoors",
+    emoji: "🏋️",
+    costMin: 3,
+    costMax: 60,
+    moq: "300–1,500 units",
+    costDrivers: ["Material durability specs", "Safety certifications", "Overmolding & ergonomics"],
+    bestCountry: "China",
+    bestCountryEmoji: "🇨🇳",
+  },
+  {
+    category: "Beauty & Personal Care",
+    emoji: "💄",
+    costMin: 0.8,
+    costMax: 18,
+    moq: "1,000–5,000 units",
+    costDrivers: ["Formula development / licensing", "Compliance & safety testing (FDA, EU)", "Packaging design & MOQ"],
+    bestCountry: "South Korea",
+    bestCountryEmoji: "🇰🇷",
+  },
+  {
+    category: "Pet Products",
+    emoji: "🐾",
+    costMin: 1.5,
+    costMax: 30,
+    moq: "300–1,000 units",
+    costDrivers: ["Pet-safe material certification", "Bite/chew durability testing", "Packaging & compliance labeling"],
+    bestCountry: "China",
+    bestCountryEmoji: "🇨🇳",
+  },
+]
+
+// ─── Benchmark table data ─────────────────────────────────────────────────────
+
+interface BenchmarkRow {
+  category: string
+  china: string
+  vietnam: string
+  india: string
+  cheapest: "china" | "vietnam" | "india"
+}
+
+const BENCHMARK_ROWS: BenchmarkRow[] = [
+  { category: "Wireless Earbuds", china: "$4.50–$18", vietnam: "$6–$22", india: "$7–$25", cheapest: "china" },
+  { category: "Cotton T-Shirt", china: "$2.50–$6", vietnam: "$2.80–$7", india: "$1.80–$5", cheapest: "india" },
+  { category: "Phone Case (TPU)", china: "$0.35–$3.50", vietnam: "$0.50–$4", india: "$0.55–$4.50", cheapest: "china" },
+  { category: "Yoga Mat", china: "$3–$12", vietnam: "$3.50–$13", india: "$2.50–$10", cheapest: "india" },
+  { category: "Stainless Water Bottle", china: "$2.80–$8", vietnam: "$3.20–$9", india: "$3–$9", cheapest: "china" },
+  { category: "Wooden Furniture (chair)", china: "$18–$60", vietnam: "$15–$50", india: "$12–$45", cheapest: "india" },
+  { category: "Ceramic Cookware", china: "$6–$28", vietnam: "$7–$32", india: "$5–$26", cheapest: "india" },
+  { category: "LED Strip Lights", china: "$1.20–$4", vietnam: "$1.50–$5", india: "$1.80–$5.50", cheapest: "china" },
+  { category: "Backpack (nylon)", china: "$5–$22", vietnam: "$5.50–$24", india: "$4.50–$20", cheapest: "india" },
+  { category: "Smart Watch", china: "$12–$55", vietnam: "$15–$65", india: "$N/A", cheapest: "china" },
+]
+
+// ─── Unit cost components ─────────────────────────────────────────────────────
+
+const COST_COMPONENTS = [
+  { label: "Raw Materials", pct: 42, color: "#FF6B35" },
+  { label: "Labor", pct: 22, color: "#F59E0B" },
+  { label: "Factory Overhead", pct: 14, color: "#3B82F6" },
+  { label: "Tooling Amortized", pct: 12, color: "#8B5CF6" },
+  { label: "QC & Packaging", pct: 10, color: "#22C55E" },
+]
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -210,6 +322,479 @@ function ProductCard({ product, featured = false }: ProductCardProps) {
   )
 }
 
+// ─── Category Cost Explorer ───────────────────────────────────────────────────
+
+function CategoryExplorer() {
+  const [activeIdx, setActiveIdx] = useState(0)
+  const entry = CATEGORY_EXPLORER[activeIdx]
+  const rangeWidth = entry.costMax - entry.costMin
+  const maxPossible = 60
+
+  return (
+    <section className="py-16 border-t border-[#E8E8E4] bg-white">
+      <div className="max-w-5xl mx-auto px-6">
+        <div className="flex items-center gap-2 mb-2">
+          <Layers className="w-5 h-5 text-[#FF6B35]" />
+          <h2 className="text-2xl font-black text-[#1A1A1A]">Category Cost Explorer</h2>
+        </div>
+        <p className="text-[#6B6B6B] text-sm mb-8 max-w-xl">
+          Select a product category to see typical cost ranges, MOQs, and cost drivers.
+        </p>
+
+        {/* Tab row */}
+        <div className="flex flex-wrap gap-2 mb-8">
+          {CATEGORY_EXPLORER.map((cat, i) => (
+            <button
+              key={cat.category}
+              onClick={() => setActiveIdx(i)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border transition-all duration-150 ${
+                activeIdx === i
+                  ? "bg-[#FF6B35] border-[#FF6B35] text-white shadow-sm"
+                  : "bg-[#FAFAF8] border-[#E8E8E4] text-[#6B6B6B] hover:border-[#FF6B35] hover:text-[#FF6B35]"
+              }`}
+            >
+              <span>{cat.emoji}</span>
+              <span className="hidden sm:inline">{cat.category}</span>
+            </button>
+          ))}
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeIdx}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.22, ease: CARD_EASE }}
+            className="bg-[#FAFAF8] rounded-2xl border border-[#E8E8E4] p-6 md:p-8"
+          >
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Left */}
+              <div>
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="text-4xl">{entry.emoji}</span>
+                  <h3 className="text-xl font-black text-[#1A1A1A]">{entry.category}</h3>
+                </div>
+
+                {/* Cost range visual */}
+                <p className="text-xs font-bold text-[#9B9B9B] uppercase tracking-widest mb-2">Average Unit Cost Range</p>
+                <div className="flex justify-between text-sm font-bold text-[#1A1A1A] mb-2">
+                  <span>${entry.costMin}</span>
+                  <span>${entry.costMax}</span>
+                </div>
+                <div className="relative h-4 bg-[#E8E8E4] rounded-full mb-1 overflow-hidden">
+                  <motion.div
+                    className="absolute h-full rounded-full"
+                    style={{
+                      left: `${(entry.costMin / maxPossible) * 100}%`,
+                      background: "linear-gradient(90deg, #FF6B35, #FFB347)",
+                    }}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(rangeWidth / maxPossible) * 100}%` }}
+                    transition={{ duration: 0.5, ease: CARD_EASE }}
+                  />
+                </div>
+                <p className="text-xs text-[#9B9B9B] mb-6">
+                  Range: ${entry.costMin} – ${entry.costMax} per unit (ex-works)
+                </p>
+
+                {/* MOQ */}
+                <div className="flex items-center gap-3 bg-white rounded-xl border border-[#E8E8E4] px-4 py-3">
+                  <Package className="w-4 h-4 text-[#FF6B35] flex-shrink-0" />
+                  <div>
+                    <p className="text-[10px] font-bold text-[#9B9B9B] uppercase tracking-wide">Typical MOQ</p>
+                    <p className="text-sm font-bold text-[#1A1A1A]">{entry.moq}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right */}
+              <div>
+                <p className="text-xs font-bold text-[#9B9B9B] uppercase tracking-widest mb-3">Main Cost Drivers</p>
+                <ul className="space-y-3 mb-6">
+                  {entry.costDrivers.map((driver, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span className="w-5 h-5 rounded-full bg-[#FF6B35] text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                        {i + 1}
+                      </span>
+                      <span className="text-sm text-[#1A1A1A] leading-relaxed">{driver}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="flex items-center gap-3 bg-white rounded-xl border border-[#E8E8E4] px-4 py-3">
+                  <span className="text-2xl">{entry.bestCountryEmoji}</span>
+                  <div>
+                    <p className="text-[10px] font-bold text-[#9B9B9B] uppercase tracking-wide">Best Country to Manufacture</p>
+                    <p className="text-sm font-bold text-[#1A1A1A]">{entry.bestCountry}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </section>
+  )
+}
+
+// ─── Benchmark Table ──────────────────────────────────────────────────────────
+
+function BenchmarkTable() {
+  return (
+    <section className="py-16 border-t border-[#E8E8E4]">
+      <div className="max-w-5xl mx-auto px-6">
+        <div className="flex items-center gap-2 mb-2">
+          <TrendingUp className="w-5 h-5 text-[#FF6B35]" />
+          <h2 className="text-2xl font-black text-[#1A1A1A]">Cost Benchmark by Country</h2>
+        </div>
+        <p className="text-[#6B6B6B] text-sm mb-8 max-w-xl">
+          Typical ex-works unit costs (USD) by country. Green cell = cheapest option for that category.
+        </p>
+
+        <div className="overflow-x-auto rounded-2xl border border-[#E8E8E4]">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-[#1A1A1A] text-white">
+                <th className="text-left px-5 py-4 font-bold">Product Category</th>
+                <th className="text-center px-5 py-4 font-bold">🇨🇳 China</th>
+                <th className="text-center px-5 py-4 font-bold">🇻🇳 Vietnam</th>
+                <th className="text-center px-5 py-4 font-bold">🇮🇳 India</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              {BENCHMARK_ROWS.map((row, i) => (
+                <tr
+                  key={row.category}
+                  className={`border-b border-[#F0F0EC] ${i % 2 === 0 ? "bg-white" : "bg-[#FAFAF8]"}`}
+                >
+                  <td className="px-5 py-3.5 font-semibold text-[#1A1A1A]">{row.category}</td>
+                  <td
+                    className={`px-5 py-3.5 text-center font-medium ${
+                      row.cheapest === "china"
+                        ? "bg-green-50 text-green-700 font-bold"
+                        : "text-[#6B6B6B]"
+                    }`}
+                  >
+                    {row.china}
+                    {row.cheapest === "china" && (
+                      <span className="ml-1.5 text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">
+                        Cheapest
+                      </span>
+                    )}
+                  </td>
+                  <td
+                    className={`px-5 py-3.5 text-center font-medium ${
+                      row.cheapest === "vietnam"
+                        ? "bg-green-50 text-green-700 font-bold"
+                        : "text-[#6B6B6B]"
+                    }`}
+                  >
+                    {row.vietnam}
+                    {row.cheapest === "vietnam" && (
+                      <span className="ml-1.5 text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">
+                        Cheapest
+                      </span>
+                    )}
+                  </td>
+                  <td
+                    className={`px-5 py-3.5 text-center font-medium ${
+                      row.cheapest === "india"
+                        ? "bg-green-50 text-green-700 font-bold"
+                        : "text-[#6B6B6B]"
+                    }`}
+                  >
+                    {row.india}
+                    {row.cheapest === "india" && (
+                      <span className="ml-1.5 text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">
+                        Cheapest
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-xs text-[#9B9B9B] mt-3">
+          * Ex-works (EXW) pricing. Does not include tooling, shipping, duties, or QC costs. Ranges reflect MOQ variance.
+        </p>
+      </div>
+    </section>
+  )
+}
+
+// ─── Cost Components Breakdown ────────────────────────────────────────────────
+
+function CostComponentsSection() {
+  return (
+    <section className="py-16 border-t border-[#E8E8E4] bg-white">
+      <div className="max-w-5xl mx-auto px-6">
+        <div className="flex items-center gap-2 mb-2">
+          <Layers className="w-5 h-5 text-[#FF6B35]" />
+          <h2 className="text-2xl font-black text-[#1A1A1A]">What&apos;s Included in Your Unit Cost?</h2>
+        </div>
+        <p className="text-[#6B6B6B] text-sm mb-8 max-w-xl">
+          A typical manufactured unit cost breaks down across five components. Understanding each
+          helps you identify where to negotiate and where to invest.
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-8 items-center">
+          {/* Stacked bar */}
+          <div>
+            <div className="flex h-10 rounded-xl overflow-hidden mb-4">
+              {COST_COMPONENTS.map((c) => (
+                <motion.div
+                  key={c.label}
+                  className="h-full"
+                  style={{ background: c.color, width: `${c.pct}%` }}
+                  initial={{ scaleX: 0, originX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, ease: CARD_EASE, delay: 0.1 }}
+                />
+              ))}
+            </div>
+            <div className="space-y-3">
+              {COST_COMPONENTS.map((c, i) => (
+                <motion.div
+                  key={c.label}
+                  initial={{ opacity: 0, x: -12 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.28, delay: i * 0.07, ease: CARD_EASE }}
+                  className="flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: c.color }} />
+                    <span className="text-sm font-semibold text-[#1A1A1A]">{c.label}</span>
+                  </div>
+                  <span className="text-sm font-black text-[#1A1A1A]">{c.pct}%</span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Descriptions */}
+          <div className="space-y-4">
+            {[
+              {
+                label: "Raw Materials",
+                color: "#FF6B35",
+                desc: "The largest cost driver. Includes all inputs: plastics, metals, textiles, electronic components. Material selection is your #1 lever for cost reduction.",
+              },
+              {
+                label: "Labor",
+                color: "#F59E0B",
+                desc: "Varies heavily by country ($0.95–$8.50/hr). Complex products with more assembly steps have higher labor share.",
+              },
+              {
+                label: "Factory Overhead",
+                color: "#3B82F6",
+                desc: "Factory rent, machinery depreciation, utilities, and management. Usually 10–18% of total cost depending on factory size.",
+              },
+              {
+                label: "Tooling Amortized",
+                color: "#8B5CF6",
+                desc: "Mold and tooling costs spread across the production run. Higher MOQs reduce the per-unit tooling burden.",
+              },
+              {
+                label: "QC & Packaging",
+                color: "#22C55E",
+                desc: "Incoming material inspection, in-process checks, final QC, and retail packaging. Often negotiable but critical to protect brand reputation.",
+              },
+            ].map((item) => (
+              <div key={item.label} className="flex items-start gap-3">
+                <div className="w-2 h-2 rounded-full flex-shrink-0 mt-1.5" style={{ background: item.color }} />
+                <div>
+                  <p className="text-sm font-bold text-[#1A1A1A] mb-0.5">{item.label}</p>
+                  <p className="text-xs text-[#6B6B6B] leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Landed Cost Estimator ────────────────────────────────────────────────────
+
+type ShippingMethod = "sea" | "air" | "express"
+
+const SHIPPING_RATES: Record<ShippingMethod, { label: string; perUnit: number; days: string }> = {
+  sea: { label: "Sea Freight (FCL/LCL)", perUnit: 0.35, days: "25–40 days" },
+  air: { label: "Air Freight", perUnit: 2.80, days: "5–10 days" },
+  express: { label: "Express Courier (DHL/FedEx)", perUnit: 6.50, days: "2–5 days" },
+}
+
+function LandedCostEstimator() {
+  const [unitCost, setUnitCost] = useState(12)
+  const [qty, setQty] = useState(500)
+  const [shipping, setShipping] = useState<ShippingMethod>("sea")
+  const [tariffPct, setTariffPct] = useState(7.5)
+
+  const shippingPerUnit = SHIPPING_RATES[shipping].perUnit
+  const dutyPerUnit = (unitCost * tariffPct) / 100
+  const landedPerUnit = unitCost + shippingPerUnit + dutyPerUnit
+  const totalLanded = landedPerUnit * qty
+
+  return (
+    <section className="py-16 border-t border-[#E8E8E4]">
+      <div className="max-w-5xl mx-auto px-6">
+        <div className="flex items-center gap-2 mb-2">
+          <Calculator className="w-5 h-5 text-[#FF6B35]" />
+          <h2 className="text-2xl font-black text-[#1A1A1A]">Interactive Landed Cost Estimator</h2>
+        </div>
+        <p className="text-[#6B6B6B] text-sm mb-8 max-w-xl">
+          Estimate your total landed cost including unit cost, shipping, and import duties.
+        </p>
+
+        <div className="bg-[#FAFAF8] rounded-2xl border border-[#E8E8E4] p-6 md:p-8">
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Inputs */}
+            <div className="space-y-5">
+              {/* Unit cost */}
+              <div>
+                <label className="block text-xs font-bold text-[#6B6B6B] uppercase tracking-widest mb-2">
+                  Unit Cost (Ex-Works, USD)
+                </label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min={0.5}
+                    max={100}
+                    step={0.5}
+                    value={unitCost}
+                    onChange={(e) => setUnitCost(Number(e.target.value))}
+                    className="flex-1 accent-[#FF6B35]"
+                  />
+                  <div className="w-20 bg-white border border-[#E8E8E4] rounded-lg px-3 py-2 text-sm font-bold text-[#1A1A1A] text-center">
+                    ${unitCost}
+                  </div>
+                </div>
+              </div>
+
+              {/* Quantity */}
+              <div>
+                <label className="block text-xs font-bold text-[#6B6B6B] uppercase tracking-widest mb-2">
+                  Order Quantity (units)
+                </label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min={100}
+                    max={10000}
+                    step={100}
+                    value={qty}
+                    onChange={(e) => setQty(Number(e.target.value))}
+                    className="flex-1 accent-[#FF6B35]"
+                  />
+                  <div className="w-20 bg-white border border-[#E8E8E4] rounded-lg px-3 py-2 text-sm font-bold text-[#1A1A1A] text-center">
+                    {qty.toLocaleString()}
+                  </div>
+                </div>
+              </div>
+
+              {/* Tariff */}
+              <div>
+                <label className="block text-xs font-bold text-[#6B6B6B] uppercase tracking-widest mb-2">
+                  Import Duty Rate (%)
+                </label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min={0}
+                    max={25}
+                    step={0.5}
+                    value={tariffPct}
+                    onChange={(e) => setTariffPct(Number(e.target.value))}
+                    className="flex-1 accent-[#FF6B35]"
+                  />
+                  <div className="w-20 bg-white border border-[#E8E8E4] rounded-lg px-3 py-2 text-sm font-bold text-[#1A1A1A] text-center">
+                    {tariffPct}%
+                  </div>
+                </div>
+              </div>
+
+              {/* Shipping method */}
+              <div>
+                <label className="block text-xs font-bold text-[#6B6B6B] uppercase tracking-widest mb-2">
+                  Shipping Method
+                </label>
+                <div className="relative">
+                  <select
+                    value={shipping}
+                    onChange={(e) => setShipping(e.target.value as ShippingMethod)}
+                    className="w-full appearance-none bg-white border border-[#E8E8E4] rounded-xl px-4 py-3 text-sm font-semibold text-[#1A1A1A] focus:outline-none focus:border-[#FF6B35] cursor-pointer pr-10"
+                  >
+                    {(Object.entries(SHIPPING_RATES) as [ShippingMethod, typeof SHIPPING_RATES[ShippingMethod]][]).map(
+                      ([key, val]) => (
+                        <option key={key} value={key}>
+                          {val.label} — ${val.perUnit}/unit ({val.days})
+                        </option>
+                      )
+                    )}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9B9B9B] pointer-events-none" />
+                </div>
+              </div>
+            </div>
+
+            {/* Results */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`${unitCost}-${qty}-${shipping}-${tariffPct}`}
+                initial={{ opacity: 0.6, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.18, ease: CARD_EASE }}
+                className="bg-white rounded-2xl border-2 border-[#FF6B35] p-6 flex flex-col justify-between"
+              >
+                <div>
+                  <p className="text-xs font-bold text-[#FF6B35] uppercase tracking-widest mb-4">
+                    Your Landed Cost Breakdown
+                  </p>
+
+                  {[
+                    { label: "Unit cost (EXW)", value: unitCost, color: "#FF6B35" },
+                    { label: "Shipping per unit", value: shippingPerUnit, color: "#3B82F6" },
+                    { label: "Import duty per unit", value: dutyPerUnit, color: "#F59E0B" },
+                  ].map((row) => (
+                    <div key={row.label} className="flex justify-between items-center py-2.5 border-b border-[#F0F0EC] last:border-b-0">
+                      <span className="text-sm text-[#6B6B6B]">{row.label}</span>
+                      <span className="text-sm font-bold" style={{ color: row.color }}>
+                        ${row.value.toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+
+                  <div className="flex justify-between items-center py-3 mt-2 bg-[#FAFAF8] rounded-xl px-4">
+                    <span className="text-sm font-bold text-[#1A1A1A]">Total landed / unit</span>
+                    <span className="text-lg font-black text-[#1A1A1A]">
+                      ${landedPerUnit.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-6 bg-[#1A1A1A] rounded-xl p-4 text-center">
+                  <p className="text-xs text-[#A8A8A4] mb-1">Total order landed cost</p>
+                  <p className="text-3xl font-black text-white">
+                    ${totalLanded.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </p>
+                  <p className="text-xs text-[#A8A8A4] mt-1">
+                    {qty.toLocaleString()} units via {SHIPPING_RATES[shipping].label.split("(")[0].trim()}
+                  </p>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function CostToManufacturePage() {
@@ -312,6 +897,18 @@ export default function CostToManufacturePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Category Cost Explorer ─────────────────────────────────────── */}
+      <CategoryExplorer />
+
+      {/* ── Cost Benchmark Table ──────────────────────────────────────── */}
+      <BenchmarkTable />
+
+      {/* ── Cost Components Explainer ─────────────────────────────────── */}
+      <CostComponentsSection />
+
+      {/* ── Landed Cost Estimator ─────────────────────────────────────── */}
+      <LandedCostEstimator />
 
       {/* ── Search + Filter + Sort ───────────────────────────────────────── */}
       <section className="pb-8 sticky top-0 z-20 bg-[#FAFAF8] border-b border-[#E8E8E4] shadow-sm">
@@ -440,7 +1037,36 @@ export default function CostToManufacturePage() {
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────────────────────── */}
+      {/* ── Bottom CTA strip ─────────────────────────────────────────────── */}
+      <section className="py-14 bg-[#FFF3EE] border-t border-[#FFD8C8]">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, ease: CARD_EASE }}
+          >
+            <p className="text-sm font-bold text-[#FF6B35] uppercase tracking-widest mb-3">AI Cost Analysis</p>
+            <h2 className="text-3xl font-black text-[#1A1A1A] mb-4 leading-tight">
+              Need a precise cost breakdown for your product?
+            </h2>
+            <p className="text-[#6B6B6B] mb-8 max-w-xl mx-auto text-lg leading-relaxed">
+              These are industry averages. Get a cost analysis tailored to your
+              exact product specifications, materials, and target markets —
+              delivered in 2–5 minutes.
+            </p>
+            <Link
+              href="/analyze"
+              className="inline-flex items-center gap-2 bg-[#FF6B35] text-white rounded-full px-8 py-4 font-bold hover:bg-[#E85A25] transition-colors shadow-lg shadow-[#FF6B35]/25"
+            >
+              Get Custom Analysis — $99
+              <ArrowRight size={16} />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Dark CTA ──────────────────────────────────────────────────────── */}
       <section className="py-20 bg-white border-t border-[#E8E8E4]">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold text-[#1A1A1A] mb-4">

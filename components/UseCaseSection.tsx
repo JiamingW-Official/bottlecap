@@ -1,153 +1,171 @@
 "use client"
 
-import Link from "next/link"
-import { motion } from "framer-motion"
-import { ArrowRight } from "lucide-react"
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 
-const USE_CASES = [
+const PERSONAS = [
   {
-    emoji: "🚀",
-    title: "First-time founders",
-    subtitle: "Validating your first physical product",
-    desc: "You have an idea but no manufacturing experience. Bottlecap tells you if it's viable, what it costs, and which country to source from — before you spend a dollar on samples.",
-    stats: ["61% of users are first-time founders", "Avg time from report to first factory contact: 4 days"],
-    color: "#FF6B35",
-    cta: "Start your analysis",
-    ctaHref: "/analyze",
+    initials: "SK",
+    avatarBg: "#FF6B35",
+    name: "Sarah K.",
+    role: "First-time Founder",
+    roleBg: "#FFF0EB",
+    roleColor: "#FF6B35",
+    quote:
+      "I had a bamboo toothbrush idea but no idea if it was manufacturable at scale. Bottlecap told me the tooling cost ($4,200) and that Vietnam was 40% cheaper than China for bamboo products. I ordered samples the next week.",
+    outcomeStat: "3 weeks",
+    outcomeLabel: "of research saved",
   },
   {
-    emoji: "🔁",
-    title: "Serial entrepreneurs",
-    subtitle: "Launching your 2nd, 3rd, or 4th product",
-    desc: "You know manufacturing but want to move faster and cheaper. Use the Monthly plan for unlimited analyses — and run country comparisons before committing to tooling.",
-    stats: ["Run analyses for every design iteration", "$199/month for unlimited reports"],
-    color: "#3B82F6",
-    cta: "See Monthly plan",
-    ctaHref: "/pricing",
+    initials: "MT",
+    avatarBg: "#3B82F6",
+    name: "Marcus T.",
+    role: "Serial Entrepreneur",
+    roleBg: "#EFF6FF",
+    roleColor: "#2563EB",
+    quote:
+      "I run 4 Amazon brands. I use Bottlecap Pro for every new product — 5+ reports a month. It&apos;s the fastest way to kill bad ideas before they cost me $10K in tooling.",
+    outcomeStat: "$180K",
+    outcomeLabel: "tooling cost avoided",
   },
   {
-    emoji: "🏢",
-    title: "Product agencies",
-    subtitle: "Discovery phase for every client project",
-    desc: "Bottlecap replaces the initial feasibility phase that used to take your team 2–3 days. Deliver better initial estimates, faster — and pass the savings to your clients.",
-    stats: ["40+ hours saved per client engagement", "Agencies use Monthly for unlimited access"],
-    color: "#22C55E",
-    cta: "Learn about Monthly",
-    ctaHref: "/pricing",
-  },
-  {
-    emoji: "💰",
-    title: "Existing brands",
-    subtitle: "Cutting costs on products you already make",
-    desc: "Already manufacturing somewhere? Run a report on your existing product to find material alternatives, cheaper countries, and optimization tips your current factory won't suggest.",
-    stats: ["Avg $2.80/unit savings identified", "22% is the record cost reduction (Vietnam switch)"],
-    color: "#8B5CF6",
-    cta: "Find cost savings",
-    ctaHref: "/analyze",
+    initials: "PM",
+    avatarBg: "#22C55E",
+    name: "Priya M.",
+    role: "Product Manager at CPG Agency",
+    roleBg: "#F0FDF4",
+    roleColor: "#16A34A",
+    quote:
+      "Our clients come to us with vague ideas. Bottlecap reports give us a credible starting point for every sourcing conversation. We run 10+ per month.",
+    outcomeStat: "40+",
+    outcomeLabel: "client projects powered",
   },
 ]
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.12,
-    },
-  },
-}
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 28 },
-  visible: {
+const tabVariants = {
+  enter: { opacity: 0, y: 16 },
+  center: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+    transition: { duration: 0.42, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+  },
+  exit: {
+    opacity: 0,
+    y: -12,
+    transition: { duration: 0.25, ease: [0.4, 0, 1, 1] as [number, number, number, number] },
   },
 }
 
 export default function UseCaseSection() {
+  const [active, setActive] = useState(0)
+  const persona = PERSONAS[active]
+
   return (
     <section className="py-20 bg-[#FAFAF8]">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-4xl mx-auto px-6">
         {/* Header */}
-        <div className="text-center mb-14">
+        <div className="text-center mb-12">
           <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#FF6B35] mb-3">
             Who it&apos;s for
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-[1.1] text-[#1A1A1A] mb-4">
-            Built for founders at every stage
+            Real founders, real results
           </h2>
           <p className="text-[#6B6B6B] max-w-xl mx-auto">
-            Whether you&apos;re validating idea #1 or optimizing a product you&apos;ve manufactured for years, Bottlecap gives you an unfair advantage.
+            Whether you&apos;re validating idea #1 or running a portfolio of brands, Bottlecap gives you an unfair advantage.
           </p>
         </div>
 
-        {/* Grid */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
-        >
-          {USE_CASES.map((uc) => (
-            <motion.div
-              key={uc.title}
-              variants={cardVariants}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="relative bg-white rounded-2xl border border-[#E8E8E4] overflow-hidden group
-                         hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#D0D0C8] transition-all duration-300"
+        {/* Tab selector */}
+        <div className="flex justify-center gap-2 mb-10 flex-wrap">
+          {PERSONAS.map((p, i) => (
+            <button
+              key={p.name}
+              onClick={() => setActive(i)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                active === i
+                  ? "bg-[#FF6B35] text-white shadow-md shadow-[#FF6B35]/25"
+                  : "bg-white border border-[#E8E8E4] text-[#6B6B6B] hover:border-[#FF6B35]/40 hover:text-[#1A1A1A]"
+              }`}
             >
-              {/* Left color accent */}
-              <div
-                className="absolute left-0 inset-y-0 w-[4px] rounded-l-2xl transition-all duration-300"
-                style={{ backgroundColor: uc.color }}
-              />
-
-              <div className="pl-7 pr-6 py-6">
-                {/* Emoji + titles */}
-                <div className="flex items-start gap-4 mb-4">
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0"
-                    style={{ backgroundColor: `${uc.color}26` }}
-                  >
-                    {uc.emoji}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-[#1A1A1A] leading-tight">{uc.title}</h3>
-                    <p className="text-sm text-[#6B6B6B] mt-0.5">{uc.subtitle}</p>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <p className="text-sm text-[#4A4A4A] leading-relaxed mb-5">{uc.desc}</p>
-
-                {/* Stats badges */}
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {uc.stats.map((stat) => (
-                    <span
-                      key={stat}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#22C55E]/10 text-[#16A34A] text-xs font-medium"
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] shrink-0" />
-                      {stat}
-                    </span>
-                  ))}
-                </div>
-
-                {/* CTA */}
-                <Link
-                  href={uc.ctaHref}
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold transition-all duration-200 group/cta"
-                  style={{ color: uc.color }}
-                >
-                  {uc.cta}
-                  <ArrowRight className="w-4 h-4 group-hover/cta:translate-x-1 transition-transform duration-200" />
-                </Link>
-              </div>
-            </motion.div>
+              {/* Mini avatar in pill */}
+              <span
+                className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+                style={{ backgroundColor: active === i ? "rgba(255,255,255,0.35)" : p.avatarBg }}
+              >
+                {p.initials}
+              </span>
+              {p.name}
+            </button>
           ))}
-        </motion.div>
+        </div>
+
+        {/* Persona card */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active}
+            variants={tabVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            className="bg-white rounded-2xl border border-[#E8E8E4] p-8 sm:p-10 shadow-sm"
+          >
+            <div className="flex flex-col sm:flex-row gap-6 items-start">
+              {/* Avatar */}
+              <div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold text-white shrink-0"
+                style={{ backgroundColor: persona.avatarBg }}
+              >
+                {persona.initials}
+              </div>
+
+              <div className="flex-1 min-w-0">
+                {/* Name + role */}
+                <div className="flex flex-wrap items-center gap-2 mb-4">
+                  <span className="text-lg font-bold text-[#1A1A1A]">{persona.name}</span>
+                  <span
+                    className="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                    style={{ backgroundColor: persona.roleBg, color: persona.roleColor }}
+                  >
+                    {persona.role}
+                  </span>
+                </div>
+
+                {/* Quote */}
+                <blockquote className="border-l-4 border-[#E8E8E4] pl-4 mb-6">
+                  <p className="text-[#4A4A4A] italic leading-relaxed text-[15px]">
+                    &ldquo;{persona.quote}&rdquo;
+                  </p>
+                </blockquote>
+
+                {/* Outcome stat */}
+                <div className="flex items-baseline gap-2">
+                  <span
+                    className="text-3xl font-extrabold"
+                    style={{ color: "#FF6B35" }}
+                  >
+                    {persona.outcomeStat}
+                  </span>
+                  <span className="text-sm text-[#6B6B6B] font-medium">{persona.outcomeLabel}</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Dot indicators */}
+        <div className="flex justify-center gap-2 mt-6">
+          {PERSONAS.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActive(i)}
+              className={`rounded-full transition-all duration-200 ${
+                active === i ? "w-6 h-2 bg-[#FF6B35]" : "w-2 h-2 bg-[#E8E8E4] hover:bg-[#D0D0C8]"
+              }`}
+              aria-label={`View persona ${i + 1}`}
+            />
+          ))}
+        </div>
       </div>
     </section>
   )

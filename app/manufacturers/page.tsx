@@ -12,6 +12,9 @@ import {
   Clock,
   DollarSign,
   Shield,
+  Zap,
+  Star,
+  HelpCircle,
 } from "lucide-react"
 import { MANUFACTURING_COUNTRIES, type ManufacturingCountry } from "@/lib/data/countries"
 
@@ -46,12 +49,59 @@ const ALL_REGIONS = [
   "Europe",
 ] as const
 
-// Normalise the region values from the data to match the filter pills
 function normaliseRegion(region: string): string {
   if (region === "North America") return "Americas"
   if (region.startsWith("Central Europe") || region.startsWith("Europe")) return "Europe"
   if (region === "Europe / Middle East") return "Europe"
   return region
+}
+
+// Tariff data for horizontal bar chart (US import duty, consumer goods)
+const TARIFF_DATA = [
+  { country: "Mexico", emoji: "🇲🇽", tariff: 0, color: "#22C55E" },
+  { country: "Canada", emoji: "🇨🇦", tariff: 0, color: "#22C55E" },
+  { country: "India", emoji: "🇮🇳", tariff: 3.5, color: "#84CC16" },
+  { country: "Vietnam", emoji: "🇻🇳", tariff: 5.0, color: "#84CC16" },
+  { country: "Bangladesh", emoji: "🇧🇩", tariff: 6.5, color: "#F59E0B" },
+  { country: "Indonesia", emoji: "🇮🇩", tariff: 7.0, color: "#F59E0B" },
+  { country: "Thailand", emoji: "🇹🇭", tariff: 8.5, color: "#F59E0B" },
+  { country: "Poland", emoji: "🇵🇱", tariff: 12.0, color: "#EF4444" },
+  { country: "South Korea", emoji: "🇰🇷", tariff: 14.5, color: "#EF4444" },
+  { country: "Taiwan", emoji: "🇹🇼", tariff: 16.0, color: "#EF4444" },
+  { country: "China", emoji: "🇨🇳", tariff: 22.5, color: "#DC2626" },
+] as const
+
+const MAX_TARIFF = 25
+
+// Quiz config
+type Priority = "Lowest cost" | "Fastest lead time" | "Highest quality"
+type ProductType = "Electronics" | "Apparel" | "Consumer goods" | "Industrial"
+
+interface QuizResult {
+  country: string
+  emoji: string
+  reason: string
+}
+
+function getRecommendation(priority: Priority, productType: ProductType): QuizResult {
+  if (priority === "Lowest cost" && productType === "Apparel")
+    return { country: "Bangladesh", emoji: "🇧🇩", reason: "World-lowest labor costs ($0.95/hr) for garment manufacturing with established export infrastructure." }
+  if (priority === "Lowest cost" && productType === "Electronics")
+    return { country: "Vietnam", emoji: "🇻🇳", reason: "Fast-growing electronics hub with $3.20/hr labor and lower tariffs than China." }
+  if (priority === "Lowest cost" && productType === "Consumer goods")
+    return { country: "India", emoji: "🇮🇳", reason: "Large supplier base, $2.10/hr labor, and strong English-language communication." }
+  if (priority === "Lowest cost" && productType === "Industrial")
+    return { country: "China", emoji: "🇨🇳", reason: "Unmatched industrial supply chain depth despite higher tariffs. No other country matches tooling costs." }
+  if (priority === "Fastest lead time")
+    return { country: "Mexico", emoji: "🇲🇽", reason: "USMCA nearshore advantage — 14-18 day lead times with overland freight, no ocean shipping." }
+  if (priority === "Highest quality" && productType === "Electronics")
+    return { country: "Taiwan", emoji: "🇹🇼", reason: "9.2/10 quality rating, world-class semiconductor and precision electronics manufacturing." }
+  if (priority === "Highest quality" && productType === "Industrial")
+    return { country: "South Korea", emoji: "🇰🇷", reason: "9.0/10 quality rating with exceptional engineering precision for industrial components." }
+  if (priority === "Highest quality" && productType === "Apparel")
+    return { country: "Poland", emoji: "🇵🇱", reason: "European quality standards, 8.5/10 rating, strong for premium fashion manufacturing." }
+  // Default highest quality consumer goods
+  return { country: "South Korea", emoji: "🇰🇷", reason: "High quality rating and strong IP protection make it ideal for premium consumer goods." }
 }
 
 // ── Sub-components ─────────────────────────────────────────────────────
@@ -126,6 +176,25 @@ function CountryCard({ country }: { country: ManufacturingCountry }) {
           ))}
         </div>
 
+        {/* Quality rating dots */}
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[10px] font-semibold text-[#9B9B9B] uppercase tracking-wide">Quality Rating</span>
+            <span className="text-xs font-bold text-[#1A1A1A]">{country.qualityRating}/10</span>
+          </div>
+          <div className="flex gap-1">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex-1 h-1.5 rounded-full"
+                style={{
+                  background: i < country.qualityRating ? "#22C55E" : "#E8E8E4",
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
         {/* Stat blocks */}
         <div className="grid grid-cols-2 gap-3 mt-auto">
           {/* Labor */}
@@ -141,22 +210,6 @@ function CountryCard({ country }: { country: ManufacturingCountry }) {
               style={{ color: laborColor(country.laborCostPerHour) }}
             >
               ${country.laborCostPerHour.toFixed(2)}
-            </span>
-          </div>
-
-          {/* Quality */}
-          <div className="bg-[#FAFAF8] rounded-xl p-3">
-            <div className="flex items-center gap-1.5 mb-1">
-              <BarChart3 className="w-3.5 h-3.5 text-[#9B9B9B]" />
-              <span className="text-[10px] font-semibold text-[#9B9B9B] uppercase tracking-wide">
-                Quality
-              </span>
-            </div>
-            <span
-              className="text-base font-black"
-              style={{ color: qualityColor(country.qualityRating) }}
-            >
-              {country.qualityRating}/10
             </span>
           </div>
 
@@ -183,6 +236,22 @@ function CountryCard({ country }: { country: ManufacturingCountry }) {
             </div>
             <span className="text-base font-black text-[#1A1A1A]">
               {country.avgTariffToUS}%
+            </span>
+          </div>
+
+          {/* Quality */}
+          <div className="bg-[#FAFAF8] rounded-xl p-3">
+            <div className="flex items-center gap-1.5 mb-1">
+              <BarChart3 className="w-3.5 h-3.5 text-[#9B9B9B]" />
+              <span className="text-[10px] font-semibold text-[#9B9B9B] uppercase tracking-wide">
+                Quality
+              </span>
+            </div>
+            <span
+              className="text-base font-black"
+              style={{ color: qualityColor(country.qualityRating) }}
+            >
+              {country.qualityRating}/10
             </span>
           </div>
         </div>
@@ -272,6 +341,166 @@ function TableView({ countries }: { countries: readonly ManufacturingCountry[] }
   )
 }
 
+// ── Quiz Strip ─────────────────────────────────────────────────────────
+
+function SegmentedControl<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string
+  options: T[]
+  value: T
+  onChange: (v: T) => void
+}) {
+  return (
+    <div>
+      <p className="text-xs font-bold text-[#6B6B6B] uppercase tracking-widest mb-2">{label}</p>
+      <div className="flex flex-wrap gap-2">
+        {options.map((opt) => (
+          <button
+            key={opt}
+            onClick={() => onChange(opt)}
+            className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all duration-150 ${
+              value === opt
+                ? "bg-[#FF6B35] border-[#FF6B35] text-white shadow-sm"
+                : "bg-white border-[#E8E8E4] text-[#6B6B6B] hover:border-[#FF6B35] hover:text-[#FF6B35]"
+            }`}
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function QuizStrip() {
+  const [priority, setPriority] = useState<Priority>("Lowest cost")
+  const [productType, setProductType] = useState<ProductType>("Consumer goods")
+
+  const result = getRecommendation(priority, productType)
+
+  return (
+    <section className="py-16 border-t border-[#E8E8E4] bg-white">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="flex items-center gap-2 mb-2">
+          <HelpCircle className="w-5 h-5 text-[#FF6B35]" />
+          <h2 className="text-2xl font-black text-[#1A1A1A]">Which country is right for you?</h2>
+        </div>
+        <p className="text-[#6B6B6B] text-sm mb-8 max-w-xl">
+          Answer two quick questions and get an instant recommendation.
+        </p>
+
+        <div className="bg-[#FAFAF8] rounded-2xl border border-[#E8E8E4] p-6 md:p-8 space-y-6">
+          <SegmentedControl
+            label="Your priority:"
+            options={["Lowest cost", "Fastest lead time", "Highest quality"] as Priority[]}
+            value={priority}
+            onChange={setPriority}
+          />
+          <SegmentedControl
+            label="Your product type:"
+            options={["Electronics", "Apparel", "Consumer goods", "Industrial"] as ProductType[]}
+            value={productType}
+            onChange={setProductType}
+          />
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`${priority}-${productType}`}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: EASE }}
+              className="bg-white rounded-xl border-2 border-[#FF6B35] p-5 flex items-start gap-4"
+            >
+              <span className="text-4xl leading-none flex-shrink-0">{result.emoji}</span>
+              <div>
+                <p className="text-xs font-bold text-[#FF6B35] uppercase tracking-widest mb-1">Recommended</p>
+                <p className="text-xl font-black text-[#1A1A1A] mb-2">{result.country}</p>
+                <p className="text-sm text-[#6B6B6B] leading-relaxed">{result.reason}</p>
+                <Link
+                  href={`/manufacturers/${toSlug(result.country)}`}
+                  className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#FF6B35] hover:underline"
+                >
+                  View full {result.country} guide <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ── Tariff Chart ───────────────────────────────────────────────────────
+
+function TariffChart() {
+  return (
+    <section className="py-16 border-t border-[#E8E8E4]">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="flex items-center gap-2 mb-2">
+          <Shield className="w-5 h-5 text-[#FF6B35]" />
+          <h2 className="text-2xl font-black text-[#1A1A1A]">Tariff Exposure Comparison</h2>
+        </div>
+        <p className="text-[#6B6B6B] text-sm mb-8 max-w-2xl">
+          Total US import duty for a typical consumer goods product (blended Section 301 + MFN rates, Q1 2026).
+          Lower tariff = lower landed cost.
+        </p>
+
+        <div className="bg-white rounded-2xl border border-[#E8E8E4] p-6 md:p-8 space-y-4">
+          {TARIFF_DATA.map((item, i) => (
+            <motion.div
+              key={item.country}
+              initial={{ opacity: 0, x: -16 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: i * 0.05, ease: EASE }}
+              className="flex items-center gap-4"
+            >
+              <div className="w-32 flex-shrink-0 flex items-center gap-2">
+                <span className="text-lg">{item.emoji}</span>
+                <span className="text-sm font-semibold text-[#1A1A1A] truncate">{item.country}</span>
+              </div>
+              <div className="flex-1 h-7 bg-[#F5F5F0] rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full rounded-full flex items-center justify-end pr-2"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: `${(item.tariff / MAX_TARIFF) * 100}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.05 + 0.1, ease: EASE }}
+                  style={{ background: item.color, minWidth: item.tariff === 0 ? "2.5rem" : undefined }}
+                >
+                  {item.tariff > 0 && (
+                    <span className="text-white text-xs font-bold">{item.tariff}%</span>
+                  )}
+                </motion.div>
+                {item.tariff === 0 && (
+                  <div className="absolute">
+                  </div>
+                )}
+              </div>
+              <div className="w-16 text-right">
+                {item.tariff === 0 ? (
+                  <span className="text-xs font-bold text-[#22C55E]">0% — Free</span>
+                ) : (
+                  <span className="text-xs font-bold text-[#1A1A1A]">{item.tariff}%</span>
+                )}
+              </div>
+            </motion.div>
+          ))}
+          <p className="text-xs text-[#9B9B9B] pt-2 border-t border-[#F0F0EC]">
+            * Rates are estimates for illustrative purposes. Actual duties vary by HS code. Verify with a licensed customs broker.
+          </p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ── Page ────────────────────────────────────────────────────────────────
 
 export default function ManufacturersPage() {
@@ -285,9 +514,14 @@ export default function ManufacturersPage() {
           (c) => normaliseRegion(c.region) === activeRegion
         )
 
+  // Sort by quality rating descending for the grid display
+  const sortedCountries = [...filteredCountries].sort(
+    (a, b) => b.qualityRating - a.qualityRating
+  )
+
   return (
     <main className="min-h-screen bg-[#FAFAF8]">
-      {/* ── Hero ────────────────────────────────────────────────────── */}
+      {/* ── Hero ────────────────────────────────────────────────── */}
       <section className="bg-[#1A1A1A] pt-20 pb-24 relative overflow-hidden">
         {/* Subtle grid texture */}
         <div
@@ -389,6 +623,9 @@ export default function ManufacturersPage() {
                 {" "}in <span className="text-[#FF6B35] font-bold">{activeRegion}</span>
               </>
             )}
+            {viewMode === "grid" && (
+              <span className="ml-2 text-[#9B9B9B]">· sorted by quality rating</span>
+            )}
           </p>
 
           {viewMode === "grid" ? (
@@ -398,7 +635,7 @@ export default function ManufacturersPage() {
                 layout
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
               >
-                {filteredCountries.map((country) => (
+                {sortedCountries.map((country) => (
                   <CountryCard key={country.code} country={country} />
                 ))}
               </motion.div>
@@ -415,6 +652,12 @@ export default function ManufacturersPage() {
           )}
         </div>
       </section>
+
+      {/* ── Quiz Strip ───────────────────────────────────────────────── */}
+      <QuizStrip />
+
+      {/* ── Tariff Chart ─────────────────────────────────────────────── */}
+      <TariffChart />
 
       {/* ── How to Choose ─────────────────────────────────────────────── */}
       <section className="py-16 border-t border-[#E8E8E4]">
@@ -458,7 +701,7 @@ export default function ManufacturersPage() {
               className="bg-white rounded-2xl border border-[#E8E8E4] p-6"
             >
               <div className="w-10 h-10 rounded-xl bg-[#FFF3EE] flex items-center justify-center mb-4">
-                <BarChart3 className="w-5 h-5 text-[#FF6B35]" />
+                <Star className="w-5 h-5 text-[#FF6B35]" />
               </div>
               <h3 className="font-black text-[#1A1A1A] text-lg mb-2">Best Quality</h3>
               <p className="text-[#6B6B6B] text-sm leading-relaxed mb-4">
@@ -484,7 +727,7 @@ export default function ManufacturersPage() {
               className="bg-white rounded-2xl border border-[#E8E8E4] p-6"
             >
               <div className="w-10 h-10 rounded-xl bg-[#EFF6FF] flex items-center justify-center mb-4">
-                <Clock className="w-5 h-5 text-[#3B82F6]" />
+                <Zap className="w-5 h-5 text-[#3B82F6]" />
               </div>
               <h3 className="font-black text-[#1A1A1A] text-lg mb-2">Fastest to US</h3>
               <p className="text-[#6B6B6B] text-sm leading-relaxed mb-4">
@@ -506,7 +749,35 @@ export default function ManufacturersPage() {
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────────────────── */}
+      {/* ── Bottom CTA ───────────────────────────────────────────────── */}
+      <section className="py-16 bg-[#FFF3EE] border-t border-[#FFD8C8]">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, ease: EASE }}
+          >
+            <p className="text-sm font-bold text-[#FF6B35] uppercase tracking-widest mb-3">Country Selection Tool</p>
+            <h2 className="text-3xl sm:text-4xl font-black text-[#1A1A1A] mb-4 leading-tight">
+              Find the best country for your product
+            </h2>
+            <p className="text-[#6B6B6B] text-lg mb-8 max-w-xl mx-auto leading-relaxed">
+              Our AI analyzes your product category, target price, and volume to recommend the
+              optimal manufacturing country with a full cost breakdown — in under 5 minutes.
+            </p>
+            <Link
+              href="/analyze"
+              className="inline-flex items-center gap-2 bg-[#FF6B35] hover:bg-[#E85A25] text-white font-bold rounded-full px-8 py-4 text-base transition-colors duration-200 shadow-lg shadow-[#FF6B35]/25"
+            >
+              Get Country Recommendation
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Dark CTA ─────────────────────────────────────────────────── */}
       <section className="py-20 bg-[#1A1A1A]">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <motion.div

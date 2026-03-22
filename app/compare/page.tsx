@@ -361,7 +361,7 @@ export default function ComparePage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
+            transition={{ duration: 0.45, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }}
           >
             <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-[#1A1A1A] leading-tight">
               Manufacturing Comparisons
@@ -538,6 +538,56 @@ export default function ComparePage() {
                           <span className="text-base">🧱</span>
                         )}
                         {comparison.title}
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* ── Quick decision strip ────────────────────────────────────── */}
+            <section className="py-10">
+              <div className="max-w-5xl mx-auto px-6">
+                <p className="text-xs font-bold uppercase tracking-widest text-[#9B9B9B] mb-4">Quick decisions</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {[
+                    {
+                      question: "Lowest cost with acceptable quality?",
+                      answer: "China",
+                      detail: "Still the default for most consumer goods under 20kg. Add 25% tariff buffer if selling to US.",
+                      href: "/compare/china-vs-vietnam",
+                      color: "#3B82F6",
+                    },
+                    {
+                      question: "Avoid US tariffs on electronics?",
+                      answer: "Vietnam",
+                      detail: "MFN rates apply, no Section 301. Lead times 2-4 weeks longer than China. Growing fast.",
+                      href: "/compare/china-vs-vietnam",
+                      color: "#22C55E",
+                    },
+                    {
+                      question: "OEM vs ODM — first-time founder?",
+                      answer: "OEM",
+                      detail: "ODM is faster but you lose IP control. Start OEM if your product has unique features worth protecting.",
+                      href: "/compare/oem-vs-odm",
+                      color: "#F59E0B",
+                    },
+                  ].map((item) => (
+                    <motion.div
+                      key={item.question}
+                      initial={{ opacity: 0, y: 12 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }}
+                    >
+                      <Link
+                        href={item.href}
+                        className="group flex flex-col h-full bg-white border border-[#E8E8E4] rounded-2xl p-5 hover:border-[#FF6B35] hover:shadow-md transition-all"
+                      >
+                        <p className="text-xs text-[#9B9B9B] mb-2 leading-snug">{item.question}</p>
+                        <p className="text-2xl font-black mb-2" style={{ color: item.color }}>{item.answer}</p>
+                        <p className="text-xs text-[#6B6B6B] leading-relaxed flex-1">{item.detail}</p>
+                        <p className="text-xs font-semibold text-[#FF6B35] mt-3 group-hover:underline">Read comparison →</p>
                       </Link>
                     </motion.div>
                   ))}
