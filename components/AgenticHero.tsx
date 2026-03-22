@@ -13,11 +13,24 @@ import {
   BarChart3,
   DollarSign,
   Search,
+  ArrowRight,
+  Zap,
 } from "lucide-react"
 import TextReveal from "@/components/animations/TextReveal"
 import MagneticButton from "@/components/interactive/MagneticButton"
 import LiveActivityTicker from "@/components/LiveActivityTicker"
 import { classifyProduct, type ClassificationResult } from "@/lib/classifyProduct"
+
+const PLACEHOLDERS = [
+  "A smart water bottle that reminds me to stay hydrated...",
+  "Wireless earbuds with active noise cancellation, 30hr battery...",
+  "A collapsible silicone food container for meal prep...",
+  "Bluetooth fitness tracker with heart rate and sleep monitoring...",
+  "A portable UV-C sterilizer wand for travel...",
+  "Minimalist leather wallet with RFID blocking, 4-card slots...",
+  "Modular desk organizer with bamboo and steel accents...",
+  "A foldable solar panel charger for camping and hiking...",
+]
 
 const INSIGHT_CARDS = [
   {
@@ -37,13 +50,42 @@ const INSIGHT_CARDS = [
   },
 ]
 
+// Estimated cost ranges per category keyword
+const COST_HINTS: Record<string, { range: string; countries: string[] }> = {
+  "Consumer Electronics": { range: "$8–$45", countries: ["🇨🇳 China", "🇻🇳 Vietnam"] },
+  "Wearable Tech":        { range: "$15–$80", countries: ["🇨🇳 China", "🇹🇼 Taiwan"] },
+  "Audio Equipment":      { range: "$6–$35",  countries: ["🇨🇳 China", "🇻🇳 Vietnam"] },
+  "Kitchen & Dining":     { range: "$2–$25",  countries: ["🇨🇳 China", "🇻🇳 Vietnam"] },
+  "Fitness & Sports":     { range: "$4–$50",  countries: ["🇨🇳 China", "🇮🇳 India"] },
+  "Beauty & Cosmetics":   { range: "$1–$20",  countries: ["🇨🇳 China", "🇰🇷 Korea"] },
+  "Smart Home":           { range: "$12–$60", countries: ["🇨🇳 China", "🇻🇳 Vietnam"] },
+  "Bags & Luggage":       { range: "$5–$40",  countries: ["🇨🇳 China", "🇻🇳 Vietnam"] },
+  "Apparel":              { range: "$3–$25",  countries: ["🇨🇳 China", "🇧🇩 Bangladesh"] },
+  "Pet Products":         { range: "$2–$18",  countries: ["🇨🇳 China", "🇻🇳 Vietnam"] },
+  "Outdoor & Camping":    { range: "$5–$45",  countries: ["🇨🇳 China", "🇻🇳 Vietnam"] },
+}
+
 export default function AgenticHero() {
   const router = useRouter()
   const [heroText, setHeroText] = useState("")
-  const [classification, setClassification] =
-    useState<ClassificationResult | null>(null)
+  const [classification, setClassification] = useState<ClassificationResult | null>(null)
   const [statusText, setStatusText] = useState("")
+  const [placeholderIdx, setPlaceholderIdx] = useState(0)
+  const [showPlaceholderAnim, setShowPlaceholderAnim] = useState(true)
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+
+  // Rotate placeholder every 3s when input is empty
+  useEffect(() => {
+    if (heroText) return
+    const interval = setInterval(() => {
+      setShowPlaceholderAnim(false)
+      setTimeout(() => {
+        setPlaceholderIdx((p) => (p + 1) % PLACEHOLDERS.length)
+        setShowPlaceholderAnim(true)
+      }, 200)
+    }, 3500)
+    return () => clearInterval(interval)
+  }, [heroText])
 
   const classify = useCallback((text: string) => {
     if (text.trim().length < 5) {
@@ -51,12 +93,9 @@ export default function AgenticHero() {
       setStatusText("")
       return
     }
-
     setStatusText("Detecting category...")
-
     const result = classifyProduct(text)
     setClassification(result)
-
     if (result.category) {
       setStatusText(
         result.category.confidence === "high"
@@ -71,64 +110,70 @@ export default function AgenticHero() {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = e.target.value
     setHeroText(val)
-
-    if (val.trim().length >= 3 && val.trim().length < 5) {
-      setStatusText("Listening...")
-    }
-
+    if (val.trim().length >= 3 && val.trim().length < 5) setStatusText("Listening...")
     clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => classify(val), 300)
   }
 
-  useEffect(() => {
-    return () => clearTimeout(debounceRef.current)
-  }, [])
+  useEffect(() => { return () => clearTimeout(debounceRef.current) }, [])
 
   const handleAnalyzeClick = () => {
-    if (heroText.trim()) {
-      sessionStorage.setItem("bottlecap_hero_text", heroText.trim())
-    }
+    if (heroText.trim()) sessionStorage.setItem("bottlecap_hero_text", heroText.trim())
     router.push("/analyze")
   }
 
   const hasChips =
     classification &&
-    (classification.category ||
-      classification.materials.length > 0 ||
-      classification.complexity)
+    (classification.category || classification.materials.length > 0 || classification.complexity)
+
+  // Cost hint for detected category
+  const costHint = classification?.category?.name
+    ? COST_HINTS[classification.category.name] ?? null
+    : null
 
   return (
     <>
       <TextReveal
         as="h1"
-        className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-[#1A1A1A]"
+        className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-[#1A1A1A] leading-[1.05]"
       >
         Your product idea deserves to be made
       </TextReveal>
-      <p className="text-lg sm:text-xl text-[#6B6B6B] max-w-2xl mt-6">
+      <p className="text-lg sm:text-xl text-[#6B6B6B] max-w-2xl mt-6 leading-relaxed">
         Tell me what you want to make. I&apos;ll tell you if it&apos;s feasible,
         how much it costs, and where to manufacture it — in under 5 minutes.
       </p>
 
       <div className="mt-10 max-w-2xl">
         {/* Input */}
-        <div className="bg-white border-2 border-[#E8E8E4] focus-within:border-[#FF6B35] rounded-2xl p-2 flex items-end transition-colors">
+        <div className="bg-white border-2 border-[#E8E8E4] focus-within:border-[#FF6B35] rounded-2xl p-2 flex items-end transition-colors shadow-sm">
           <textarea
-            className="border-none flex-1 resize-none outline-none p-3 text-[#1A1A1A] placeholder:text-[#9B9B9B] bg-transparent min-h-[60px]"
-            placeholder="Try: A smart water bottle that reminds me to stay hydrated..."
+            className="border-none flex-1 resize-none outline-none p-3 text-[#1A1A1A] bg-transparent min-h-[60px]"
+            placeholder={showPlaceholderAnim ? PLACEHOLDERS[placeholderIdx] : ""}
             rows={2}
             value={heroText}
             onChange={handleChange}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey && heroText.trim().length > 5) {
+                e.preventDefault()
+                handleAnalyzeClick()
+              }
+            }}
           />
           <MagneticButton>
             <button
               onClick={handleAnalyzeClick}
-              className="bg-[#FF6B35] text-white rounded-xl px-6 py-3 font-semibold whitespace-nowrap hover:bg-[#E85A25] transition-all shadow-[0_2px_8px_rgba(255,107,53,0.25)] hover:shadow-[0_4px_14px_rgba(255,107,53,0.35)] shrink-0"
+              className="bg-[#FF6B35] text-white rounded-xl px-6 py-3 font-semibold whitespace-nowrap hover:bg-[#E85A25] transition-all shadow-[0_2px_8px_rgba(255,107,53,0.25)] hover:shadow-[0_4px_14px_rgba(255,107,53,0.35)] shrink-0 flex items-center gap-2"
             >
-              {heroText.trim().length > 10 ? "Analyze this →" : "Start for $99 →"}
+              {heroText.trim().length > 10 ? (
+                <>Analyze this <ArrowRight className="w-4 h-4" /></>
+              ) : (
+                <>Start for $99 <ArrowRight className="w-4 h-4" /></>
+              )}
             </button>
           </MagneticButton>
         </div>
+        <p className="text-xs text-[#9B9B9B] mt-1.5 ml-1">Press Enter to analyze · Shift+Enter for new line</p>
 
         {/* Classification chips */}
         <div className="mt-3 min-h-[32px]">
@@ -146,10 +191,13 @@ export default function AgenticHero() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
-                    className="inline-flex items-center gap-1.5 bg-[#FFF0EB] text-[#FF6B35] rounded-full px-3 py-1 text-xs font-medium"
+                    className="inline-flex items-center gap-1.5 bg-[#FFF0EB] text-[#FF6B35] rounded-full px-3 py-1 text-xs font-semibold border border-[#FF6B35]/20"
                   >
                     <Tag className="w-3 h-3" />
                     {classification.category.name}
+                    {classification.category.confidence === "high" && (
+                      <span className="text-[9px] opacity-60">· high confidence</span>
+                    )}
                   </motion.span>
                 )}
                 {classification.materials.map((mat) => (
@@ -179,9 +227,7 @@ export default function AgenticHero() {
                     }`}
                   >
                     <Cpu className="w-3 h-3" />
-                    {classification.complexity.charAt(0).toUpperCase() +
-                      classification.complexity.slice(1)}{" "}
-                    complexity
+                    {classification.complexity.charAt(0).toUpperCase() + classification.complexity.slice(1)} complexity
                   </motion.span>
                 )}
               </motion.div>
@@ -206,35 +252,54 @@ export default function AgenticHero() {
           )}
         </AnimatePresence>
 
-        {/* Insight cards — appear when classification has results */}
+        {/* Cost hint — appears when category detected */}
+        <AnimatePresence>
+          {costHint && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 6 }}
+              transition={{ delay: 0.1 }}
+              className="mt-3 flex items-center gap-3 bg-[#F5F5F0] rounded-xl px-4 py-2.5 border border-[#E8E8E4]"
+            >
+              <DollarSign className="w-4 h-4 text-[#FF6B35] shrink-0" />
+              <div className="flex-1">
+                <span className="text-xs font-semibold text-[#1A1A1A]">Typical cost: </span>
+                <span className="text-xs font-black text-[#FF6B35]">{costHint.range}/unit</span>
+                <span className="text-xs text-[#9B9B9B] ml-2">
+                  · from {costHint.countries.join(", ")}
+                </span>
+              </div>
+              <Zap className="w-3 h-3 text-[#9B9B9B] shrink-0" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Insight cards */}
         <AnimatePresence>
           {classification?.category && (
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 12 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-              className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3"
+              transition={{ duration: 0.3, delay: 0.15 }}
+              className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3"
             >
               {INSIGHT_CARDS.map((card, i) => (
                 <motion.div
                   key={card.title}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15 + i * 0.1 }}
-                  className="bg-white/80 backdrop-blur border border-[#E8E8E4] rounded-xl p-3"
+                  transition={{ delay: 0.2 + i * 0.08 }}
+                  className="bg-white/90 backdrop-blur border border-[#E8E8E4] rounded-xl p-3 hover:border-[#FF6B35]/30 transition-colors"
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-6 h-6 rounded-lg bg-[#FFF0EB] flex items-center justify-center">
                       <card.icon className="w-3.5 h-3.5 text-[#FF6B35]" />
                     </div>
-                    <span className="text-xs font-semibold text-[#1A1A1A]">
-                      {card.title}
-                    </span>
+                    <span className="text-xs font-semibold text-[#1A1A1A]">{card.title}</span>
                   </div>
-                  <p className="text-[10px] text-[#9B9B9B] leading-relaxed">
-                    {card.desc}
-                  </p>
+                  <p className="text-[10px] text-[#9B9B9B] leading-relaxed">{card.desc}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -243,39 +308,38 @@ export default function AgenticHero() {
 
         {/* Related products preview */}
         <AnimatePresence>
-          {classification &&
-            classification.relatedProducts.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 8 }}
-                transition={{ delay: 0.4 }}
-                className="mt-3 flex flex-wrap gap-2"
-              >
-                <span className="text-[10px] text-[#9B9B9B] self-center">
-                  Similar products:
+          {classification && classification.relatedProducts.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ delay: 0.45 }}
+              className="mt-3 flex flex-wrap gap-2 items-center"
+            >
+              <span className="text-[10px] text-[#9B9B9B] font-medium">Similar products:</span>
+              {classification.relatedProducts.map((p) => (
+                <span
+                  key={p.name}
+                  className="inline-flex items-center gap-1 bg-[#F5F5F0] border border-[#E8E8E4] rounded-full px-2.5 py-1 text-[10px] text-[#6B6B6B]"
+                >
+                  <BarChart3 className="w-2.5 h-2.5" />
+                  {p.name}
+                  <span className="text-[#FF6B35] font-semibold">${p.costRange.min}–${p.costRange.max}/unit</span>
                 </span>
-                {classification.relatedProducts.map((p) => (
-                  <span
-                    key={p.name}
-                    className="inline-flex items-center gap-1 bg-[#F5F5F0] rounded-full px-2.5 py-1 text-[10px] text-[#6B6B6B]"
-                  >
-                    <DollarSign className="w-2.5 h-2.5" />
-                    {p.name} (${p.costRange.min}–${p.costRange.max}/unit)
-                  </span>
-                ))}
-              </motion.div>
-            )}
+              ))}
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
 
       {/* Trust badges */}
-      <div className="flex flex-wrap gap-x-8 gap-y-2 mt-8">
+      <div className="flex flex-wrap gap-x-6 gap-y-2 mt-8">
         {[
           { dot: "#22C55E", text: "Ready in 2–5 minutes" },
           { dot: "#9B9B9B", text: "Powered by Claude AI" },
           { dot: "#9B9B9B", text: "72-hour money-back guarantee" },
-        ].map(item => (
+          { dot: "#9B9B9B", text: "Stripe secure checkout" },
+        ].map((item) => (
           <span key={item.text} className="flex items-center gap-2 text-sm text-[#6B6B6B]">
             <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: item.dot }} />
             {item.text}

@@ -6,6 +6,7 @@ import { Check, ArrowRight, Lock, EyeOff, RotateCcw, Cpu, BookOpen, Globe2, Flas
 import AgenticHero from "@/components/AgenticHero"
 import AnimatedCounter from "@/components/AnimatedCounter"
 import DataExplorer from "@/components/DataExplorer"
+import CountrySpotlight from "@/components/CountrySpotlight"
 import ProcessDiagram from "@/components/ProcessDiagram"
 import FeatureShowcase from "@/components/FeatureShowcase"
 import IndustryComparison from "@/components/IndustryComparison"
@@ -369,6 +370,27 @@ export default function Home() {
             </p>
           </ScrollReveal>
           <DataExplorer />
+        </div>
+      </ScrollReveal>
+
+      {/* ================================================================ */}
+      {/* COUNTRY SPOTLIGHT                                                */}
+      {/* ================================================================ */}
+      <ScrollReveal className="py-20">
+        <div className="max-w-5xl mx-auto px-6">
+          <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#FF6B35] mb-3">Manufacturing regions</p>
+          <TextReveal
+            as="h2"
+            className="text-3xl sm:text-4xl font-bold tracking-tight leading-[1.1] mb-4 text-[#1A1A1A]"
+          >
+            Where should you manufacture?
+          </TextReveal>
+          <ScrollReveal delay={0.1}>
+            <p className="text-[#6B6B6B] mb-8 max-w-2xl">
+              Compare top manufacturing countries across cost, quality, lead time, and IP protection — side by side.
+            </p>
+          </ScrollReveal>
+          <CountrySpotlight />
         </div>
       </ScrollReveal>
 
