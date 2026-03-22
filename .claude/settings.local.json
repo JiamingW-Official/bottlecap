@@ -35,7 +35,8 @@
       "Bash(python3:*)",
       "Bash(node:*)",
       "Bash(railway:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npm run:*)"
     ]
   }
 }

@@ -21,16 +21,16 @@ const STEPS: ProcessStep[] = [
     number: 1,
     title: "Describe Your Product",
     description:
-      "Tell us what you want to make. Include materials, features, target price — even a rough sketch is fine.",
-    duration: "2 min",
+      "Tell us what you want to make. Include materials, features, target price — even a rough sketch is enough to get started.",
+    duration: "60 seconds",
     durationColor: "#22C55E",
     Icon: PenTool,
     details: [
-      "Write a detailed product description",
-      "Upload reference images or sketches",
-      "Set your target price range",
-      "Tell us your main concern",
-      "Specify initial quantity needed",
+      "Describe materials, dimensions, and key features",
+      "Upload a reference image or sketch (optional)",
+      "Set your target retail price range",
+      "Tell us your biggest concern (cost, quality, speed)",
+      "Specify your initial order quantity",
     ],
     visual: (
       <div className="bg-[#F5F5F0] rounded-xl p-4 space-y-2">
@@ -59,9 +59,9 @@ const STEPS: ProcessStep[] = [
   },
   {
     number: 2,
-    title: "AI Analysis",
+    title: "AI Analysis (50+ Dimensions)",
     description:
-      "Our AI analyzes your product across 50+ manufacturing dimensions including cost, materials, suppliers, and tariffs.",
+      "Claude AI — the same model used by enterprises — analyzes your product in parallel across cost, materials, tariffs, countries, compliance, and optimization opportunities.",
     duration: "2–5 min",
     durationColor: "#3B82F6",
     Icon: Cpu,
@@ -69,13 +69,13 @@ const STEPS: ProcessStep[] = [
       <>
         <GlossaryTooltip term="hs-code">HS code</GlossaryTooltip>{" "}
         classification &{" "}
-        <GlossaryTooltip term="tariff">tariff</GlossaryTooltip> lookup
+        <GlossaryTooltip term="tariff">tariff</GlossaryTooltip> rate lookup
       </>,
-      "Cost estimation across 3+ countries",
-      "Material selection & alternatives",
-      "Manufacturing process identification",
-      "Quality & compliance assessment",
-      "Supplier country comparison",
+      "Per-unit cost breakdown across 3+ countries",
+      "Materials analysis + cheaper alternatives",
+      "Manufacturing process & tooling assessment",
+      "Compliance & certification requirements",
+      "5 live data sources: Alibaba, UN Comtrade, USITC, Trends, Amazon",
     ],
     visual: (
       <div className="bg-[#F5F5F0] rounded-xl p-4">
@@ -118,20 +118,23 @@ const STEPS: ProcessStep[] = [
   },
   {
     number: 3,
-    title: "Get Your Report",
+    title: "Get Your 12-Section Report",
     description:
-      "Receive a comprehensive manufacturing feasibility report with actionable next steps and supplier recommendations.",
-    duration: "Instant",
+      "Your full feasibility report arrives in your inbox and appears on-screen — 12 structured sections covering every question a manufacturing consultant would answer.",
+    duration: "Instant delivery",
     durationColor: "#FF6B35",
     Icon: BarChart3,
     details: [
-      "Feasibility score (0–100)",
-      "Per-unit cost breakdown",
-      "3-country comparison with pros/cons",
-      "10 manufacturing specifications",
-      "Optimization tips with savings estimates",
-      "7-step action checklist",
-      "Shareable report card",
+      "Feasibility score (0–100) with explanation",
+      "HS code + applicable tariff rate",
+      "Per-unit cost breakdown (6 components)",
+      "3-country supplier comparison with radar chart",
+      "Materials analysis + cheaper alternatives",
+      "10 factory-ready manufacturing specifications",
+      "Optimization tips with dollar savings amounts",
+      "7-step prioritized action checklist",
+      "Red flag warnings (IP, compliance, quality)",
+      "Shareable PNG report card for pitch decks",
     ],
     visual: (
       <div className="bg-[#F5F5F0] rounded-xl p-4">
@@ -175,18 +178,19 @@ const STEPS: ProcessStep[] = [
   },
   {
     number: 4,
-    title: "Take Action",
+    title: "Take Action & Manufacture",
     description:
-      "Use your report to contact suppliers, refine your product, and start your manufacturing journey with confidence.",
+      "Your report gives you everything needed to approach factories, negotiate quotes, and move from idea to first sample with confidence — not guesswork.",
     duration: "Your pace",
     durationColor: "#8B5CF6",
     Icon: Rocket,
     details: [
-      "Follow the prioritized action checklist",
-      "Contact verified suppliers (optional add-on)",
-      "Download and share your report card",
-      "Iterate on your design based on insights",
-      "Start your factory sample process",
+      "Follow the 7-step checklist in sequence",
+      "Copy the 10 specs into your factory RFQ email",
+      "Contact 3+ factories in your recommended region",
+      "Unlock Verified Supplier List add-on ($199)",
+      "Share your report card with co-founders or investors",
+      "Run follow-up analyses as your design evolves",
     ],
     visual: (
       <div className="bg-[#F5F5F0] rounded-xl p-4">
