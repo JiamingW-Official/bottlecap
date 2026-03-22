@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useCallback } from "react"
 import Link from "next/link"
 import {
   ArrowLeft,
@@ -17,8 +17,15 @@ import {
   SlidersHorizontal,
   ChevronDown,
   ChevronUp,
+  Copy,
+  Check,
+  ClipboardList,
+  MessageSquare,
+  ShieldAlert,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+
+// ─── Constants ────────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
   "Electronics",
@@ -176,6 +183,118 @@ const REGIONS: Region[] = [
   },
 ]
 
+// ─── Red Flags ────────────────────────────────────────────────────────────────
+
+const RED_FLAGS = [
+  {
+    title: "Price far below market average",
+    detail: "More than 30% under market rate is almost always a quality or scam signal.",
+  },
+  {
+    title: "No sample order option",
+    detail: "Legitimate factories will provide samples, usually at cost. Refusal is a red flag.",
+  },
+  {
+    title: "No factory photos or audit reports",
+    detail: "Any serious supplier can provide facility photos, ISO certs, or third-party audit results.",
+  },
+  {
+    title: "Requests 100% upfront payment",
+    detail: "Standard terms are 30% deposit, 70% before shipment. Never pay 100% upfront.",
+  },
+  {
+    title: "No English-speaking contact",
+    detail: "Clear communication is essential. Lack of it leads to spec errors and disputes.",
+  },
+  {
+    title: "Cannot show previous similar products",
+    detail: "A factory without a portfolio in your category likely lacks real experience.",
+  },
+  {
+    title: "Pushes for trial order with no quality guarantee",
+    detail: "Urgency without accountability is a warning. Insist on written quality specs.",
+  },
+  {
+    title: "Contact only via personal WhatsApp",
+    detail: "Business WeChat, email, or a company domain are minimum professionalism signals.",
+  },
+]
+
+// ─── Outreach Scripts ─────────────────────────────────────────────────────────
+
+const SCRIPTS = [
+  {
+    id: "first",
+    label: "First contact",
+    content: `Subject: Inquiry - [Product Name] Manufacturing Partnership
+
+Dear Factory Manager,
+
+My name is [Your Name] from [Company Name]. We are looking to source [product type] and found your factory through [platform].
+
+We are interested in:
+- Product: [product name]
+- Quantity: [MOQ] units per order
+- Target delivery: [timeframe]
+- Key requirements: [certifications, materials, specs]
+
+Could you please send:
+1. Your product catalog for similar items
+2. Unit price at [MOQ] and [2x MOQ]
+3. Sample availability and lead time
+4. Factory audit certificate or ISO certification
+
+We aim to make a sourcing decision within 2 weeks.
+
+Best regards,
+[Your Name]
+[Your Email] | [Your Phone]`,
+  },
+  {
+    id: "followup",
+    label: "Follow-up (3 days)",
+    content: `Subject: Following up - [Product Name] Inquiry
+
+Dear [Contact Name],
+
+I sent an inquiry on [date] regarding [product name] manufacturing and wanted to follow up.
+
+We are ready to move quickly and are evaluating 3–4 factories this week.
+If you are interested, please send your pricing and lead time at your earliest convenience.
+
+A quick reply helps us prioritize our shortlist.
+
+Thank you,
+[Your Name]`,
+  },
+  {
+    id: "negotiate",
+    label: "Price negotiation",
+    content: `Subject: Price Discussion - [Product Name]
+
+Dear [Contact Name],
+
+Thank you for your quotation of $[X] per unit for [product name].
+
+We have received competitive quotes from other factories in [region].
+To move forward with your factory, we would need:
+
+- Unit price: $[target price] at [MOQ] units
+- Payment terms: 30% deposit, 70% before shipment
+- Lead time: [X] days from order confirmation
+- Free sample prior to bulk order
+
+If you can meet these terms, we are prepared to issue a PO this week.
+
+Please let us know if there is flexibility on the pricing.
+
+Best regards,
+[Your Name]`,
+  },
+]
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
 function computeMatchScore(region: Region, priority: PriorityId): number {
   const weights: Record<PriorityId, number> = {
     cost: 0.15,
@@ -228,6 +347,215 @@ const CATEGORY_TOP: Record<Category, string> = {
   "Food Packaging": "Food-Grade Mfg",
 }
 
+// ─── CopyButton ───────────────────────────────────────────────────────────────
+
+function CopyButton({
+  text,
+  label = "Copy",
+  className = "",
+}: {
+  text: string
+  label?: string
+  className?: string
+}) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }, [text])
+
+  return (
+    <button
+      onClick={handleCopy}
+      className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-all ${
+        copied
+          ? "bg-[#F0FDF4] text-[#15803D] border-[#BBF7D0]"
+          : "bg-white text-[#6B6B6B] border-[#E8E8E4] hover:border-[#1A1A1A] hover:text-[#1A1A1A]"
+      } ${className}`}
+    >
+      {copied ? (
+        <>
+          <Check className="w-3.5 h-3.5" /> Copied!
+        </>
+      ) : (
+        <>
+          <Copy className="w-3.5 h-3.5" /> {label}
+        </>
+      )}
+    </button>
+  )
+}
+
+// ─── RFQ Template ─────────────────────────────────────────────────────────────
+
+function RFQTemplate({ category }: { category: Category | "" }) {
+  const productLabel = category ? category.toLowerCase() : "[product type]"
+  const cityGuess = category === "Electronics"
+    ? "Shenzhen"
+    : category === "Apparel"
+    ? "Ho Chi Minh City"
+    : category === "Beauty"
+    ? "Guangzhou"
+    : "[city]"
+
+  const template = `Subject: RFQ - ${category || "[Product Name]"} - [Quantity] Units
+
+Dear Factory Manager,
+
+I am looking to source ${productLabel} from your factory.
+
+Product Requirements:
+- Product: ${category || "[product name]"}
+- Quantity: [MOQ] units (first order)
+- Target Price: $[X] per unit FOB ${cityGuess}
+- Packaging: [requirement]
+- Certifications required: [list]
+
+Please provide:
+1. Unit price at [MOQ], [2x MOQ], [5x MOQ]
+2. Lead time from order confirmation
+3. Sample availability and cost
+4. Factory audit certificate / ISO certification
+
+Looking forward to your response.
+
+Best regards,
+[Your Name]`
+
+  return (
+    <div className="mt-12 bg-white rounded-2xl border border-[#E8E8E4] overflow-hidden">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E8E4]">
+        <div className="flex items-center gap-2">
+          <ClipboardList className="w-4 h-4 text-[#FF6B35]" />
+          <h3 className="font-bold text-[#1A1A1A] text-sm">RFQ Template Generator</h3>
+          {category && (
+            <span className="text-xs bg-[#FFF0EB] text-[#FF6B35] px-2 py-0.5 rounded-full font-medium">
+              {category}
+            </span>
+          )}
+        </div>
+        <CopyButton text={template} label="Copy RFQ Template" />
+      </div>
+      <div className="p-6">
+        {!category && (
+          <p className="text-sm text-[#9B9B9B] mb-4">
+            Select a product category above to pre-fill this template.
+          </p>
+        )}
+        <pre className="text-xs text-[#1A1A1A] font-mono bg-[#FAFAF8] rounded-xl p-5 whitespace-pre-wrap leading-relaxed border border-[#E8E8E4]">
+          {template}
+        </pre>
+        <p className="text-xs text-[#9B9B9B] mt-3">
+          Replace all placeholders in brackets before sending. Customize the
+          certifications row for your product (e.g. CE, FDA, REACH, ISO 9001).
+        </p>
+      </div>
+    </div>
+  )
+}
+
+// ─── Red Flags Section ────────────────────────────────────────────────────────
+
+function RedFlagsSection() {
+  return (
+    <div className="mt-10 bg-white rounded-2xl border border-[#E8E8E4] overflow-hidden">
+      <div className="flex items-center gap-2 px-6 py-4 border-b border-[#E8E8E4] bg-[#FEF2F2]">
+        <ShieldAlert className="w-4 h-4 text-[#DC2626]" />
+        <h3 className="font-bold text-[#1A1A1A] text-sm">Sourcing Red Flags</h3>
+        <span className="text-xs text-[#DC2626] bg-[#FECACA] px-2 py-0.5 rounded-full font-medium">
+          8 warning signs
+        </span>
+      </div>
+      <div className="p-6">
+        <p className="text-sm text-[#6B6B6B] mb-5 leading-relaxed">
+          Watch for these signals when vetting any supplier. One flag alone may
+          not disqualify — but multiple flags together should stop you.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {RED_FLAGS.map((flag, idx) => (
+            <motion.div
+              key={flag.title}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.3,
+                delay: idx * 0.04,
+                ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
+              }}
+              className="flex gap-3 p-4 rounded-xl border border-[#FECACA] bg-[#FEF2F2]"
+            >
+              <AlertTriangle className="w-4 h-4 text-[#DC2626] flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-xs font-semibold text-[#1A1A1A] mb-1">{flag.title}</p>
+                <p className="text-xs text-[#6B6B6B] leading-relaxed">{flag.detail}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Outreach Scripts ─────────────────────────────────────────────────────────
+
+function OutreachScripts() {
+  const [activeTab, setActiveTab] = useState<string>("first")
+  const activeScript = SCRIPTS.find((s) => s.id === activeTab)!
+
+  return (
+    <div className="mt-10 bg-white rounded-2xl border border-[#E8E8E4] overflow-hidden">
+      <div className="flex items-center gap-2 px-6 py-4 border-b border-[#E8E8E4]">
+        <MessageSquare className="w-4 h-4 text-[#FF6B35]" />
+        <h3 className="font-bold text-[#1A1A1A] text-sm">Sample Outreach Scripts</h3>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-1 px-6 pt-4 border-b border-[#E8E8E4] pb-0">
+        {SCRIPTS.map((s) => (
+          <button
+            key={s.id}
+            onClick={() => setActiveTab(s.id)}
+            className={`px-4 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-all -mb-px ${
+              activeTab === s.id
+                ? "border-[#FF6B35] text-[#FF6B35] bg-[#FFF0EB]"
+                : "border-transparent text-[#6B6B6B] hover:text-[#1A1A1A]"
+            }`}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -6 }}
+          transition={{ duration: 0.18 }}
+          className="p-6"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs text-[#9B9B9B]">
+              Replace all bracketed placeholders before sending.
+            </p>
+            <CopyButton text={activeScript.content} label="Copy script" />
+          </div>
+          <pre className="text-xs text-[#1A1A1A] font-mono bg-[#FAFAF8] rounded-xl p-5 whitespace-pre-wrap leading-relaxed border border-[#E8E8E4] overflow-x-auto">
+            {activeScript.content}
+          </pre>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  )
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
+
 export default function SupplierFinderPage() {
   const [category, setCategory] = useState<Category | "">("")
   const [priority, setPriority] = useState<PriorityId>("cost")
@@ -268,7 +596,8 @@ export default function SupplierFinderPage() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF8]">
-      {/* ── Top nav strip ── */}
+
+      {/* ── Breadcrumb ─────────────────────────────────────────────────────── */}
       <div className="border-b border-[#E8E8E4] bg-white">
         <div className="max-w-7xl mx-auto px-6 py-3 flex items-center gap-2 text-sm text-[#6B6B6B]">
           <Link href="/" className="hover:text-[#1A1A1A] transition-colors">Home</Link>
@@ -279,7 +608,7 @@ export default function SupplierFinderPage() {
         </div>
       </div>
 
-      {/* ── Hero header ── */}
+      {/* ── Hero header ────────────────────────────────────────────────────── */}
       <div className="bg-white border-b border-[#E8E8E4]">
         <div className="max-w-7xl mx-auto px-6 py-10">
           <Link
@@ -321,11 +650,11 @@ export default function SupplierFinderPage() {
         </div>
       </div>
 
-      {/* ── Body: sidebar + results ── */}
+      {/* ── Body: sidebar + results ─────────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-6 py-10">
         <div className="flex flex-col lg:flex-row gap-8">
 
-          {/* ── Filter sidebar ── */}
+          {/* ── Filter sidebar ─────────────────────────────────────────────── */}
           <aside className="lg:w-72 flex-shrink-0">
             <div className="lg:sticky lg:top-6">
               {/* Mobile toggle */}
@@ -392,7 +721,7 @@ export default function SupplierFinderPage() {
                         </div>
                       </div>
 
-                      {/* Priority — toggle chips */}
+                      {/* Priority */}
                       <div>
                         <label className="block text-xs font-semibold text-[#1A1A1A] uppercase tracking-wide mb-3">
                           Top Priority
@@ -415,7 +744,7 @@ export default function SupplierFinderPage() {
                         </div>
                       </div>
 
-                      {/* MOQ — pills */}
+                      {/* MOQ */}
                       <div>
                         <label className="block text-xs font-semibold text-[#1A1A1A] uppercase tracking-wide mb-3">
                           Min. Order Qty
@@ -443,8 +772,9 @@ export default function SupplierFinderPage() {
             </div>
           </aside>
 
-          {/* ── Results panel ── */}
+          {/* ── Results panel ──────────────────────────────────────────────── */}
           <div className="flex-1 min-w-0">
+
             {/* Results toolbar */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
               <div className="text-sm text-[#6B6B6B]">
@@ -483,7 +813,7 @@ export default function SupplierFinderPage() {
               </div>
             </div>
 
-            {/* No category selected */}
+            {/* Empty / prompt states */}
             <AnimatePresence mode="wait">
               {!category && !showEmpty && (
                 <motion.div
@@ -506,7 +836,6 @@ export default function SupplierFinderPage() {
                 </motion.div>
               )}
 
-              {/* Empty state */}
               {showEmpty && (
                 <motion.div
                   key="empty"
@@ -534,7 +863,6 @@ export default function SupplierFinderPage() {
                 </motion.div>
               )}
 
-              {/* Results list */}
               {showResults && (
                 <motion.div
                   key="results"
@@ -559,8 +887,11 @@ export default function SupplierFinderPage() {
                           transition={{ duration: 0.25, delay: idx * 0.05 }}
                           className="bg-white rounded-2xl border border-[#E8E8E4] hover:border-[#FF6B35] hover:shadow-sm transition-all overflow-hidden"
                         >
-                          {/* Card top bar with match score */}
-                          <div className="h-1 w-full" style={{ backgroundColor: idx === 0 ? "#FF6B35" : "#E8E8E4" }} />
+                          {/* Top bar */}
+                          <div
+                            className="h-1 w-full"
+                            style={{ backgroundColor: idx === 0 ? "#FF6B35" : "#E8E8E4" }}
+                          />
 
                           <div className="p-6">
                             {/* Header row */}
@@ -577,7 +908,6 @@ export default function SupplierFinderPage() {
                                     )}
                                   </div>
                                   <div className="flex items-center gap-2 mt-1 flex-wrap">
-                                    {/* Best for chip */}
                                     {topCat && (
                                       <span className="text-xs bg-[#F5F5F0] text-[#6B6B6B] px-2 py-0.5 rounded-full">
                                         Best for: {CATEGORY_TOP[topCat] ?? topCat}
@@ -590,7 +920,7 @@ export default function SupplierFinderPage() {
                                 </div>
                               </div>
 
-                              {/* Match score badge */}
+                              {/* Match score */}
                               <div
                                 className="flex flex-col items-center px-4 py-2 rounded-xl border"
                                 style={{ backgroundColor: badge.bg, borderColor: badge.border }}
@@ -604,7 +934,7 @@ export default function SupplierFinderPage() {
                               </div>
                             </div>
 
-                            {/* Score bars — mini radar */}
+                            {/* Score bars */}
                             <div className="bg-[#FAFAF8] rounded-xl p-4 mb-5 space-y-2.5">
                               {metrics.map((m) => {
                                 const val = region[m.key] as number
@@ -672,7 +1002,7 @@ export default function SupplierFinderPage() {
                               </div>
                             </div>
 
-                            {/* Footer row: platforms + CTA */}
+                            {/* Footer: platforms + CTA */}
                             <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#E8E8E4]">
                               <div className="flex flex-wrap items-center gap-2">
                                 <span className="text-xs text-[#9B9B9B]">Source on:</span>
@@ -704,7 +1034,16 @@ export default function SupplierFinderPage() {
               )}
             </AnimatePresence>
 
-            {/* Bottom CTA */}
+            {/* ── RFQ Template ─────────────────────────────────────────── */}
+            <RFQTemplate category={category} />
+
+            {/* ── Red Flags ────────────────────────────────────────────── */}
+            <RedFlagsSection />
+
+            {/* ── Outreach Scripts ─────────────────────────────────────── */}
+            <OutreachScripts />
+
+            {/* ── Bottom CTA ───────────────────────────────────────────── */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -740,6 +1079,7 @@ export default function SupplierFinderPage() {
                 Money-back guarantee · Delivered in 2–5 minutes · Powered by Claude AI
               </p>
             </motion.div>
+
           </div>
         </div>
       </div>
