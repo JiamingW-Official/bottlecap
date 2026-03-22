@@ -27,9 +27,10 @@ const resourceLinks = [
   { href: "/compare", label: "Comparisons" },
   { href: "/glossary", label: "Glossary" },
   { href: "/trends", label: "Trending Products" },
+  { href: "/suppliers", label: "Verified Suppliers" },
 ]
 
-const resourcePrefixes = ["/glossary", "/manufacturers", "/compare", "/cost-to-manufacture", "/trends"]
+const resourcePrefixes = ["/glossary", "/manufacturers", "/compare", "/cost-to-manufacture", "/trends", "/suppliers"]
 
 function DropdownMenu({
   label,
