@@ -337,9 +337,8 @@ export default function Home() {
             20 product categories covered
           </TextReveal>
           <ScrollReveal delay={0.1}>
-            <p className="text-center text-[#6B6B6B] mb-12 max-w-2xl mx-auto">
-              From consumer electronics to apparel, Bottlecap analyzes
-              products across every major manufacturing category.
+            <p className="text-center text-[#6B6B6B] mb-8 max-w-2xl mx-auto">
+              From consumer electronics to apparel — filter by category or search to find yours. Click any to start your analysis.
             </p>
           </ScrollReveal>
           <CategoryShowcase />

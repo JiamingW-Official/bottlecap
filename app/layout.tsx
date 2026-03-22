@@ -12,6 +12,7 @@ import ScrollProgress from "@/components/ScrollProgress"
 import KonamiEasterEgg from "@/components/KonamiEasterEgg"
 import EasterEggs from "@/components/EasterEggs"
 import AccessibilityEnhancements from "@/components/AccessibilityEnhancements"
+import StickyAnalyzeCTA from "@/components/StickyAnalyzeCTA"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -123,6 +124,7 @@ export default function RootLayout({
           <KonamiEasterEgg />
           <EasterEggs />
           <AccessibilityEnhancements />
+          <StickyAnalyzeCTA />
         </SmoothScrollProvider>
       </body>
     </html>

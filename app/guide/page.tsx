@@ -15,6 +15,9 @@ import {
   Lock,
   Package,
   ClipboardCheck,
+  BookOpen,
+  Clock,
+  ChevronRight,
   type LucideIcon,
 } from "lucide-react"
 
@@ -169,113 +172,158 @@ const deepDives: GuideItem[] = [
 ]
 
 const difficultyColors = {
-  Beginner: "bg-[#DCFCE7] text-[#166534]",
-  Intermediate: "bg-[#FEF3C7] text-[#92400E]",
-  Advanced: "bg-[#FEF2F2] text-[#991B1B]",
+  Beginner:     { bg: "bg-[#DCFCE7]", text: "text-[#166534]", bar: "#22C55E" },
+  Intermediate: { bg: "bg-[#FEF3C7]", text: "text-[#92400E]", bar: "#F59E0B" },
+  Advanced:     { bg: "bg-[#FEF2F2]", text: "text-[#991B1B]", bar: "#EF4444" },
 }
 
 const pathway = [
   {
     level: "Start Here",
     color: "#22C55E",
+    bg: "bg-[#F0FDF4]",
+    border: "border-[#22C55E]/20",
     guides: ["Manufacturing 101", "Supplier Sourcing"],
+    description: "Learn the fundamentals before anything else",
   },
   {
     level: "Intermediate",
     color: "#F59E0B",
+    bg: "bg-[#FFFBEB]",
+    border: "border-[#F59E0B]/20",
     guides: ["Country Comparison", "Materials Guide", "Shipping & Logistics"],
+    description: "Understand where and how to source",
   },
   {
     level: "Advanced",
     color: "#EF4444",
+    bg: "bg-[#FEF2F2]",
+    border: "border-[#EF4444]/20",
     guides: ["Quality Control", "IP Protection", "Certifications"],
+    description: "Protect and scale your product",
   },
 ]
 
 function GuideCard({ guide }: { guide: GuideItem }) {
+  const diff = guide.difficulty ? difficultyColors[guide.difficulty] : null
   return (
     <Link
       href={guide.href}
-      className="group bg-white rounded-2xl p-8 border border-[#E8E8E4] shadow-sm hover:shadow-md hover:border-[#FF6B35] transition-all"
+      className="group bg-white rounded-2xl p-6 border border-[#E8E8E4] hover:shadow-md hover:border-[#FF6B35]/30 transition-all flex flex-col gap-4"
     >
-      <div className="flex items-start justify-between mb-4">
-        <div className="w-12 h-12 rounded-xl bg-[#FFF0EB] flex items-center justify-center">
-          <guide.Icon className="w-6 h-6 text-[#FF6B35]" />
+      <div className="flex items-start justify-between">
+        <div className="w-11 h-11 rounded-xl bg-[#FFF0EB] flex items-center justify-center shrink-0">
+          <guide.Icon className="w-5 h-5 text-[#FF6B35]" />
         </div>
         <div className="flex items-center gap-2">
-          {guide.difficulty && (
-            <span
-              className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${difficultyColors[guide.difficulty]}`}
-            >
+          {guide.difficulty && diff && (
+            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${diff.bg} ${diff.text}`}>
               {guide.difficulty}
             </span>
           )}
           {guide.readTime && (
-            <span className="text-[10px] text-[#9B9B9B]">
+            <span className="flex items-center gap-1 text-[10px] text-[#9B9B9B]">
+              <Clock className="w-3 h-3" />
               {guide.readTime}
             </span>
           )}
         </div>
       </div>
-      <h3 className="text-xl font-bold text-[#1A1A1A] mb-3 group-hover:text-[#FF6B35] transition-colors">
-        {guide.title}
-      </h3>
-      <p className="text-[#6B6B6B] leading-relaxed mb-4">
-        {guide.description}
-      </p>
-      <span className="text-[#FF6B35] font-semibold text-sm">
-        Read guide &rarr;
+
+      <div className="flex-1">
+        <h3 className="text-lg font-bold text-[#1A1A1A] mb-2 group-hover:text-[#FF6B35] transition-colors leading-snug">
+          {guide.title}
+        </h3>
+        <p className="text-sm text-[#6B6B6B] leading-relaxed">
+          {guide.description}
+        </p>
+      </div>
+
+      <span className="flex items-center gap-1 text-[#FF6B35] font-semibold text-sm group-hover:gap-2 transition-all">
+        Read guide
+        <ChevronRight className="w-4 h-4" />
       </span>
     </Link>
   )
 }
 
 export default function GuidePage() {
+  const allGuides = [...fundamentals, ...byCategory, ...deepDives]
+  const totalMinutes = allGuides.reduce((sum, g) => sum + parseInt(g.readTime || "0"), 0)
+
   return (
     <main className="min-h-screen bg-[#FAFAF8]">
+
       {/* Hero */}
-      <section className="py-20 sm:py-28">
-        <div className="max-w-4xl mx-auto px-6">
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-[#1A1A1A]">
+      <section className="py-20 sm:py-28 border-b border-[#E8E8E4]">
+        <div className="max-w-5xl mx-auto px-6">
+          <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#FF6B35] mb-4">
+            Free Education
+          </p>
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-[1.1] text-[#1A1A1A] mb-5">
             Manufacturing Guides
           </h1>
-          <p className="text-lg sm:text-xl text-[#6B6B6B] max-w-2xl mt-6 leading-relaxed">
-            Free, practical guides for founders and product creators. Whether
-            you&apos;re exploring your first product idea or scaling production.
+          <p className="text-lg text-[#6B6B6B] max-w-2xl leading-relaxed mb-10">
+            Free, practical guides for founders and product creators — whether
+            you&apos;re exploring your first idea or scaling production.
           </p>
+
+          {/* Stats bar */}
+          <div className="flex items-center gap-6 flex-wrap">
+            {[
+              { icon: BookOpen, value: `${allGuides.length}`, label: "guides" },
+              { icon: Clock, value: `${totalMinutes}+`, label: "min reading" },
+              { icon: Layers, value: "3", label: "skill levels" },
+            ].map((stat) => (
+              <div key={stat.label} className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-[#FFF0EB] flex items-center justify-center">
+                  <stat.icon className="w-4 h-4 text-[#FF6B35]" />
+                </div>
+                <div>
+                  <span className="font-black text-[#1A1A1A] text-lg leading-none">{stat.value}</span>
+                  <span className="text-xs text-[#9B9B9B] ml-1">{stat.label}</span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Reading Pathway */}
-      <section className="pb-16">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-sm font-semibold text-[#9B9B9B] uppercase tracking-widest mb-6">
+      <section className="py-14">
+        <div className="max-w-5xl mx-auto px-6">
+          <h2 className="text-xs font-bold text-[#9B9B9B] uppercase tracking-widest mb-6">
             Suggested Reading Path
           </h2>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {pathway.map((p, i) => (
-              <div key={p.level} className="flex-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                    style={{ backgroundColor: p.color }}
-                  >
-                    {i + 1}
-                  </div>
-                  <span className="font-semibold text-sm text-[#1A1A1A]">
-                    {p.level}
-                  </span>
-                  {i < pathway.length - 1 && (
-                    <div className="hidden sm:block flex-1 h-px bg-[#E8E8E4]" />
-                  )}
+              <div
+                key={p.level}
+                className={`relative rounded-2xl border p-5 ${p.bg} ${p.border}`}
+              >
+                {/* Step number badge */}
+                <div
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold mb-3"
+                  style={{ backgroundColor: p.color }}
+                >
+                  {i + 1}
                 </div>
-                <div className="ml-11 sm:ml-0 space-y-1">
+                <p className="font-bold text-[#1A1A1A] mb-1">{p.level}</p>
+                <p className="text-xs text-[#6B6B6B] mb-3">{p.description}</p>
+                <ul className="space-y-1">
                   {p.guides.map((g) => (
-                    <p key={g} className="text-xs text-[#6B6B6B]">
+                    <li key={g} className="flex items-center gap-1.5 text-xs text-[#4B4B4B]">
+                      <div className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: p.color }} />
                       {g}
-                    </p>
+                    </li>
                   ))}
-                </div>
+                </ul>
+                {/* Connector arrow for desktop */}
+                {i < pathway.length - 1 && (
+                  <div className="hidden sm:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-8 items-center justify-center">
+                    <ChevronRight className="w-4 h-4 text-[#D0D0C8]" />
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -284,11 +332,14 @@ export default function GuidePage() {
 
       {/* Fundamentals */}
       <section className="pb-16">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-2xl font-bold text-[#1A1A1A] mb-6">
-            Fundamentals
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-2xl font-bold text-[#1A1A1A]">Fundamentals</h2>
+            <span className="text-xs bg-[#F5F5F0] text-[#9B9B9B] px-2.5 py-1 rounded-full font-medium">
+              {fundamentals.length} guides
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {fundamentals.map((guide) => (
               <GuideCard key={guide.href} guide={guide} />
             ))}
@@ -297,12 +348,15 @@ export default function GuidePage() {
       </section>
 
       {/* By Product Category */}
-      <section className="pb-16">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-2xl font-bold text-[#1A1A1A] mb-6">
-            By Product Category
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <section className="pb-16 bg-white border-y border-[#E8E8E4]">
+        <div className="max-w-5xl mx-auto px-6 pt-16">
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-2xl font-bold text-[#1A1A1A]">By Product Category</h2>
+            <span className="text-xs bg-[#F5F5F0] text-[#9B9B9B] px-2.5 py-1 rounded-full font-medium">
+              {byCategory.length} guides
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {byCategory.map((guide) => (
               <GuideCard key={guide.href} guide={guide} />
             ))}
@@ -311,12 +365,15 @@ export default function GuidePage() {
       </section>
 
       {/* Deep Dives */}
-      <section className="pb-20">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-2xl font-bold text-[#1A1A1A] mb-6">
-            Deep Dives
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <section className="py-16">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-2xl font-bold text-[#1A1A1A]">Deep Dives</h2>
+            <span className="text-xs bg-[#F5F5F0] text-[#9B9B9B] px-2.5 py-1 rounded-full font-medium">
+              {deepDives.length} guides
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {deepDives.map((guide) => (
               <GuideCard key={guide.href} guide={guide} />
             ))}
@@ -325,22 +382,34 @@ export default function GuidePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-white border-t border-[#E8E8E4]">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-[#1A1A1A] mb-4">
+      <section className="py-20 bg-[#1A1A1A]">
+        <div className="max-w-5xl mx-auto px-6 text-center">
+          <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#FF6B35] mb-3">
+            Skip the research
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight">
             Ready to analyze your product idea?
           </h2>
-          <p className="text-[#6B6B6B] mb-8 max-w-xl mx-auto">
-            Skip the research. Get a complete manufacturing feasibility report
-            with cost breakdowns, country comparisons, and optimization tips in
-            minutes.
+          <p className="text-[#9B9B9B] mb-8 max-w-xl mx-auto leading-relaxed">
+            Get a complete manufacturing feasibility report with cost breakdowns,
+            country comparisons, and optimization tips in 2–5 minutes.
           </p>
-          <Link
-            href="/analyze"
-            className="inline-block bg-[#FF6B35] text-white rounded-full px-8 py-4 font-semibold hover:bg-[#E85A25] transition-colors"
-          >
-            Analyze my idea &rarr;
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/analyze"
+              className="inline-flex items-center gap-2 bg-[#FF6B35] text-white rounded-full px-8 py-4 font-semibold hover:bg-[#E85A25] shadow-[0_4px_14px_rgba(255,107,53,0.4)] transition-all"
+            >
+              Analyze my idea — $99
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/report/demo"
+              className="inline-flex items-center gap-2 bg-white/10 text-white rounded-full px-8 py-4 font-semibold hover:bg-white/20 transition-all border border-white/10"
+            >
+              See sample report
+            </Link>
+          </div>
+          <p className="text-xs text-[#6B6B6B] mt-4">72-hr money-back · 2–5 min delivery · Stripe secure</p>
         </div>
       </section>
     </main>
