@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { AnimatePresence, motion } from "framer-motion"
-import { useGlossaryTerm } from "@/lib/hooks/useGlossary"
+import { useGlossary } from "@/lib/hooks/useGlossary"
 
 interface GlossaryTooltipProps {
   term: string
@@ -14,7 +14,8 @@ export default function GlossaryTooltip({
   term,
   children,
 }: GlossaryTooltipProps) {
-  const glossaryTerm = useGlossaryTerm(term)
+  const { findTerm } = useGlossary()
+  const glossaryTerm = findTerm(term)
   const [open, setOpen] = useState(false)
   const wrapperRef = useRef<HTMLSpanElement>(null)
   const tooltipRef = useRef<HTMLDivElement>(null)
@@ -36,7 +37,7 @@ export default function GlossaryTooltip({
   }, [open])
 
   if (!glossaryTerm) {
-    return <>{children}</>
+    return <span>{children}</span>
   }
 
   const handleMouseEnter = () => {
@@ -48,10 +49,20 @@ export default function GlossaryTooltip({
     timeoutRef.current = setTimeout(() => setOpen(false), 200)
   }
 
+  const shortDefinition =
+    glossaryTerm.definition.length > 160
+      ? glossaryTerm.definition.slice(0, 160) + "..."
+      : glossaryTerm.definition
+
+  const shortTip =
+    glossaryTerm.practicalTip.length > 120
+      ? glossaryTerm.practicalTip.slice(0, 120) + "..."
+      : glossaryTerm.practicalTip
+
   return (
     <span
       ref={wrapperRef}
-      className="relative inline"
+      className="relative inline-block"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -66,45 +77,45 @@ export default function GlossaryTooltip({
         {open && (
           <motion.div
             ref={tooltipRef}
-            initial={{ opacity: 0, scale: 0.95, y: 4 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 4 }}
-            transition={{ duration: 0.15 }}
-            className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-72 bg-white border border-[#E8E8E4] rounded-xl shadow-lg p-4"
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={{
+              duration: 0.15,
+              ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
+            }}
+            className="absolute bottom-full left-0 mb-2 z-50 w-64 bg-white rounded-2xl border border-[#E8E8E4] shadow-lg p-4"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            {/* Arrow */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full">
-              <div className="w-2.5 h-2.5 bg-white border-r border-b border-[#E8E8E4] rotate-45 -translate-y-1.5" />
-            </div>
-
+            {/* Header */}
             <div className="flex items-center gap-2 mb-2">
               <span className="font-semibold text-sm text-[#1A1A1A]">
                 {glossaryTerm.term}
               </span>
               {glossaryTerm.acronym && (
-                <span className="bg-[#FFF0EB] text-[#FF6B35] rounded-full px-2 py-0.5 text-xs font-medium">
+                <span className="bg-[#FF6B35] text-white rounded-full px-2 py-0.5 text-xs font-medium">
                   {glossaryTerm.acronym}
                 </span>
               )}
             </div>
 
+            {/* Definition */}
             <p className="text-xs text-[#6B6B6B] leading-relaxed mb-2">
-              {glossaryTerm.definition.length > 150
-                ? glossaryTerm.definition.slice(0, 150) + "..."
-                : glossaryTerm.definition}
+              {shortDefinition}
             </p>
 
-            <div className="bg-[#F5F5F0] rounded-lg p-2.5 mb-2">
-              <p className="text-xs text-[#1A1A1A] leading-relaxed">
-                <span className="font-medium">Tip: </span>
-                {glossaryTerm.practicalTip.length > 120
-                  ? glossaryTerm.practicalTip.slice(0, 120) + "..."
-                  : glossaryTerm.practicalTip}
-              </p>
-            </div>
+            {/* Practical tip */}
+            {glossaryTerm.practicalTip && (
+              <div className="bg-[#FFF0EB] rounded-lg p-2.5 mb-2">
+                <p className="text-xs text-[#1A1A1A] leading-relaxed">
+                  <span className="font-medium">Tip: </span>
+                  {shortTip}
+                </p>
+              </div>
+            )}
 
+            {/* Learn more */}
             <Link
               href={`/glossary/${glossaryTerm.slug}`}
               className="text-xs text-[#FF6B35] font-medium hover:underline"

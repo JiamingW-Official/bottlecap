@@ -4,12 +4,26 @@ import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import { BarChart3, Globe, Zap, Shield, FileText, TrendingDown, Package, CheckCircle, Share2, Search, DollarSign, Clock, ChevronDown, ChevronRight } from "lucide-react"
 
-const features = [
+interface Feature {
+  icon: React.ElementType
+  title: string
+  shortDesc: string
+  expandedDesc: string
+  detailedExplanation: string
+  realWorldExample: string
+  stat: string
+  statLabel: string
+  learnMoreHref?: string
+  featured: boolean
+}
+
+const features: Feature[] = [
   {
     icon: BarChart3,
     title: "Feasibility Score",
     shortDesc: "0–100 score across 50+ manufacturing dimensions.",
     expandedDesc: "Our feasibility score synthesizes complexity, material availability, tooling requirements, regulatory compliance burden, supply chain depth, and unit economics into a single actionable number. Scores above 80 mean you're ready to request factory quotes. Scores of 50–79 flag specific solvable challenges. Below 50 means significant rework is needed before investing further.",
+    detailedExplanation: "Our scoring algorithm weighs 8 factors: manufacturing complexity, material availability, tooling requirements, import regulations, minimum order viability, margin potential, competition density, and supply chain maturity. A score below 50 means rethink; 50-79 means proceed with caution; 80+ means strong signal.",
     realWorldExample: "A founder's Bluetooth pet collar scored 73 — moderate complexity due to FCC certification. The report told her exactly what certification path to take, dropping her risk from unknown to manageable.",
     stat: "50+",
     statLabel: "dimensions analyzed",
@@ -21,6 +35,7 @@ const features = [
     title: "3-Country Manufacturing Comparison",
     shortDesc: "China, Vietnam, India, Mexico — side by side with real tariff rates.",
     expandedDesc: "We compare your specific product across the top 3 manufacturing regions for your category — factoring in labor costs, tooling costs, MOQ norms, lead times, tariff rates (including Section 301 duties), quality certifications, and IP protection. Each region gets a radar chart score across 5 dimensions so you can make an informed decision, not a guess.",
+    detailedExplanation: "We score China, Vietnam, India, Mexico, Turkey, Bangladesh, and other major hubs against your specific product — not generic rankings. Factors include: tooling capacity, category specialization, lead times, OEM experience, and current tariff exposure to your target market.",
     realWorldExample: "A modular desk organizer founder was set on China until the report showed Vietnam was 18% cheaper after tariffs for his volume. He switched and saved $3.20/unit.",
     stat: "12",
     statLabel: "countries in our database",
@@ -32,6 +47,7 @@ const features = [
     title: "Per-Unit Cost Breakdown",
     shortDesc: "Materials, labor, tooling, overhead, packaging, shipping — all broken out.",
     expandedDesc: "We break down your unit cost into 6 components: materials (with specific material costs), labor (by region), tooling amortization, overhead (factory margin, QC, waste), packaging, and shipping. Each component shows a low and high estimate so you understand your cost range before committing to tooling. This is the number sourcing agents charge $500+ just to estimate.",
+    detailedExplanation: "Costs are broken into 5 categories: materials (raw + packaging), labor (assembly + QC), tooling amortization, factory overhead, and logistics. Each line shows percentage of total and how it compares to industry benchmarks for your category.",
     realWorldExample: "A silicone kitchen set founder discovered her packaging cost ($1.80/unit) was higher than her labor cost ($1.40). The report flagged a simpler packaging option that saved $0.90/unit at scale.",
     stat: "6",
     statLabel: "cost components",
@@ -43,6 +59,7 @@ const features = [
     title: "HS Code Classification",
     shortDesc: "Your exact import classification + tariff rate, in plain English.",
     expandedDesc: "We identify your product's Harmonized System (HS) code — the 10-digit number used by US Customs to determine your tariff rate. We show the applicable rate, any Section 301 additional duties (for China-made goods), and whether any trade agreement rates apply (USMCA, KORUS FTA, etc.). We include a confidence score and explain the classification in plain English.",
+    detailedExplanation: "We identify your product's 6-digit Harmonized System code by analyzing materials, function, and trade patterns across 200+ countries. You'll see MFN (most-favored nation) rates, Section 301 tariff status, and whether your product qualifies for duty drawback.",
     realWorldExample: "A smart thermos founder was shocked to learn her product was classified under 8516.79 (not kitchenware as she assumed), making it subject to a 25% Section 301 tariff — a $4.20/unit surprise caught before she placed her order.",
     stat: "90+",
     statLabel: "HS codes in database",
@@ -54,6 +71,7 @@ const features = [
     title: "Materials Analysis",
     shortDesc: "Spec the right materials and discover cheaper alternatives.",
     expandedDesc: "We analyze the materials your product requires, flag potential supply chain issues, and identify alternatives that achieve the same performance at lower cost. Unlike a factory, we have no incentive to upsell you on premium materials — so we'll tell you when a $0.40/kg material swap saves you $1.20/unit without any quality impact. We also flag sustainability options for brands targeting eco-conscious markets.",
+    detailedExplanation: "We suggest 2-5 substitute materials ranked by cost, sustainability, and manufacturing compatibility. Each alternative includes expected price delta, common suppliers, and whether it affects certification requirements (CE, FDA, etc.).",
     realWorldExample: "A water bottle founder was quoted for 304 stainless steel. The report suggested 201 SS for the inner body and 304 only for contact surfaces — saving $1.10/unit with identical food-safety compliance.",
     stat: "50+",
     statLabel: "materials tracked",
@@ -65,6 +83,7 @@ const features = [
     title: "10 Factory-Ready Specs",
     shortDesc: "The exact manufacturing specifications your factory will ask for.",
     expandedDesc: "Factories won't give you a real quote without a tech pack or specification sheet. We generate 10 factory-ready manufacturing specifications — dimensions, tolerances, material grades, surface finishes, assembly methods, packaging requirements, and QC test criteria — specific to your product. Copy them directly into your RFQ email and walk into supplier negotiations prepared.",
+    detailedExplanation: "A structured specification sheet factories can quote directly from: dimensions + tolerances, material call-outs, surface finish codes, assembly method, packaging spec, test requirements, certification marks needed, labeling requirements, MOQ range, and lead time expectation.",
     realWorldExample: "A first-time founder used his 10 specs in his Alibaba RFQ. Three factories responded within 24 hours — where his previous vague inquiry had generated zero replies.",
     stat: "10",
     statLabel: "specifications generated",
@@ -76,6 +95,7 @@ const features = [
     title: "Optimization Tips",
     shortDesc: "Specific dollar-amount savings — not vague advice.",
     expandedDesc: "We identify specific optimizations ranked by dollar impact at your target order quantity. Each tip shows the change, the reason it works, and the estimated savings per unit and total at your MOQ. Tips cover material substitutions, manufacturing process changes, packaging simplifications, order quantity adjustments, and regional sourcing switches. The average Bottlecap report identifies $2–$5/unit in actionable savings.",
+    detailedExplanation: "Each tip includes an estimated dollar savings per unit, implementation difficulty (Easy/Medium/Hard), and the trade-off. Examples: switching PETG to PP ($0.40/unit, Easy), consolidating shipping to sea freight ($1.20/unit, Easy), reducing colorway count ($0.18/unit, Easy).",
     realWorldExample: "A smart home sensor founder implemented 3 of 5 optimization tips — switching to injection-molded ABS housing, simplifying the PCB layout, and using stock antenna designs — saving $3.40/unit without any functional compromise.",
     stat: "$2–$5",
     statLabel: "avg savings per unit identified",
@@ -87,6 +107,7 @@ const features = [
     title: "7-Step Action Checklist",
     shortDesc: "Prioritized next steps from idea to production — checkable in your report.",
     expandedDesc: "The action checklist translates your report findings into a specific, ordered to-do list. Steps are sequenced by dependency — you won't be told to contact factories before you've confirmed your HS code, or request samples before you've resolved a red flag. Check items off directly in your report and they persist across sessions via localStorage.",
+    detailedExplanation: "A prioritized sequence: 1) Finalize product spec, 2) Determine HS code, 3) Request 3 factory quotes, 4) Order samples, 5) Arrange inspection, 6) Confirm payment terms, 7) Book freight. Each step links to relevant tools or guides.",
     realWorldExample: "An outdoor gear founder completed all 7 steps in 3 weeks — from report to having her first 50-unit sample order in transit. She credited the checklist with keeping her from wasting time on steps she wasn't ready for.",
     stat: "7",
     statLabel: "ordered action steps",
@@ -98,6 +119,7 @@ const features = [
     title: "Red Flag Warnings",
     shortDesc: "IP conflicts, compliance requirements, quality risks — flagged honestly.",
     expandedDesc: "We surface risks that could derail your product after you've already invested in tooling or samples. Common flags include: products requiring FDA approval you weren't aware of, IP-adjacent designs that could invite litigation, certifications (CE, FCC, UL) that add 3–6 months to your timeline, materials banned in key markets, and quality risks inherent to your chosen manufacturing region for your product type.",
+    detailedExplanation: "We check 15+ risk categories including regulatory compliance gaps, IP exposure, banned substance lists (REACH, CPSC, Prop 65), certification timelines, and region-specific quality failure rates. Each flag includes severity level, estimated cost to resolve, and recommended mitigation path.",
     realWorldExample: "A kitchen product founder was flagged that her silicone food container required FDA food-contact certification — a 4-month process she had zero budget or timeline for. She caught it before spending $8,000 on tooling.",
     stat: "15+",
     statLabel: "risk categories checked",
@@ -109,6 +131,7 @@ const features = [
     title: "Shareable Report Card",
     shortDesc: "One-click PNG export or shareable link. Perfect for pitch decks.",
     expandedDesc: "Your full report has a permanent, shareable URL — anyone with the link can view it, no login required. For pitches and co-founder alignment, we generate a single-page report card as a downloadable PNG: feasibility score, product name, top country recommendation, key cost estimate, and your main optimization opportunity. Clean enough for a slide deck, detailed enough to be useful.",
+    detailedExplanation: "The shareable report card distills your full analysis into a single-page artifact: feasibility score badge, top manufacturing country, per-unit cost estimate, and primary optimization opportunity. Permanent URLs are generated at report creation and never expire, making them safe to include in pitch decks and investor data rooms.",
     realWorldExample: "A hardware founder shared her report card in her YC application to show manufacturing feasibility. The reviewer noted it was the most prepared manufacturing section they'd seen from a pre-product company.",
     stat: "PNG + link",
     statLabel: "export formats",
@@ -120,6 +143,7 @@ const features = [
     title: "2–5 Minute Delivery",
     shortDesc: "No queue, no delays. Report in your inbox before you finish your coffee.",
     expandedDesc: "Our AI pipeline runs in parallel — HS code classification, cost modeling, country scoring, materials analysis, and optimization identification all happen simultaneously. The report page auto-refreshes as each section completes. You'll have your full 12-section report emailed within 5 minutes of payment — not the 2–4 weeks a sourcing agent takes.",
+    detailedExplanation: "Our analysis pipeline runs 6 modules in parallel: HS classification, cost modeling, country scoring, materials analysis, compliance screening, and optimization identification. Each module streams results to the report page as it completes, so you see data populating in real time rather than waiting for a single delivery.",
     realWorldExample: "A founder submitted his product at 9:47am during a coffee break. By 9:52am he had a complete report and had already shared it with his co-founder. He placed his first factory inquiry before noon the same day.",
     stat: "2–5 min",
     statLabel: "avg delivery time",
@@ -131,6 +155,7 @@ const features = [
     title: "$2K–$8K Cheaper Than Agents",
     shortDesc: "Same depth as a sourcing agent, for $99. No retainer, no recurring fees.",
     expandedDesc: "Traditional sourcing agents charge $2,000–$8,000 for initial feasibility analysis and sourcing recommendations — and they take 2–4 weeks. Manufacturing consultants charge $200–$500/hour. Bottlecap delivers comparable analysis (often broader, since we cover 12 countries vs. an agent's 2–3 preferred regions) for $99, in under 5 minutes, with a 72-hour money-back guarantee if it's not useful.",
+    detailedExplanation: "Sourcing agents typically charge a $2,000–$8,000 retainer for initial feasibility and country selection, then 3–5% of your FOB order value ongoing. Bottlecap covers the same scope — 12 countries, cost modeling, HS code, compliance screening — for $99 flat with no ongoing fees and a 72-hour money-back guarantee.",
     realWorldExample: "A hardware founder was quoted $4,500 by a sourcing agent for an initial feasibility study and country comparison. He ran a Bottlecap report for $99 before the call — and ended up not needing the agent at all.",
     stat: "$2K–$8K",
     statLabel: "avg agent cost (vs. $99)",
@@ -165,8 +190,11 @@ export default function FeatureShowcase() {
             <h3 className="text-2xl font-bold tracking-tight text-[#1A1A1A] mb-2">
               {HeroCard.title}
             </h3>
-            <p className="text-sm text-[#6B6B6B] leading-relaxed mb-6 max-w-sm">
+            <p className="text-sm text-[#6B6B6B] leading-relaxed mb-4 max-w-sm">
               {HeroCard.shortDesc}
+            </p>
+            <p className="text-xs text-[#4A4A4A] leading-relaxed mb-6 max-w-md">
+              {HeroCard.detailedExplanation}
             </p>
           </div>
           <div className="flex items-end justify-between">
@@ -178,12 +206,14 @@ export default function FeatureShowcase() {
                 {HeroCard.statLabel}
               </p>
             </div>
-            <Link
-              href={HeroCard.learnMoreHref}
-              className="text-xs font-semibold text-[#FF6B35] hover:text-[#E85D2A] flex items-center gap-1 transition-colors"
-            >
-              Read guide <ChevronRight className="w-3 h-3" />
-            </Link>
+            {HeroCard.learnMoreHref && (
+              <Link
+                href={HeroCard.learnMoreHref}
+                className="text-xs font-semibold text-[#FF6B35] hover:text-[#E85D2A] flex items-center gap-1 transition-colors"
+              >
+                Read guide <ChevronRight className="w-3 h-3" />
+              </Link>
+            )}
           </div>
         </div>
 
@@ -205,8 +235,11 @@ export default function FeatureShowcase() {
                       {f.title}
                     </h3>
                   </div>
-                  <p className="text-xs text-[#6B6B6B] leading-relaxed mb-4">
+                  <p className="text-xs text-[#6B6B6B] leading-relaxed mb-2">
                     {f.shortDesc}
+                  </p>
+                  <p className="text-[11px] text-[#4A4A4A] leading-relaxed mb-4">
+                    {f.detailedExplanation}
                   </p>
                 </div>
                 <div className="flex items-end justify-between">
@@ -218,12 +251,14 @@ export default function FeatureShowcase() {
                       {f.statLabel}
                     </p>
                   </div>
-                  <Link
-                    href={f.learnMoreHref}
-                    className="text-xs font-semibold text-[#FF6B35] hover:text-[#E85D2A] flex items-center gap-1 transition-colors"
-                  >
-                    Read guide <ChevronRight className="w-3 h-3" />
-                  </Link>
+                  {f.learnMoreHref && (
+                    <Link
+                      href={f.learnMoreHref}
+                      className="text-xs font-semibold text-[#FF6B35] hover:text-[#E85D2A] flex items-center gap-1 transition-colors"
+                    >
+                      Read guide <ChevronRight className="w-3 h-3" />
+                    </Link>
+                  )}
                 </div>
               </div>
             )
@@ -244,7 +279,10 @@ export default function FeatureShowcase() {
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.04, layout: { duration: 0.3, ease: "easeInOut" } }}
+              transition={{
+                delay: i * 0.04,
+                layout: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] },
+              }}
               className={`bg-white rounded-xl border transition-all overflow-hidden ${
                 isOpen
                   ? "border-[#FF6B35]/30 shadow-[0_4px_20px_rgba(255,107,53,0.1)]"
@@ -275,7 +313,7 @@ export default function FeatureShowcase() {
                 <div className="shrink-0 mt-0.5">
                   <motion.div
                     animate={{ rotate: isOpen ? 180 : 0 }}
-                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                    transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }}
                   >
                     <ChevronDown className={`w-4 h-4 transition-colors ${isOpen ? "text-[#FF6B35]" : "text-[#9B9B9B] group-hover:text-[#6B6B6B]"}`} />
                   </motion.div>
@@ -290,7 +328,7 @@ export default function FeatureShowcase() {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }}
                     style={{ overflow: "hidden" }}
                   >
                     <div className="px-5 pb-5 space-y-4">
@@ -303,9 +341,9 @@ export default function FeatureShowcase() {
                         <span className="text-xs text-[#9B9B9B] font-medium">{f.statLabel}</span>
                       </div>
 
-                      {/* Expanded description */}
+                      {/* Detailed explanation */}
                       <p className="text-xs text-[#4A4A4A] leading-relaxed">
-                        {f.expandedDesc}
+                        {f.detailedExplanation}
                       </p>
 
                       {/* Real-world example callout */}
@@ -319,12 +357,14 @@ export default function FeatureShowcase() {
                       </div>
 
                       {/* Learn more link */}
-                      <Link
-                        href={f.learnMoreHref}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-[#FF6B35] hover:text-[#E85D2A] transition-colors"
-                      >
-                        Read guide <ChevronRight className="w-3 h-3" />
-                      </Link>
+                      {f.learnMoreHref && (
+                        <Link
+                          href={f.learnMoreHref}
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-[#FF6B35] hover:text-[#E85D2A] transition-colors"
+                        >
+                          Read guide <ChevronRight className="w-3 h-3" />
+                        </Link>
+                      )}
                     </div>
                   </motion.div>
                 )}

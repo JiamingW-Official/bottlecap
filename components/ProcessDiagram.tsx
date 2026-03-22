@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
+import React, { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { PenTool, Cpu, BarChart3, Rocket, Check } from "lucide-react"
 import GlossaryTooltip from "@/components/GlossaryTooltip"
@@ -8,7 +8,7 @@ import GlossaryTooltip from "@/components/GlossaryTooltip"
 interface ProcessStep {
   number: number
   title: string
-  description: string
+  description: React.ReactNode
   duration: string
   durationColor: string
   Icon: React.ComponentType<{ className?: string }>
@@ -61,7 +61,7 @@ const STEPS: ProcessStep[] = [
     number: 2,
     title: "AI Analysis (50+ Dimensions)",
     description:
-      "Claude AI — the same model used by enterprises — analyzes your product in parallel across cost, materials, tariffs, countries, compliance, and optimization opportunities.",
+      <>Claude AI — the same model used by enterprises — analyzes your product in parallel across cost, materials, <GlossaryTooltip term="Tariff">tariffs</GlossaryTooltip>, countries, compliance, and optimization opportunities.</>,
     duration: "2–5 min",
     durationColor: "#3B82F6",
     Icon: Cpu,
@@ -120,13 +120,13 @@ const STEPS: ProcessStep[] = [
     number: 3,
     title: "Get Your 12-Section Report",
     description:
-      "Your full feasibility report arrives in your inbox and appears on-screen — 12 structured sections covering every question a manufacturing consultant would answer.",
+      <>Your full <GlossaryTooltip term="Feasibility">feasibility</GlossaryTooltip> report arrives in your inbox and appears on-screen — 12 structured sections covering every question a manufacturing consultant would answer.</>,
     duration: "Instant delivery",
     durationColor: "#FF6B35",
     Icon: BarChart3,
     details: [
-      "Feasibility score (0–100) with explanation",
-      "HS code + applicable tariff rate",
+      <><GlossaryTooltip term="Feasibility">Feasibility</GlossaryTooltip> score (0&ndash;100) with explanation</>,
+      <><GlossaryTooltip term="hs-code">HS code</GlossaryTooltip> + applicable <GlossaryTooltip term="Tariff">tariff</GlossaryTooltip> rate</>,
       "Per-unit cost breakdown (6 components)",
       "3-country supplier comparison with radar chart",
       "Materials analysis + cheaper alternatives",
@@ -196,26 +196,28 @@ const STEPS: ProcessStep[] = [
       <div className="bg-[#F5F5F0] rounded-xl p-4">
         <div className="text-[10px] font-bold text-[#9B9B9B] uppercase tracking-wider mb-3">7-Step Action Checklist</div>
         <div className="space-y-2">
-          {[
-            { text: "Contact 3 Vietnam factories for RFQ", done: true },
-            { text: "Request material samples", done: true },
-            { text: "Review tooling cost estimates", done: false, active: true },
-            { text: "Finalize material spec", done: false },
-            { text: "Negotiate MOQ terms", done: false },
-            { text: "Order production sample", done: false },
-            { text: "QC inspection before shipment", done: false },
-          ].map((item, i) => (
+          {(
+            [
+              { label: "Contact 3 Vietnam factories for RFQ", done: true,  active: false },
+              { label: "Request material samples",            done: true,  active: false },
+              { label: "Review tooling cost estimates",       done: false, active: true  },
+              { label: "Finalize material spec",              done: false, active: false },
+              { label: <>Negotiate <GlossaryTooltip term="MOQ">MOQ</GlossaryTooltip> terms</>, done: false, active: false },
+              { label: "Order production sample",             done: false, active: false },
+              { label: "QC inspection before shipment",       done: false, active: false },
+            ] as { label: React.ReactNode; done: boolean; active: boolean }[]
+          ).map((item, i) => (
             <div key={i} className={`flex items-center gap-2 ${item.done ? "opacity-50" : ""}`}>
               <div className={`w-4 h-4 rounded shrink-0 flex items-center justify-center border ${
-                item.done ? "bg-[#22C55E] border-[#22C55E]" :
+                item.done   ? "bg-[#22C55E] border-[#22C55E]" :
                 item.active ? "border-[#FF6B35] bg-[#FFF0EB]" :
                 "border-[#E8E8E4] bg-white"
               }`}>
-                {item.done && <Check className="w-2.5 h-2.5 text-white" />}
+                {item.done   && <Check className="w-2.5 h-2.5 text-white" />}
                 {item.active && <div className="w-1.5 h-1.5 rounded-full bg-[#FF6B35]" />}
               </div>
               <span className={`text-xs ${item.done ? "line-through text-[#9B9B9B]" : item.active ? "text-[#1A1A1A] font-medium" : "text-[#6B6B6B]"}`}>
-                {item.text}
+                {item.label}
               </span>
             </div>
           ))}
