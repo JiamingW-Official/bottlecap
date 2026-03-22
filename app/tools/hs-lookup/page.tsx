@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { Search, ArrowLeft, Copy, Check, ArrowRight, ChevronRight } from "lucide-react"
+import { Search, ArrowLeft, Copy, Check, ArrowRight, ChevronRight, ChevronDown, Info, AlertTriangle, TrendingDown, Globe2, BookOpen } from "lucide-react"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -72,6 +72,50 @@ const HS_DATABASE: HsEntry[] = [
   { code: "8714", description: "Bicycle Parts",          chapter: "Chapter 87", category: "Medical", mfnRate: 3.7, china301: true  },
   { code: "8708", description: "Auto Accessories",       chapter: "Chapter 87", category: "Medical", mfnRate: 2.5, china301: true  },
   { code: "4911", description: "Printed Packaging",      chapter: "Chapter 49", category: "Medical", mfnRate: 0,   china301: true  },
+
+  // Additional Electronics
+  { code: "8513", description: "Portable Lamps & Flashlights", chapter: "Chapter 84/85", category: "Electronics", mfnRate: 3.5, china301: true },
+  { code: "8507", description: "Batteries & Battery Packs",    chapter: "Chapter 84/85", category: "Electronics", mfnRate: 3.4, china301: true },
+  { code: "8504", description: "Power Adapters & Chargers",    chapter: "Chapter 84/85", category: "Electronics", mfnRate: 0,   china301: true },
+  { code: "9102", description: "Smart Watches & Wearables",    chapter: "Chapter 91",    category: "Electronics", mfnRate: 4.2, china301: true },
+  { code: "8528", description: "Monitors & Displays",          chapter: "Chapter 84/85", category: "Electronics", mfnRate: 0,   china301: true },
+  { code: "8471.30", description: "Laptops & Portable Computers", chapter: "Chapter 84/85", category: "Electronics", mfnRate: 0, china301: true },
+
+  // Additional Textiles
+  { code: "6111", description: "Babies&apos; Garments",        chapter: "Chapter 61–63", category: "Textiles", mfnRate: 8.1,  china301: false },
+  { code: "6217", description: "Clothing Accessories",         chapter: "Chapter 61–63", category: "Textiles", mfnRate: 14.6, china301: false },
+  { code: "6301", description: "Blankets & Throws",            chapter: "Chapter 61–63", category: "Textiles", mfnRate: 8.4,  china301: false },
+  { code: "6305", description: "Tote Bags & Shopping Bags",    chapter: "Chapter 61–63", category: "Textiles", mfnRate: 6.3,  china301: false },
+  { code: "6115", description: "Socks & Hosiery",              chapter: "Chapter 61–63", category: "Textiles", mfnRate: 13.5, china301: false },
+
+  // Additional Plastics
+  { code: "3917", description: "Plastic Tubing & Hoses",       chapter: "Chapter 39", category: "Plastics", mfnRate: 3.8, china301: true },
+  { code: "3921", description: "Foam & Insulation Panels",     chapter: "Chapter 39", category: "Plastics", mfnRate: 4.2, china301: true },
+  { code: "3944", description: "Plastic Toys & Games",         chapter: "Chapter 39", category: "Plastics", mfnRate: 0,   china301: true },
+
+  // Additional Furniture & Home
+  { code: "9405.10", description: "Chandeliers & Ceiling Lamps", chapter: "Chapter 94", category: "Furniture", mfnRate: 3.7, china301: true },
+  { code: "6306", description: "Tarpaulins & Outdoor Covers",    chapter: "Chapter 63", category: "Furniture", mfnRate: 9.4, china301: false },
+  { code: "7013", description: "Glassware & Drinkware",          chapter: "Chapter 70", category: "Furniture", mfnRate: 9.8, china301: true },
+  { code: "6911", description: "Ceramic Tableware & Cookware",   chapter: "Chapter 69", category: "Furniture", mfnRate: 6.0, china301: true },
+
+  // Additional Beauty
+  { code: "3307", description: "Shaving & Personal Care Products", chapter: "Chapter 33", category: "Beauty", mfnRate: 4.9, china301: true },
+  { code: "9616", description: "Perfume Sprayers & Atomizers",    chapter: "Chapter 96", category: "Beauty", mfnRate: 4.6, china301: true },
+  { code: "3305", description: "Hair Care Products",               chapter: "Chapter 33", category: "Beauty", mfnRate: 3.0, china301: true },
+  { code: "3406", description: "Candles & Decorative Wax Items",  chapter: "Chapter 34", category: "Beauty", mfnRate: 0,   china301: true },
+
+  // Metals
+  { code: "8215", description: "Kitchen Cutlery & Utensils",  chapter: "Chapter 82", category: "Metals", mfnRate: 0,   china301: true },
+  { code: "7323", description: "Steel Cookware & Pots",       chapter: "Chapter 73", category: "Metals", mfnRate: 5.3, china301: true },
+  { code: "7612", description: "Aluminum Cans & Containers",  chapter: "Chapter 76", category: "Metals", mfnRate: 2.6, china301: true },
+  { code: "8309", description: "Bottle Caps & Metal Closures", chapter: "Chapter 83", category: "Metals", mfnRate: 2.7, china301: true },
+
+  // Toys
+  { code: "9505", description: "Holiday & Seasonal Decorations", chapter: "Chapter 95", category: "Toys", mfnRate: 0,   china301: true },
+  { code: "9508", description: "Amusement Rides & Equipment",    chapter: "Chapter 95", category: "Toys", mfnRate: 0,   china301: true },
+  { code: "9502", description: "Action Figures & Collectibles",  chapter: "Chapter 95", category: "Toys", mfnRate: 0,   china301: true },
+  { code: "9207", description: "Musical Instruments (Electric)", chapter: "Chapter 92", category: "Toys", mfnRate: 0,   china301: true },
 ]
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -383,6 +427,142 @@ export default function HsLookupPage() {
           Get Full Analysis <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
+
+      {/* ── Educational: How to read an HS Code ── */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }}
+        className="mt-16 bg-white border border-[#E8E8E4] rounded-2xl p-6 sm:p-8"
+      >
+        <div className="flex items-center gap-3 mb-5">
+          <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-[#FF6B35]/10">
+            <BookOpen className="w-4 h-4 text-[#FF6B35]" />
+          </span>
+          <h2 className="text-xl font-bold text-[#1A1A1A]">How to Read an HS Code</h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <p className="text-sm text-[#6B6B6B] leading-relaxed mb-4">
+              HS codes are a globally standardized system of 6-digit numbers used to classify traded products. Every customs authority in 200+ countries uses the same first 6 digits — then adds country-specific digits (8-10 total) for more precision.
+            </p>
+
+            {/* Code anatomy */}
+            <div className="bg-[#FAFAF8] rounded-xl p-4 font-mono">
+              <div className="flex items-center gap-1 text-2xl font-black tracking-widest mb-3">
+                <span className="text-[#3B82F6] bg-blue-50 rounded px-1">85</span>
+                <span className="text-[#22C55E] bg-green-50 rounded px-1">18</span>
+                <span className="text-[#F59E0B] bg-amber-50 rounded px-1">10</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-[11px]">
+                <div>
+                  <div className="font-bold text-[#3B82F6] mb-0.5">Chapter (2)</div>
+                  <div className="text-[#6B6B6B]">Product family. 85 = Electrical equipment</div>
+                </div>
+                <div>
+                  <div className="font-bold text-[#22C55E] mb-0.5">Heading (4)</div>
+                  <div className="text-[#6B6B6B]">Sub-family. 8518 = Microphones, speakers</div>
+                </div>
+                <div>
+                  <div className="font-bold text-[#F59E0B] mb-0.5">Subheading (6)</div>
+                  <div className="text-[#6B6B6B]">Specific type. Used for customs filing</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="text-sm font-bold text-[#1A1A1A] flex items-center gap-2">
+              <Info className="w-4 h-4 text-[#FF6B35]" />
+              Key things to know
+            </h3>
+            {[
+              { title: "Wrong code = legal risk", body: "Misdeclaring an HS code is customs fraud. Use the correct code even if a higher tariff applies." },
+              { title: "Codes change", body: "The WCO updates HS codes every 5 years. The most recent update was 2022. Always verify with your customs broker." },
+              { title: "6 digits = international, 8-10 = country-specific", body: "US uses HTS (10 digits), EU uses CN (8 digits), China uses CIQ (13 digits)." },
+              { title: "First-sale vs. transaction value", body: "Tariffs apply to the customs value (usually CIF price), not your retail price." },
+            ].map((item) => (
+              <div key={item.title} className="flex gap-3 text-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B35] mt-1.5 shrink-0" />
+                <div>
+                  <span className="font-semibold text-[#1A1A1A]">{item.title}: </span>
+                  <span className="text-[#6B6B6B]">{item.body}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
+      {/* ── Tariff rate context ── */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }}
+        className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4"
+      >
+        {[
+          {
+            icon: TrendingDown,
+            title: "MFN Rate",
+            color: "#22C55E",
+            bg: "bg-green-50",
+            body: "Most-Favored-Nation rate — the standard US tariff applied to most countries. 0% means duty-free. Applies to Vietnam, Mexico, India for most products.",
+          },
+          {
+            icon: AlertTriangle,
+            title: "Section 301 (China)",
+            color: "#EF4444",
+            bg: "bg-red-50",
+            body: "Additional 25% tariff on thousands of Chinese products, imposed 2018–2019. Added on top of MFN. Check List 1, 2, 3, and 4A for your category.",
+          },
+          {
+            icon: Globe2,
+            title: "FTA Rates",
+            color: "#3B82F6",
+            bg: "bg-blue-50",
+            body: "Free Trade Agreements (USMCA, CAFTA, FTA-Korea, etc.) can reduce tariffs to 0% if your product meets rules-of-origin requirements.",
+          },
+        ].map((item) => (
+          <div key={item.title} className="bg-white border border-[#E8E8E4] rounded-2xl p-5">
+            <div className={`inline-flex items-center justify-center w-9 h-9 rounded-xl ${item.bg} mb-3`}>
+              <item.icon className="w-4 h-4" style={{ color: item.color }} />
+            </div>
+            <h3 className="font-bold text-[#1A1A1A] mb-2 text-sm">{item.title}</h3>
+            <p className="text-xs text-[#6B6B6B] leading-relaxed">{item.body}</p>
+          </div>
+        ))}
+      </motion.section>
+
+      {/* ── Sourcing strategy guide ── */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }}
+        className="mt-6 bg-[#1A1A1A] rounded-2xl p-6 sm:p-8"
+      >
+        <h2 className="text-lg font-bold text-white mb-4">Tariff-Aware Sourcing Strategy</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {[
+            { step: "01", title: "Find your HS code", body: "Use this tool to identify your 4-digit heading. Note whether Section 301 applies." },
+            { step: "02", title: "Calculate total landed cost", body: "MFN rate (+ 301 if from China) × customs value. Add freight, insurance, and brokerage fees." },
+            { step: "03", title: "Compare sourcing countries", body: "If China total rate is 28%+, Vietnam or Mexico at MFN rate may save significant margin per unit." },
+            { step: "04", title: "Verify with a customs broker", body: "For orders over $2,500, verify your classification with a licensed customs broker before committing to a supplier." },
+          ].map((s) => (
+            <div key={s.step} className="flex gap-3">
+              <span className="text-2xl font-black text-[#FF6B35] leading-none shrink-0 font-mono">{s.step}</span>
+              <div>
+                <p className="font-semibold text-white text-sm mb-0.5">{s.title}</p>
+                <p className="text-xs text-[#9B9B9B] leading-relaxed">{s.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.section>
     </div>
   )
 }
