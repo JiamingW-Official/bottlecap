@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from "react"
 import Link from "next/link"
-import { ArrowLeft, BarChart3, Globe, Trophy, Info } from "lucide-react"
+import { ArrowLeft, BarChart3, Globe, Trophy, Info, Lightbulb } from "lucide-react"
+import { motion } from "framer-motion"
 
 interface CountryData {
   id: string
@@ -21,7 +22,7 @@ const COUNTRIES: CountryData[] = [
   {
     id: "china",
     name: "China",
-    flag: "\uD83C\uDDE8\uD83C\uDDF3",
+    flag: "🇨🇳",
     labor: 6.50,
     quality: 7,
     leadDays: 35,
@@ -33,7 +34,7 @@ const COUNTRIES: CountryData[] = [
   {
     id: "vietnam",
     name: "Vietnam",
-    flag: "\uD83C\uDDFB\uD83C\uDDF3",
+    flag: "🇻🇳",
     labor: 2.99,
     quality: 6,
     leadDays: 42,
@@ -45,7 +46,7 @@ const COUNTRIES: CountryData[] = [
   {
     id: "india",
     name: "India",
-    flag: "\uD83C\uDDEE\uD83C\uDDF3",
+    flag: "🇮🇳",
     labor: 2.18,
     quality: 6,
     leadDays: 45,
@@ -57,7 +58,7 @@ const COUNTRIES: CountryData[] = [
   {
     id: "mexico",
     name: "Mexico",
-    flag: "\uD83C\uDDF2\uD83C\uDDFD",
+    flag: "🇲🇽",
     labor: 4.82,
     quality: 7,
     leadDays: 14,
@@ -69,7 +70,7 @@ const COUNTRIES: CountryData[] = [
   {
     id: "thailand",
     name: "Thailand",
-    flag: "\uD83C\uDDF9\uD83C\uDDED",
+    flag: "🇹🇭",
     labor: 3.50,
     quality: 7,
     leadDays: 38,
@@ -81,7 +82,7 @@ const COUNTRIES: CountryData[] = [
   {
     id: "turkey",
     name: "Turkey",
-    flag: "\uD83C\uDDF9\uD83C\uDDF7",
+    flag: "🇹🇷",
     labor: 4.10,
     quality: 7,
     leadDays: 30,
@@ -93,7 +94,7 @@ const COUNTRIES: CountryData[] = [
   {
     id: "indonesia",
     name: "Indonesia",
-    flag: "\uD83C\uDDEE\uD83C\uDDE9",
+    flag: "🇮🇩",
     labor: 1.99,
     quality: 5,
     leadDays: 45,
@@ -105,7 +106,7 @@ const COUNTRIES: CountryData[] = [
   {
     id: "bangladesh",
     name: "Bangladesh",
-    flag: "\uD83C\uDDE7\uD83C\uDDE9",
+    flag: "🇧🇩",
     labor: 0.95,
     quality: 5,
     leadDays: 50,
@@ -113,6 +114,54 @@ const COUNTRIES: CountryData[] = [
     infrastructure: 4,
     tariff: 15.6,
     specializations: ["Garments", "Knitwear", "Denim"],
+  },
+  {
+    id: "southkorea",
+    name: "South Korea",
+    flag: "🇰🇷",
+    labor: 8.50,
+    quality: 9,
+    leadDays: 28,
+    ip: 8,
+    infrastructure: 9,
+    tariff: 0,
+    specializations: ["Electronics", "Cosmetics", "Automotive", "K-Beauty"],
+  },
+  {
+    id: "taiwan",
+    name: "Taiwan",
+    flag: "🇹🇼",
+    labor: 6.80,
+    quality: 9,
+    leadDays: 30,
+    ip: 8,
+    infrastructure: 8,
+    tariff: 3.5,
+    specializations: ["Electronics", "Semiconductors", "Bicycles", "Precision Parts"],
+  },
+  {
+    id: "philippines",
+    name: "Philippines",
+    flag: "🇵🇭",
+    labor: 2.40,
+    quality: 6,
+    leadDays: 42,
+    ip: 5,
+    infrastructure: 5,
+    tariff: 4.8,
+    specializations: ["Furniture", "Coconut Products", "BPO", "Garments"],
+  },
+  {
+    id: "poland",
+    name: "Poland (EU)",
+    flag: "🇵🇱",
+    labor: 7.20,
+    quality: 8,
+    leadDays: 21,
+    ip: 9,
+    infrastructure: 8,
+    tariff: 0,
+    specializations: ["Auto Parts", "Furniture", "Food", "Cosmetics"],
   },
 ]
 
@@ -129,6 +178,60 @@ const METRICS = [
 ] as const
 
 type MetricKey = (typeof METRICS)[number]["key"]
+
+// Product type definitions
+type ProductType =
+  | "general"
+  | "electronics"
+  | "textiles"
+  | "furniture"
+  | "cosmetics"
+  | "medical"
+
+interface ProductTypeConfig {
+  label: string
+  weights: {
+    quality: number
+    cost: number
+    ip: number
+    speed: number
+    infrastructure: number
+  }
+  description: string
+}
+
+const PRODUCT_TYPES: Record<ProductType, ProductTypeConfig> = {
+  general: {
+    label: "General Products",
+    weights: { quality: 0.25, cost: 0.20, ip: 0.20, speed: 0.20, infrastructure: 0.15 },
+    description: "Quality 25% · Cost 20% · IP 20% · Speed 20% · Infrastructure 15%",
+  },
+  electronics: {
+    label: "Electronics",
+    weights: { quality: 0.20, cost: 0.25, ip: 0.30, speed: 0.00, infrastructure: 0.25 },
+    description: "IP 30% · Infrastructure 25% · Cost 25% · Quality 20%",
+  },
+  textiles: {
+    label: "Textiles / Apparel",
+    weights: { quality: 0.25, cost: 0.35, ip: 0.10, speed: 0.15, infrastructure: 0.15 },
+    description: "Cost 35% · Quality 25% · Speed 15% · Infrastructure 15% · IP 10%",
+  },
+  furniture: {
+    label: "Furniture",
+    weights: { quality: 0.15, cost: 0.30, ip: 0.15, speed: 0.20, infrastructure: 0.20 },
+    description: "Cost 30% · Speed 20% · Infrastructure 20% · Quality 15% · IP 15%",
+  },
+  cosmetics: {
+    label: "Cosmetics / Beauty",
+    weights: { quality: 0.35, cost: 0.15, ip: 0.25, speed: 0.15, infrastructure: 0.10 },
+    description: "Quality 35% · IP 25% · Cost 15% · Speed 15% · Infrastructure 10%",
+  },
+  medical: {
+    label: "Medical Devices",
+    weights: { quality: 0.30, cost: 0.05, ip: 0.35, speed: 0.10, infrastructure: 0.20 },
+    description: "IP 35% · Quality 30% · Infrastructure 20% · Speed 10% · Cost 5%",
+  },
+}
 
 function getMetricValue(country: CountryData, key: MetricKey): number {
   return country[key] as number
@@ -156,8 +259,104 @@ function normalizeForBar(key: MetricKey, value: number): number {
   return Math.min(100, Math.max(5, ((value - range.min) / (range.max - range.min)) * 100))
 }
 
+// Generate a one-sentence verdict for a ranked country
+function generateVerdict(
+  country: CountryData & { score: number },
+  rank: number,
+  productType: ProductType,
+  allRanked: Array<CountryData & { score: number }>
+): string {
+  const productLabel = PRODUCT_TYPES[productType].label
+
+  if (rank === 0) {
+    // Find the country's strongest attribute among the weighted priorities
+    const config = PRODUCT_TYPES[productType]
+    const { weights } = config
+    const topWeight = Object.entries(weights).sort((a, b) => b[1] - a[1])[0][0]
+    const advantageMap: Record<string, string> = {
+      ip: `strong IP protection score of ${country.ip}/10`,
+      quality: `high quality rating of ${country.quality}/10`,
+      cost: `competitive labor cost of $${country.labor.toFixed(2)}/hr`,
+      speed: `fast ${country.leadDays}-day lead time`,
+      infrastructure: `excellent infrastructure score of ${country.infrastructure}/10`,
+    }
+    const advantage = advantageMap[topWeight] ?? `balanced performance`
+    return `${country.name} is your best option for ${productLabel}, with ${advantage}.`
+  }
+
+  // For non-winners, note a meaningful trade-off vs #1
+  const winner = allRanked[0]
+  if (country.labor < winner.labor) {
+    const pct = Math.round(((winner.labor - country.labor) / winner.labor) * 100)
+    return `${country.name} offers ${pct}% lower labor cost than ${winner.name} but scores lower overall.`
+  }
+  if (country.tariff === 0 && winner.tariff > 0) {
+    return `${country.name} has zero US tariffs, which may offset its lower weighted score.`
+  }
+  if (country.leadDays < winner.leadDays) {
+    const days = winner.leadDays - country.leadDays
+    return `${country.name} ships ${days} days faster than ${winner.name} — ideal if speed is critical.`
+  }
+  if (country.quality > winner.quality) {
+    return `${country.name} has higher quality ratings, worth considering for premium products.`
+  }
+  return `${country.name} ranks #${rank + 1} overall — a solid alternative with different trade-offs.`
+}
+
+// Generate dynamic key insights comparing selected countries
+function generateInsights(countries: CountryData[]): string[] {
+  if (countries.length < 2) return []
+  const insights: string[] = []
+
+  // Cheapest vs most expensive labor
+  const sorted = [...countries].sort((a, b) => a.labor - b.labor)
+  const cheapest = sorted[0]
+  const priciest = sorted[sorted.length - 1]
+  if (cheapest.id !== priciest.id) {
+    const pct = Math.round(((priciest.labor - cheapest.labor) / priciest.labor) * 100)
+    insights.push(
+      `${cheapest.name} has ${pct}% lower labor cost than ${priciest.name} ($${cheapest.labor.toFixed(2)}/hr vs $${priciest.labor.toFixed(2)}/hr).`
+    )
+  }
+
+  // Zero-tariff countries
+  const zeroTariff = countries.filter((c) => c.tariff === 0)
+  const withTariff = countries.filter((c) => c.tariff > 0)
+  if (zeroTariff.length > 0 && withTariff.length > 0) {
+    const shipmentSize = 10000
+    const highestTariff = withTariff.sort((a, b) => b.tariff - a.tariff)[0]
+    const saving = Math.round((highestTariff.tariff / 100) * shipmentSize)
+    const zeroNames = zeroTariff.map((c) => c.name).join(" and ")
+    insights.push(
+      `${zeroNames} has no US import duties — saving ~$${saving.toLocaleString()} on a $${shipmentSize.toLocaleString()} shipment vs ${highestTariff.name} (${highestTariff.tariff}% tariff).`
+    )
+  }
+
+  // Fastest vs slowest lead time
+  const fastestLead = [...countries].sort((a, b) => a.leadDays - b.leadDays)[0]
+  const slowestLead = [...countries].sort((a, b) => b.leadDays - a.leadDays)[0]
+  if (fastestLead.id !== slowestLead.id) {
+    const diff = slowestLead.leadDays - fastestLead.leadDays
+    insights.push(
+      `${fastestLead.name} delivers ${diff} days faster than ${slowestLead.name} (${fastestLead.leadDays} vs ${slowestLead.leadDays} days avg lead time).`
+    )
+  }
+
+  // Best vs worst IP protection
+  const bestIP = [...countries].sort((a, b) => b.ip - a.ip)[0]
+  const worstIP = [...countries].sort((a, b) => a.ip - b.ip)[0]
+  if (bestIP.id !== worstIP.id && bestIP.ip !== worstIP.ip) {
+    insights.push(
+      `${bestIP.name} offers significantly stronger IP protection (${bestIP.ip}/10) than ${worstIP.name} (${worstIP.ip}/10) — critical for proprietary designs.`
+    )
+  }
+
+  return insights.slice(0, 4)
+}
+
 export default function CountryComparePage() {
   const [selected, setSelected] = useState<string[]>(["china", "mexico"])
+  const [productType, setProductType] = useState<ProductType>("general")
 
   const toggleCountry = (id: string) => {
     setSelected((prev) => {
@@ -172,41 +371,31 @@ export default function CountryComparePage() {
     [selected]
   )
 
-  // Overall ranking: quality 25%, cost 20%, IP 20%, speed 20%, infrastructure 15%
+  const weights = PRODUCT_TYPES[productType].weights
+
+  // Overall ranking with product-type weights
   const rankings = useMemo(() => {
     if (selectedCountries.length < 2) return []
 
-    // Normalize each metric to 0-10 score (higher is better)
     const maxLabor = Math.max(...selectedCountries.map((c) => c.labor))
     const maxLead = Math.max(...selectedCountries.map((c) => c.leadDays))
-    const maxTariff = Math.max(...selectedCountries.map((c) => c.tariff))
 
     return selectedCountries
       .map((c) => {
         const costScore = maxLabor > 0 ? ((maxLabor - c.labor) / maxLabor) * 10 : 5
         const speedScore = maxLead > 0 ? ((maxLead - c.leadDays) / maxLead) * 10 : 5
-        const tariffPenalty = maxTariff > 0 ? ((maxTariff - c.tariff) / maxTariff) * 2 : 0
 
-        const weighted =
-          c.quality * 0.25 +
-          costScore * 0.20 +
-          c.ip * 0.20 +
-          speedScore * 0.20 +
-          c.infrastructure * 0.15 +
-          tariffPenalty * 0.00 // tariff factored into cost implicitly
-
-        // Alternative: include tariff directly
         const score =
-          c.quality * 0.25 +
-          costScore * 0.20 +
-          c.ip * 0.20 +
-          speedScore * 0.20 +
-          c.infrastructure * 0.15
+          c.quality * weights.quality +
+          costScore * weights.cost +
+          c.ip * weights.ip +
+          speedScore * weights.speed +
+          c.infrastructure * weights.infrastructure
 
         return { ...c, score: Math.round(score * 10) / 10 }
       })
       .sort((a, b) => b.score - a.score)
-  }, [selectedCountries])
+  }, [selectedCountries, weights])
 
   // Determine best/worst for each metric
   const bestWorst = useMemo((): Partial<Record<MetricKey, { bestId: string; worstId: string }>> => {
@@ -225,6 +414,8 @@ export default function CountryComparePage() {
     }
     return result
   }, [selectedCountries])
+
+  const insights = useMemo(() => generateInsights(selectedCountries), [selectedCountries])
 
   const showComparison = selectedCountries.length >= 2
 
@@ -251,6 +442,27 @@ export default function CountryComparePage() {
         Select 2-4 manufacturing countries to compare side by side. See how they
         stack up on labor costs, quality, lead times, IP protection, and more.
       </p>
+
+      {/* Product-type filter */}
+      <div className="bg-white rounded-2xl border border-[#E8E8E4] p-6 mb-4">
+        <label className="block text-sm font-semibold text-[#1A1A1A] mb-3">
+          What are you manufacturing?
+        </label>
+        <select
+          value={productType}
+          onChange={(e) => setProductType(e.target.value as ProductType)}
+          className="w-full sm:w-auto border border-[#E8E8E4] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] bg-[#FAFAF8] focus:outline-none focus:ring-2 focus:ring-[#FF6B35] cursor-pointer"
+        >
+          {(Object.entries(PRODUCT_TYPES) as [ProductType, ProductTypeConfig][]).map(([key, cfg]) => (
+            <option key={key} value={key}>
+              {cfg.label}
+            </option>
+          ))}
+        </select>
+        <p className="text-xs text-[#9B9B9B] mt-2">
+          Scoring weights: {PRODUCT_TYPES[productType].description}
+        </p>
+      </div>
 
       {/* Country selector */}
       <div className="bg-white rounded-2xl border border-[#E8E8E4] p-6 mb-10">
@@ -347,12 +559,12 @@ export default function CountryComparePage() {
                             {c.name}
                           </span>
                           <div className="flex-1 h-6 bg-[#F5F5F0] rounded-full overflow-hidden relative">
-                            <div
-                              className="h-full rounded-full transition-all duration-500"
-                              style={{
-                                width: `${barWidth}%`,
-                                backgroundColor: BAR_COLORS[i],
-                              }}
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${barWidth}%` }}
+                              transition={{ duration: 0.6, delay: i * 0.05 }}
+                              className="h-full rounded-full"
+                              style={{ backgroundColor: BAR_COLORS[i] }}
                             />
                           </div>
                           <span className="text-xs font-semibold text-[#1A1A1A] w-20 shrink-0">
@@ -451,7 +663,7 @@ export default function CountryComparePage() {
               </h2>
             </div>
             <p className="text-xs text-[#6B6B6B] mb-4">
-              Weighted score: Quality 25% + Cost 20% + IP Protection 20% + Speed 20% + Infrastructure 15%
+              Weighted score: {PRODUCT_TYPES[productType].description}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -495,10 +707,35 @@ export default function CountryComparePage() {
                       </span>
                     ))}
                   </div>
+
+                  {/* Verdict */}
+                  <p className="text-xs text-[#6B6B6B] mt-3 leading-relaxed text-left">
+                    {generateVerdict(c, i, productType, rankings)}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Key Insights */}
+          {insights.length > 0 && (
+            <div className="mb-10 bg-white rounded-2xl border border-[#E8E8E4] p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Lightbulb className="w-5 h-5 text-[#FF6B35]" />
+                <h2 className="text-xl font-bold text-[#1A1A1A]">Key Insights</h2>
+              </div>
+              <ul className="space-y-3">
+                {insights.map((insight, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-[#1A1A1A]">
+                    <span className="mt-0.5 w-5 h-5 rounded-full bg-[#FFF0EB] text-[#FF6B35] text-[10px] font-bold flex items-center justify-center shrink-0">
+                      {i + 1}
+                    </span>
+                    {insight}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </>
       )}
 
