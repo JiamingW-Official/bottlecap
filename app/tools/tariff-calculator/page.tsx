@@ -11,6 +11,13 @@ import {
   CheckCircle,
   Search,
   ArrowRight,
+  ChevronDown,
+  ChevronUp,
+  Info,
+  ExternalLink,
+  DollarSign,
+  BarChart2,
+  Package,
 } from "lucide-react"
 
 // ---------------------------------------------------------------------------
@@ -145,6 +152,10 @@ export default function TariffCalculatorPage() {
   const [productValue, setProductValue] = useState(10000)
   const [quantity, setQuantity] = useState(500)
   const [categorySearch, setCategorySearch] = useState("")
+  const [usmcaEligible, setUsmcaEligible] = useState(true)
+  const [shippingMode, setShippingMode] = useState<"sea" | "air">("sea")
+  const [classifierOpen, setClassifierOpen] = useState(false)
+  const [landedTableOpen, setLandedTableOpen] = useState(false)
 
   const origin = useMemo(
     () => ORIGIN_COUNTRIES.find((c) => c.id === originCountry)!,
@@ -190,9 +201,69 @@ export default function TariffCalculatorPage() {
   }, [cat, productValue, quantity, chinaCalc.dutyAmount])
 
   // Stacked bar widths
-  const maxLanded = Math.max(...comparisonRows.map((r) => r.landedCost), 1)
   const productBarPct = (productValue / Math.max(calc.landedCost, 1)) * 100
   const dutyBarPct = (calc.dutyAmount / Math.max(calc.landedCost, 1)) * 100
+
+  // Freight per unit
+  const freightPerUnit = shippingMode === "sea" ? 1.20 : 4.50
+  const freightTotal = freightPerUnit * quantity
+  const brokerFeePerUnit = 0.25
+  const brokerFeeTotal = brokerFeePerUnit * quantity
+
+  // Sourcing scenario comparison (China, Vietnam, Mexico)
+  const cnCountry = ORIGIN_COUNTRIES.find((c) => c.id === "CN")!
+  const vnCountry = ORIGIN_COUNTRIES.find((c) => c.id === "VN")!
+  const mxCountry = ORIGIN_COUNTRIES.find((c) => c.id === "MX")!
+  const unitCost = quantity > 0 ? productValue / quantity : 0
+
+  const cnScenario = useMemo(() => calcForCountry(cnCountry, cat, productValue, quantity), [cat, productValue, quantity])
+  const vnScenario = useMemo(() => calcForCountry(vnCountry, cat, productValue, quantity), [cat, productValue, quantity])
+  const mxScenario = useMemo(() => {
+    const mxEffective = usmcaEligible
+      ? { ...calcForCountry(mxCountry, cat, productValue, quantity) }
+      : calcForCountry({ ...mxCountry, fta: false, baseTariff: cat.mfnRate }, cat, productValue, quantity)
+    return mxEffective
+  }, [cat, productValue, quantity, usmcaEligible])
+
+  const scenarioLandedPerUnit = [
+    cnScenario.landedPerUnit + freightPerUnit + brokerFeePerUnit,
+    vnScenario.landedPerUnit + freightPerUnit + brokerFeePerUnit,
+    mxScenario.landedPerUnit + freightPerUnit + brokerFeePerUnit,
+  ]
+  const bestScenarioIndex = scenarioLandedPerUnit.indexOf(Math.min(...scenarioLandedPerUnit))
+
+  // Landed cost breakdown for current selection
+  const mfnDutyTotal = (productValue * calc.mfnRate) / 100
+  const s301DutyTotal = origin.section301 ? (productValue * calc.additionalRate) / 100 : 0
+  const grandTotal = productValue + freightTotal + mfnDutyTotal + s301DutyTotal + brokerFeeTotal
+  const pct = (n: number) => grandTotal > 0 ? ((n / grandTotal) * 100).toFixed(1) : "0.0"
+
+  // China decision helper
+  const chinaTotalRate = chinaCalc.totalRate
+  let chinaDecision: { level: "red" | "amber" | "green"; message: string }
+  if (chinaTotalRate > 30) {
+    chinaDecision = {
+      level: "red",
+      message: `Consider Vietnam or Mexico. China's total duty rate for this product is high (${chinaTotalRate}%).`,
+    }
+  } else if (chinaTotalRate >= 15) {
+    chinaDecision = {
+      level: "amber",
+      message: `Borderline. China's duty rate is ${chinaTotalRate}%. Compare landed cost carefully before committing to a supplier.`,
+    }
+  } else {
+    chinaDecision = {
+      level: "green",
+      message: `China still competitive at ${chinaTotalRate}% total duty. Focus on supplier quality and lead times.`,
+    }
+  }
+
+  const decisionStyles = {
+    red: { bg: "bg-[#FEF2F2]", border: "border-[#FECACA]", text: "text-[#991B1B]", icon: "text-[#EF4444]" },
+    amber: { bg: "bg-[#FFFBEB]", border: "border-[#FDE68A]", text: "text-[#92400E]", icon: "text-[#F59E0B]" },
+    green: { bg: "bg-[#F0FDF4]", border: "border-[#BBF7D0]", text: "text-[#166534]", icon: "text-[#22C55E]" },
+  }
+  const ds = decisionStyles[chinaDecision.level]
 
   return (
     <div className="min-h-screen bg-[#FAFAF8]">
@@ -316,6 +387,35 @@ export default function TariffCalculatorPage() {
                 className="w-full bg-white border-2 border-[#E8E8E4] rounded-xl px-4 py-3 text-[#1A1A1A] outline-none focus:border-[#FF6B35] transition-colors"
                 min={1}
               />
+            </div>
+
+            {/* Shipping mode */}
+            <div>
+              <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
+                Shipping Mode
+              </label>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShippingMode("sea")}
+                  className={`flex-1 py-2 rounded-xl text-sm font-semibold border-2 transition-colors ${
+                    shippingMode === "sea"
+                      ? "bg-[#FF6B35] border-[#FF6B35] text-white"
+                      : "bg-white border-[#E8E8E4] text-[#6B6B6B]"
+                  }`}
+                >
+                  Sea ($1.20/unit)
+                </button>
+                <button
+                  onClick={() => setShippingMode("air")}
+                  className={`flex-1 py-2 rounded-xl text-sm font-semibold border-2 transition-colors ${
+                    shippingMode === "air"
+                      ? "bg-[#FF6B35] border-[#FF6B35] text-white"
+                      : "bg-white border-[#E8E8E4] text-[#6B6B6B]"
+                  }`}
+                >
+                  Air ($4.50/unit)
+                </button>
+              </div>
             </div>
           </div>
 
@@ -525,6 +625,312 @@ export default function TariffCalculatorPage() {
         </div>
 
         {/* ---------------------------------------------------------------- */}
+        {/* SOURCING SCENARIO COMPARISON                                       */}
+        {/* ---------------------------------------------------------------- */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] as const }}
+          className="bg-white rounded-2xl border border-[#E8E8E4] overflow-hidden mb-6"
+        >
+          <div className="px-6 py-5 border-b border-[#E8E8E4] flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-2">
+              <BarChart2 className="w-5 h-5 text-[#FF6B35]" />
+              <h2 className="font-bold text-[#1A1A1A]">Sourcing Scenario Comparison</h2>
+              <span className="text-xs text-[#6B6B6B] ml-1">— same product, 3 countries</span>
+            </div>
+            {/* USMCA toggle */}
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <span className="text-sm text-[#6B6B6B]">USMCA eligible?</span>
+              <button
+                role="switch"
+                aria-checked={usmcaEligible}
+                onClick={() => setUsmcaEligible(!usmcaEligible)}
+                className={`relative w-10 h-5 rounded-full transition-colors ${
+                  usmcaEligible ? "bg-[#22C55E]" : "bg-[#D1D5DB]"
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+                    usmcaEligible ? "translate-x-5" : "translate-x-0"
+                  }`}
+                />
+              </button>
+            </label>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#E8E8E4]">
+            {[
+              {
+                flag: "🇨🇳",
+                label: "China",
+                mfnRate: cnScenario.mfnRate,
+                additionalRate: cnScenario.additionalRate,
+                totalRate: cnScenario.totalRate,
+                dutyPerUnit: cnScenario.perUnit,
+                netLandedPerUnit: scenarioLandedPerUnit[0],
+                isBest: bestScenarioIndex === 0,
+                note: cnScenario.additionalRate > 0 ? `MFN ${cnScenario.mfnRate}% + Section 301 ${cnScenario.additionalRate}%` : `MFN only: ${cnScenario.mfnRate}%`,
+              },
+              {
+                flag: "🇻🇳",
+                label: "Vietnam",
+                mfnRate: vnScenario.mfnRate,
+                additionalRate: 0,
+                totalRate: vnScenario.totalRate,
+                dutyPerUnit: vnScenario.perUnit,
+                netLandedPerUnit: scenarioLandedPerUnit[1],
+                isBest: bestScenarioIndex === 1,
+                note: `MFN only: ${vnScenario.mfnRate}%`,
+              },
+              {
+                flag: "🇲🇽",
+                label: "Mexico",
+                mfnRate: usmcaEligible ? 0 : cat.mfnRate,
+                additionalRate: 0,
+                totalRate: mxScenario.totalRate,
+                dutyPerUnit: mxScenario.perUnit,
+                netLandedPerUnit: scenarioLandedPerUnit[2],
+                isBest: bestScenarioIndex === 2,
+                note: usmcaEligible ? "0% under USMCA" : `MFN only: ${cat.mfnRate}% (not USMCA eligible)`,
+              },
+            ].map((s) => (
+              <div
+                key={s.label}
+                className={`p-6 relative ${s.isBest ? "ring-2 ring-inset ring-[#22C55E] rounded-none" : ""}`}
+              >
+                {s.isBest && (
+                  <span className="absolute top-3 right-3 bg-[#22C55E] text-white text-xs font-bold px-2.5 py-1 rounded-full">
+                    Best option
+                  </span>
+                )}
+                <p className="text-2xl mb-1">{s.flag}</p>
+                <p className="font-bold text-[#1A1A1A] text-lg mb-0.5">{s.label}</p>
+                <p className="text-xs text-[#6B6B6B] mb-4">{s.note}</p>
+
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-[#6B6B6B]">Total tariff</span>
+                    <span className={`font-bold ${s.totalRate === 0 ? "text-[#22C55E]" : s.totalRate > 20 ? "text-[#EF4444]" : "text-[#F59E0B]"}`}>
+                      {s.totalRate}%
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-[#6B6B6B]">Duty per unit</span>
+                    <span className="font-semibold text-[#1A1A1A]">${fmt(s.dutyPerUnit, 2)}</span>
+                  </div>
+                  <div className="h-px bg-[#E8E8E4]" />
+                  <div className="flex justify-between text-sm">
+                    <span className="text-[#6B6B6B] font-medium">Net landed / unit</span>
+                    <span className={`font-black text-base ${s.isBest ? "text-[#22C55E]" : "text-[#1A1A1A]"}`}>
+                      ${fmt(s.netLandedPerUnit, 2)}
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#9B9B9B]">Incl. FOB + duty + freight + broker</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* "SHOULD I SOURCE FROM CHINA?" DECISION HELPER                     */}
+        {/* ---------------------------------------------------------------- */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] as const }}
+          className={`${ds.bg} border ${ds.border} rounded-2xl p-5 mb-6 flex items-start gap-4`}
+        >
+          {chinaDecision.level === "red" && <AlertTriangle className={`w-5 h-5 ${ds.icon} mt-0.5 shrink-0`} />}
+          {chinaDecision.level === "amber" && <Info className={`w-5 h-5 ${ds.icon} mt-0.5 shrink-0`} />}
+          {chinaDecision.level === "green" && <CheckCircle className={`w-5 h-5 ${ds.icon} mt-0.5 shrink-0`} />}
+          <div>
+            <p className={`font-bold mb-1 ${ds.text}`}>Should I source from China?</p>
+            <p className={`text-sm ${ds.text}`}>{chinaDecision.message}</p>
+          </div>
+        </motion.div>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* LANDED COST BREAKDOWN TABLE (expandable)                          */}
+        {/* ---------------------------------------------------------------- */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.22, ease: [0.25, 0.1, 0.25, 1] as const }}
+          className="bg-white rounded-2xl border border-[#E8E8E4] overflow-hidden mb-6"
+        >
+          <button
+            onClick={() => setLandedTableOpen(!landedTableOpen)}
+            className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[#FAFAF8] transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <DollarSign className="w-5 h-5 text-[#FF6B35]" />
+              <span className="font-bold text-[#1A1A1A]">Full Landed Cost Breakdown</span>
+            </div>
+            {landedTableOpen ? (
+              <ChevronUp className="w-5 h-5 text-[#6B6B6B]" />
+            ) : (
+              <ChevronDown className="w-5 h-5 text-[#6B6B6B]" />
+            )}
+          </button>
+
+          <AnimatePresence>
+            {landedTableOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] as const }}
+                className="overflow-hidden"
+              >
+                <div className="overflow-x-auto border-t border-[#E8E8E4]">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-[#E8E8E4] bg-[#FAFAF8]">
+                        <th className="text-left px-6 py-3 text-xs font-semibold text-[#6B6B6B] uppercase tracking-wide">Component</th>
+                        <th className="text-right px-4 py-3 text-xs font-semibold text-[#6B6B6B] uppercase tracking-wide">Amount (total)</th>
+                        <th className="text-right px-4 py-3 text-xs font-semibold text-[#6B6B6B] uppercase tracking-wide">Per unit</th>
+                        <th className="text-right px-6 py-3 text-xs font-semibold text-[#6B6B6B] uppercase tracking-wide">% of total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        {
+                          label: "Unit cost (FOB)",
+                          total: productValue,
+                          per: unitCost,
+                          note: "",
+                        },
+                        {
+                          label: `Ocean/Air freight (${shippingMode})`,
+                          total: freightTotal,
+                          per: freightPerUnit,
+                          note: `$${freightPerUnit.toFixed(2)}/unit est.`,
+                        },
+                        {
+                          label: "Import duty (MFN)",
+                          total: mfnDutyTotal,
+                          per: quantity > 0 ? mfnDutyTotal / quantity : 0,
+                          note: `${calc.mfnRate}% of FOB`,
+                        },
+                        ...(origin.section301
+                          ? [
+                              {
+                                label: "Section 301 surcharge",
+                                total: s301DutyTotal,
+                                per: quantity > 0 ? s301DutyTotal / quantity : 0,
+                                note: `${calc.additionalRate}% of FOB`,
+                              },
+                            ]
+                          : []),
+                        {
+                          label: "Customs broker fee",
+                          total: brokerFeeTotal,
+                          per: brokerFeePerUnit,
+                          note: "~est.",
+                        },
+                      ].map((row) => (
+                        <tr key={row.label} className="border-b border-[#E8E8E4]">
+                          <td className="px-6 py-3 text-[#1A1A1A]">
+                            {row.label}
+                            {row.note && (
+                              <span className="ml-2 text-xs text-[#9B9B9B]">{row.note}</span>
+                            )}
+                          </td>
+                          <td className="text-right px-4 py-3 font-medium text-[#1A1A1A]">${fmt(row.total, 2)}</td>
+                          <td className="text-right px-4 py-3 text-[#6B6B6B]">${fmt(row.per, 2)}</td>
+                          <td className="text-right px-6 py-3 text-[#6B6B6B]">{pct(row.total)}%</td>
+                        </tr>
+                      ))}
+                      <tr className="bg-[#FAFAF8]">
+                        <td className="px-6 py-3 font-bold text-[#1A1A1A]">Total landed cost</td>
+                        <td className="text-right px-4 py-3 font-black text-[#1A1A1A]">${fmt(grandTotal, 2)}</td>
+                        <td className="text-right px-4 py-3 font-bold text-[#1A1A1A]">${fmt(quantity > 0 ? grandTotal / quantity : 0, 2)}</td>
+                        <td className="text-right px-6 py-3 font-bold text-[#1A1A1A]">100%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* TARIFF CLASSIFICATION HELPER (collapsible accordion)              */}
+        {/* ---------------------------------------------------------------- */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.25, ease: [0.25, 0.1, 0.25, 1] as const }}
+          className="bg-white rounded-2xl border border-[#E8E8E4] overflow-hidden mb-10"
+        >
+          <button
+            onClick={() => setClassifierOpen(!classifierOpen)}
+            className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[#FAFAF8] transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <Info className="w-5 h-5 text-[#FF6B35]" />
+              <span className="font-bold text-[#1A1A1A]">How was this tariff determined?</span>
+            </div>
+            {classifierOpen ? (
+              <ChevronUp className="w-5 h-5 text-[#6B6B6B]" />
+            ) : (
+              <ChevronDown className="w-5 h-5 text-[#6B6B6B]" />
+            )}
+          </button>
+
+          <AnimatePresence>
+            {classifierOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] as const }}
+                className="overflow-hidden"
+              >
+                <div className="px-6 pb-6 border-t border-[#E8E8E4] pt-5 space-y-5">
+                  <div>
+                    <p className="font-semibold text-[#1A1A1A] mb-1">What is MFN (Most-Favored-Nation) rate?</p>
+                    <p className="text-sm text-[#6B6B6B]">
+                      The MFN rate is the standard US import duty applied to all WTO member countries. It is the baseline tariff for any country without a special free trade agreement with the US. Rates vary by HS code and are updated annually by the US International Trade Commission.
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-[#1A1A1A] mb-1">What is Section 301?</p>
+                    <p className="text-sm text-[#6B6B6B]">
+                      Section 301 refers to additional tariffs imposed on Chinese goods under the Trade Act of 1974. The US Trade Representative (USTR) enacted four lists (List 1, List 2, List 3, List 4A) starting in 2018, adding 7.5%–25% on top of the MFN rate. These tariffs remain in effect as of 2026 and cover the majority of goods imported from China. Not all HS codes are affected — some exclusions exist.
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-[#1A1A1A] mb-1">When do tariffs change?</p>
+                    <p className="text-sm text-[#6B6B6B]">
+                      MFN rates are reviewed annually by the WCO (World Customs Organization) and the US ITC. Section 301 rates may change via USTR rulemaking or Presidential executive action. Always verify the current rate with CBP before filing an entry.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3 bg-[#FAFAF8] rounded-xl p-4">
+                    <ExternalLink className="w-4 h-4 text-[#FF6B35] shrink-0" />
+                    <div>
+                      <p className="text-sm font-semibold text-[#1A1A1A]">Check official CBP rulings</p>
+                      <p className="text-xs text-[#6B6B6B] mb-1">Search binding rulings by HS code, product description, or ruling number.</p>
+                      <a
+                        href="https://rulings.cbp.gov/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-[#FF6B35] font-semibold hover:underline"
+                      >
+                        rulings.cbp.gov →
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* ---------------------------------------------------------------- */}
         {/* MULTI-COUNTRY COMPARISON TABLE                                    */}
         {/* ---------------------------------------------------------------- */}
         <motion.div
@@ -669,6 +1075,54 @@ export default function TariffCalculatorPage() {
               </div>
             )
           })()}
+        </motion.div>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* RELATED TOOLS QUICK LINKS                                         */}
+        {/* ---------------------------------------------------------------- */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] as const }}
+          className="mb-10"
+        >
+          <p className="text-sm font-semibold text-[#6B6B6B] uppercase tracking-wide mb-4">Related Tools</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              {
+                href: "/tools/cost-calculator",
+                icon: <DollarSign className="w-5 h-5 text-[#FF6B35]" />,
+                title: "Cost Calculator",
+                desc: "Break down total COGS including manufacturing, packaging, and overhead.",
+              },
+              {
+                href: "/tools/country-compare",
+                icon: <Globe className="w-5 h-5 text-[#FF6B35]" />,
+                title: "Country Compare",
+                desc: "Compare sourcing risk, labor cost, and lead times across manufacturing countries.",
+              },
+              {
+                href: "/tools/hs-lookup",
+                icon: <Package className="w-5 h-5 text-[#FF6B35]" />,
+                title: "HS Code Lookup",
+                desc: "Find the right HS code for your product to ensure accurate tariff classification.",
+              },
+            ].map((tool) => (
+              <Link
+                key={tool.href}
+                href={tool.href}
+                className="bg-white border border-[#E8E8E4] rounded-2xl p-5 hover:border-[#FF6B35] hover:shadow-sm transition-all group"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  {tool.icon}
+                  <span className="font-semibold text-[#1A1A1A] group-hover:text-[#FF6B35] transition-colors">
+                    {tool.title}
+                  </span>
+                </div>
+                <p className="text-sm text-[#6B6B6B]">{tool.desc}</p>
+              </Link>
+            ))}
+          </div>
         </motion.div>
 
         {/* ---------------------------------------------------------------- */}
