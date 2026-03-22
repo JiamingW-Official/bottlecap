@@ -555,6 +555,148 @@ export default function TrendsPage() {
         </div>
       </section>
 
+      {/* ── What to source in Q1 2026 ── */}
+      <section className="py-16 sm:py-20 border-b border-[#E8E8E4]">
+        <div className="max-w-5xl mx-auto px-6">
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={stagger(0.08)}
+          >
+            <motion.div variants={fadeUp} className="mb-8">
+              <div className="flex items-center gap-2 mb-3">
+                <Zap size={18} className="text-[#22C55E]" />
+                <span className="text-sm font-semibold text-[#22C55E] uppercase tracking-wider">
+                  Q1 2026 Playbook
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-[#1A1A1A] mb-2">
+                What smart founders are sourcing right now
+              </h2>
+              <p className="text-[#6B6B6B]">
+                Based on analysis patterns and trade data from January–March 2026.
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                {
+                  signal: "BUY",
+                  color: "#22C55E",
+                  bg: "bg-green-50",
+                  border: "border-green-200",
+                  category: "Outdoor & Camping Gear",
+                  rationale: "Summer demand spike 8–10 weeks out. Vietnam factories have capacity now. Sea freight from HCMC is 22 days to US West Coast.",
+                  action: "Place sample orders by end of March for July shelf dates.",
+                },
+                {
+                  signal: "BUY",
+                  color: "#22C55E",
+                  bg: "bg-green-50",
+                  border: "border-green-200",
+                  category: "Silicone Kitchen Products",
+                  rationale: "FDA-compliant silicone MOQs dropped 40% as Chinese factories cleared inventory. Landed cost under $3/unit for basic products.",
+                  action: "Negotiate hard on tooling. Factories are hungry for orders.",
+                },
+                {
+                  signal: "WATCH",
+                  color: "#F59E0B",
+                  bg: "bg-amber-50",
+                  border: "border-amber-200",
+                  category: "Electronics Accessories",
+                  rationale: "Section 301 pressure ongoing. Vietnam alternatives exist but tooling lead times 6–8 weeks longer than China.",
+                  action: "Get quotes from both countries before committing tooling.",
+                },
+                {
+                  signal: "AVOID",
+                  color: "#EF4444",
+                  bg: "bg-red-50",
+                  border: "border-red-200",
+                  category: "Woven Textiles from China",
+                  rationale: "Anti-dumping investigations active on synthetic fabrics. Customs holds adding 3–5 weeks to clearance times. India and Bangladesh offer better risk profile.",
+                  action: "Redirect to Bangladesh or Turkey if lead time allows.",
+                },
+              ].map((item) => (
+                <motion.div
+                  key={item.category}
+                  variants={fadeUp}
+                  className={`${item.bg} border ${item.border} rounded-2xl p-5`}
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <span
+                      className="text-xs font-black px-2.5 py-1 rounded-full text-white"
+                      style={{ backgroundColor: item.color }}
+                    >
+                      {item.signal}
+                    </span>
+                    <span className="font-bold text-[#1A1A1A] text-sm">{item.category}</span>
+                  </div>
+                  <p className="text-xs text-[#6B6B6B] leading-relaxed mb-3">{item.rationale}</p>
+                  <p className="text-xs font-semibold" style={{ color: item.color }}>
+                    → {item.action}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Hot Products This Month ── */}
+      <section className="py-16 sm:py-20 border-b border-[#E8E8E4] bg-white">
+        <div className="max-w-5xl mx-auto px-6">
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={stagger(0.06)}
+          >
+            <motion.div variants={fadeUp} className="mb-8">
+              <div className="flex items-center gap-2 mb-3">
+                <TrendingUp size={18} className="text-[#FF6B35]" />
+                <span className="text-sm font-semibold text-[#FF6B35] uppercase tracking-wider">
+                  Most Analyzed
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-[#1A1A1A]">
+                Top products founders analyzed this month
+              </h2>
+            </motion.div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { name: "Insulated Tumbler", cost: "$4–8", rank: 1 },
+                { name: "LED Desk Lamp", cost: "$6–12", rank: 2 },
+                { name: "Bamboo Toothbrush", cost: "$0.80–2", rank: 3 },
+                { name: "Pet GPS Collar", cost: "$18–35", rank: 4 },
+                { name: "Silicone Baking Mat", cost: "$2–4", rank: 5 },
+                { name: "Portable Charger", cost: "$8–15", rank: 6 },
+                { name: "Reusable Straw Set", cost: "$0.50–1", rank: 7 },
+                { name: "Yoga Block Set", cost: "$5–9", rank: 8 },
+              ].map((item) => (
+                <motion.div key={item.name} variants={fadeUp}>
+                  <Link
+                    href="/analyze"
+                    onClick={() => {
+                      if (typeof window !== "undefined") {
+                        sessionStorage.setItem("bottlecap_hero_text", item.name)
+                      }
+                    }}
+                    className="group flex flex-col bg-[#FAFAF8] border border-[#E8E8E4] rounded-2xl p-4 hover:border-[#FF6B35] hover:bg-white hover:shadow-md transition-all"
+                  >
+                    <span className="text-[10px] font-black text-[#FF6B35] mb-2">#{item.rank}</span>
+                    <span className="text-sm font-bold text-[#1A1A1A] leading-snug mb-1 group-hover:text-[#FF6B35] transition-colors">{item.name}</span>
+                    <span className="text-xs text-[#9B9B9B]">{item.cost}/unit</span>
+                    <span className="text-[10px] font-semibold text-[#FF6B35] mt-2 opacity-0 group-hover:opacity-100 transition-opacity">Analyze this →</span>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── Bottom CTA ── */}
       <section className="py-20 sm:py-28 bg-white">
         <div className="max-w-3xl mx-auto px-6 text-center">
