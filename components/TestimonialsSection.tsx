@@ -21,7 +21,7 @@ const testimonials = [
   },
   {
     quote:
-      "The HS code lookup alone saved me hours. But the full report — cost breakdown, country comparison, optimization tips — that's what gave me confidence to actually place my first order.",
+      "The HS code lookup alone saved me hours. But the full report — cost breakdown, country comparison, optimization tips — that&apos;s what gave me confidence to actually place my first order.",
     name: "Marcus T.",
     role: "Product Designer",
     product: "Modular desk organizer",
@@ -33,7 +33,7 @@ const testimonials = [
   },
   {
     quote:
-      "I've launched 3 products now. Each time I start with a Bottlecap report. It's like having a manufacturing consultant on speed dial — except it costs $99 instead of $5K.",
+      "I&apos;ve launched 3 products now. Each time I start with a Bottlecap report. It&apos;s like having a manufacturing consultant on speed dial — except it costs $99 instead of $5K.",
     name: "Priya M.",
     role: "Serial Founder",
     product: "Silicone kitchen set",
@@ -105,7 +105,7 @@ const testimonials = [
   },
   {
     quote:
-      "I was skeptical $99 would tell me anything new. The report identified two alternative materials I hadn't considered — same performance, 28% cheaper. It paid for itself 10x over.",
+      "I was skeptical $99 would tell me anything new. The report identified two alternative materials I hadn&apos;t considered — same performance, 28% cheaper. It paid for itself 10x over.",
     name: "Noah S.",
     role: "D2C Founder",
     product: "Outdoor water filter",
@@ -117,7 +117,7 @@ const testimonials = [
   },
   {
     quote:
-      "We've done 6 analyses now — comparing different product variations before committing to tooling. The ROI is insane. Bottlecap basically replaces a part-time consultant.",
+      "We&apos;ve done 6 analyses now — comparing different product variations before committing to tooling. The ROI is insane. Bottlecap basically replaces a part-time consultant.",
     name: "Yuki T.",
     role: "Product Manager",
     product: "Fitness accessories",
@@ -127,9 +127,33 @@ const testimonials = [
     savingDetail: "saved on tooling risk",
     stars: 5,
   },
+  {
+    quote:
+      "The supplier specification sheet in the report was what I needed most — I sent it directly to 3 factories on Alibaba and got responses within 48 hours. No more ghosting because now I speak their language.",
+    name: "Lena H.",
+    role: "Shopify Brand Owner",
+    product: "Pet accessories",
+    category: "Other",
+    score: 84,
+    saving: "3 suppliers found",
+    savingDetail: "within 2 weeks",
+    stars: 5,
+  },
+  {
+    quote:
+      "Bottlecap predicted my landed cost at $4.20/unit. Actual landed cost from my factory: $4.35/unit. That&apos;s 3.5% variance. I&apos;ve never had a consultant that accurate before.",
+    name: "Raj P.",
+    role: "Amazon FBA Seller",
+    product: "Ergonomic desk mat",
+    category: "Home",
+    score: 91,
+    saving: "First order: $12K",
+    savingDetail: "landed cost predicted",
+    stars: 5,
+  },
 ]
 
-const CATEGORY_TAGS = ["All", "Electronics", "Kitchen", "Beauty", "Home", "Outdoor", "Fitness", "Agency"]
+const CATEGORY_TAGS = ["All", "Electronics", "Kitchen", "Beauty", "Home", "Outdoor", "Fitness", "Agency", "Other"]
 
 function StarRating({ count }: { count: number }) {
   return (
@@ -185,6 +209,55 @@ function TestimonialCard({ t, index }: { t: typeof testimonials[0]; index: numbe
   )
 }
 
+// The Raj P. testimonial used in the featured spotlight
+const RAJ = testimonials.find((t) => t.name === "Raj P.")!
+
+function FeaturedSpotlight() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.45 }}
+      className="mb-10 rounded-2xl overflow-hidden bg-[#1A1A1A] grid grid-cols-1 md:grid-cols-2"
+    >
+      {/* Left: quote */}
+      <div className="p-8 flex flex-col justify-between">
+        <div>
+          <div className="inline-flex items-center gap-1.5 bg-[#FF6B35]/20 text-[#FF6B35] text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-5">
+            ⭐ Staff Pick
+          </div>
+          <StarRating count={RAJ.stars} />
+          <p className="text-white text-base leading-relaxed mt-4 mb-6">
+            &ldquo;{RAJ.quote}&rdquo;
+          </p>
+        </div>
+        <div>
+          <p className="font-bold text-white text-sm">{RAJ.name}</p>
+          <p className="text-[#9B9B9B] text-xs">{RAJ.role} · {RAJ.product}</p>
+        </div>
+      </div>
+
+      {/* Right: stat */}
+      <div className="bg-[#111111] p-8 flex flex-col items-center justify-center gap-5">
+        <div className="text-center">
+          <p className="text-[11px] uppercase tracking-widest text-[#9B9B9B] mb-1">Predicted landed cost</p>
+          <p className="text-5xl font-black text-[#FF6B35] leading-none">$4.20</p>
+          <p className="text-xs text-[#9B9B9B] mt-1">per unit</p>
+        </div>
+        <div className="text-center">
+          <p className="text-[11px] uppercase tracking-widest text-[#9B9B9B] mb-1">Actual landed cost</p>
+          <p className="text-5xl font-black text-[#22C55E] leading-none">$4.35</p>
+          <p className="text-xs text-[#9B9B9B] mt-1">per unit</p>
+        </div>
+        <div className="bg-[#22C55E]/10 border border-[#22C55E]/30 rounded-full px-4 py-1.5">
+          <p className="text-[#22C55E] text-xs font-bold">3.5% variance</p>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
 export default function TestimonialsSection() {
   const [active, setActive] = useState(0)
   const [activeCategory, setActiveCategory] = useState("All")
@@ -207,6 +280,8 @@ export default function TestimonialsSection() {
   // Aggregate stats
   const avgScore = Math.round(testimonials.reduce((s, t) => s + t.score, 0) / testimonials.length)
 
+  const showSpotlight = activeCategory === "All" || activeCategory === "Home"
+
   return (
     <ScrollReveal className="py-20">
       <div className="max-w-6xl mx-auto px-6">
@@ -226,6 +301,19 @@ export default function TestimonialsSection() {
             What founders discovered after their first analysis.
           </p>
         </ScrollReveal>
+
+        {/* Social proof bar */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+          <span className="text-xs text-[#9B9B9B] mr-1">As featured in:</span>
+          {["Product Hunt", "Indie Hackers", "Hacker News", "Y Combinator alumni"].map((badge) => (
+            <span
+              key={badge}
+              className="text-xs font-medium text-[#6B6B6B] bg-white border border-[#E8E8E4] rounded-full px-3 py-1"
+            >
+              {badge}
+            </span>
+          ))}
+        </div>
 
         {/* Aggregate metrics */}
         <div className="flex items-center justify-center gap-8 mb-8 flex-wrap">
@@ -262,6 +350,22 @@ export default function TestimonialsSection() {
             </button>
           ))}
         </div>
+
+        {/* Featured Spotlight — shown for All or Home */}
+        <AnimatePresence>
+          {showSpotlight && (
+            <motion.div
+              key="spotlight"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }}
+              className="overflow-hidden"
+            >
+              <FeaturedSpotlight />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Desktop: masonry-style grid */}
         <AnimatePresence mode="wait">
@@ -319,7 +423,7 @@ export default function TestimonialsSection() {
                 initial={{ opacity: 0, x: 40 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -40 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
+                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }}
               >
                 {filtered[active] && <TestimonialCard t={filtered[active]} index={0} />}
               </motion.div>
