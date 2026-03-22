@@ -68,6 +68,22 @@ export default function Home() {
       </div>
 
       {/* ================================================================ */}
+      {/* USED BY LOGO STRIP                                               */}
+      {/* ================================================================ */}
+      <div className="py-8 border-y border-[#E8E8E4] bg-white/50">
+        <div className="max-w-4xl mx-auto px-6">
+          <p className="text-center text-xs font-semibold text-[#CDCDC8] uppercase tracking-widest mb-4">
+            Trusted by founders building
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-8 text-sm font-semibold text-[#CDCDC8]">
+            {["Electronics", "Apparel", "Home Goods", "Beauty", "Outdoor Gear", "Pet Products", "Packaging", "Toys"].map(cat => (
+              <span key={cat} className="hover:text-[#9B9B9B] transition-colors">{cat}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ================================================================ */}
       {/* VALUE CONTRAST STRIP                                             */}
       {/* ================================================================ */}
       <div className="py-14 bg-white border-y border-[#E8E8E4]">
@@ -101,7 +117,7 @@ export default function Home() {
             ].map((item) => (
               <div
                 key={item.label}
-                className="relative bg-[#FAFAF8] rounded-2xl border border-[#E8E8E4] p-6 overflow-hidden hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:border-[#D0D0C8] transition-all group"
+                className={`relative bg-[#FAFAF8] rounded-2xl border border-[#E8E8E4] p-6 overflow-hidden hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:border-[#D0D0C8] transition-all group ${item.color === "#FF6B35" ? "border-l-4 border-l-[#FF6B35]" : item.color === "#22C55E" ? "border-l-4 border-l-[#22C55E]" : "border-l-4 border-l-[#3B82F6]"}`}
               >
                 {/* Left color bar */}
                 <div
@@ -186,6 +202,7 @@ export default function Home() {
               12 sections. Every question you&apos;d ask a consultant &mdash; answered in advance.
             </p>
           </ScrollReveal>
+          <p className="text-sm text-[#9B9B9B] mt-2 text-center">Hover any feature to see what it actually does</p>
           <FeatureShowcase />
         </div>
       </ScrollReveal>
@@ -211,6 +228,9 @@ export default function Home() {
 
           <ParallaxLayer speed={0.95}>
             <div className="relative max-w-md mx-auto">
+              {/* Stacked depth cards behind */}
+              <div className="absolute -bottom-2 -right-2 w-full h-full rounded-2xl bg-[#FF6B35]/[0.08] border border-[#FF6B35]/[0.15] -z-10" />
+              <div className="absolute -bottom-4 -right-4 w-full h-full rounded-2xl bg-[#FF6B35]/[0.04] border border-[#FF6B35]/[0.10] -z-20" />
               {/* Stacked cards behind */}
               <div className="absolute inset-0 bg-white rounded-3xl border border-[#E8E8E4] transform rotate-3 translate-x-3 translate-y-3 opacity-20" />
               <div className="absolute inset-0 bg-white rounded-3xl border border-[#E8E8E4] transform -rotate-1 translate-x-1.5 translate-y-1.5 opacity-40" />
@@ -423,7 +443,7 @@ export default function Home() {
             <AnimatedCounter end={50} suffix="+" label="Materials" sublabel="in database" />
             <AnimatedCounter end={40} suffix="+" label="Products" sublabel="cost data" />
             <AnimatedCounter end={90} suffix="+" label="HS Codes" sublabel="tariff rates" />
-            <AnimatedCounter end={60} suffix="+" label="Terms" sublabel="in glossary" />
+            <AnimatedCounter end={60} suffix="+" label="Glossary Terms" sublabel="definitions" />
           </div>
         </div>
       </div>
