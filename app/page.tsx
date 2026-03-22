@@ -14,6 +14,9 @@ import CategoryShowcase from "@/components/CategoryShowcase"
 import LiveDemoSection from "@/components/LiveDemoSection"
 import TestimonialsSection from "@/components/TestimonialsSection"
 import FAQ from "@/components/FAQ"
+import UseCaseSection from "@/components/UseCaseSection"
+import ROIStrip from "@/components/ROIStrip"
+import TrendingProducts from "@/components/TrendingProducts"
 import ScrollReveal from "@/components/animations/ScrollReveal"
 import TextReveal from "@/components/animations/TextReveal"
 import ParallaxLayer from "@/components/animations/ParallaxLayer"
@@ -130,6 +133,16 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* ================================================================ */}
+      {/* ROI STRIP                                                        */}
+      {/* ================================================================ */}
+      <ROIStrip />
+
+      {/* ================================================================ */}
+      {/* TRENDING PRODUCTS                                                */}
+      {/* ================================================================ */}
+      <TrendingProducts />
 
       {/* ================================================================ */}
       {/* HOW IT WORKS                                                     */}
@@ -324,6 +337,11 @@ export default function Home() {
         </div>
         <TestimonialsSection />
       </div>
+
+      {/* ================================================================ */}
+      {/* USE CASE SECTION                                                 */}
+      {/* ================================================================ */}
+      <UseCaseSection />
 
       {/* ================================================================ */}
       {/* CATEGORIES WE COVER                                              */}
