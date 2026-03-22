@@ -5,8 +5,9 @@ import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Search, FileText, FileSearch, ArrowRight, Loader2, BarChart3, Zap,
-  Filter, Plus, CheckCircle, Trophy, Calendar, ChevronRight, Clock,
-  TrendingUp, Share2, Home,
+  Filter, Plus, Trophy, ChevronRight, Clock,
+  TrendingUp, Share2, Home, Sparkles, DollarSign, HelpCircle, X,
+  SortAsc, FlaskConical, RefreshCw,
 } from "lucide-react"
 import ScrollReveal from "@/components/animations/ScrollReveal"
 import TextReveal from "@/components/animations/TextReveal"
@@ -78,6 +79,8 @@ interface ReportSummary {
 }
 
 type StatusFilter = "all" | "complete" | "processing" | "failed"
+type SortOption = "newest" | "oldest" | "highest"
+type ScoreFilter = "all" | "high" | "medium" | "low"
 
 // ─── Skeleton card ───────────────────────────────────────────────────────────
 
@@ -136,6 +139,16 @@ export default function DashboardPage() {
   const [searched, setSearched] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all")
+  const [sortOption, setSortOption] = useState<SortOption>("newest")
+  const [scoreFilter, setScoreFilter] = useState<ScoreFilter>("all")
+  const [nameSearch, setNameSearch] = useState("")
+  const [dismissedUpsell, setDismissedUpsell] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setDismissedUpsell(localStorage.getItem("dismissed_upsell") === "true")
+    }
+  }, [])
 
   const handleLookup = async () => {
     if (!email.trim()) return
@@ -175,10 +188,21 @@ export default function DashboardPage() {
     }
   }
 
-  const filteredReports =
-    statusFilter === "all"
-      ? reports
-      : reports.filter((r) => r.status === statusFilter || (statusFilter === "complete" && r.status === "completed"))
+  const filteredReports = reports
+    .filter((r) => {
+      if (statusFilter !== "all" && !(r.status === statusFilter || (statusFilter === "complete" && r.status === "completed"))) return false
+      if (scoreFilter === "high" && (r.feasibilityScore === undefined || r.feasibilityScore < 80)) return false
+      if (scoreFilter === "medium" && (r.feasibilityScore === undefined || r.feasibilityScore < 50 || r.feasibilityScore >= 80)) return false
+      if (scoreFilter === "low" && (r.feasibilityScore === undefined || r.feasibilityScore >= 50)) return false
+      if (nameSearch.trim() && !r.productName.toLowerCase().includes(nameSearch.toLowerCase())) return false
+      return true
+    })
+    .sort((a, b) => {
+      if (sortOption === "newest") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      if (sortOption === "oldest") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      if (sortOption === "highest") return (b.feasibilityScore ?? 0) - (a.feasibilityScore ?? 0)
+      return 0
+    })
 
   const completedReports = reports.filter(
     (r) => r.status === "complete" || r.status === "completed"
@@ -196,17 +220,12 @@ export default function DashboardPage() {
       ? Math.max(...completedReports.map((r) => r.feasibilityScore || 0))
       : null
 
-  const thisMonthCount = reports.filter((r) => {
-    const d = new Date(r.createdAt)
-    const now = new Date()
-    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
-  }).length
+  const totalSavings = completedReports.length * 2500
 
   const animatedTotal = useCountUp(reports.length > 0 ? reports.length : null, 600)
   const animatedAvgScore = useCountUp(avgScore, 800)
-  const animatedCompleted = useCountUp(reports.length > 0 ? completedReports.length : null, 700)
   const animatedBest = useCountUp(bestScore, 900)
-  const animatedThisMonth = useCountUp(reports.length > 0 ? thisMonthCount : null, 650)
+  const animatedSavings = useCountUp(completedReports.length > 0 ? totalSavings : null, 1000)
 
   const hasReports = reports.length > 0
   const noResults = searched && !loading && reports.length === 0 && !error
@@ -349,8 +368,8 @@ export default function DashboardPage() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-8">
-                {/* Total */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+                {/* Total analyses */}
                 <div className="bg-white rounded-2xl border border-[#E8E8E4] p-4 flex flex-col items-center text-center">
                   <div className="w-8 h-8 rounded-lg bg-[#FFF0EB] flex items-center justify-center mb-2">
                     <FileText className="w-4 h-4 text-[#FF6B35]" />
@@ -358,7 +377,7 @@ export default function DashboardPage() {
                   <p className="text-2xl font-black text-[#1A1A1A] leading-none mb-1">
                     {animatedTotal ?? 0}
                   </p>
-                  <p className="text-[11px] text-[#9B9B9B] font-medium">Total</p>
+                  <p className="text-[11px] text-[#9B9B9B] font-medium">Analyses Run</p>
                 </div>
 
                 {/* Avg score */}
@@ -372,18 +391,7 @@ export default function DashboardPage() {
                   <p className="text-[11px] text-[#9B9B9B] font-medium">Avg Score</p>
                 </div>
 
-                {/* Completed */}
-                <div className="bg-white rounded-2xl border border-[#E8E8E4] p-4 flex flex-col items-center text-center">
-                  <div className="w-8 h-8 rounded-lg bg-[#F0FDF4] flex items-center justify-center mb-2">
-                    <CheckCircle className="w-4 h-4 text-[#22C55E]" />
-                  </div>
-                  <p className="text-2xl font-black text-[#22C55E] leading-none mb-1">
-                    {animatedCompleted ?? 0}
-                  </p>
-                  <p className="text-[11px] text-[#9B9B9B] font-medium">Completed</p>
-                </div>
-
-                {/* Best score */}
+                {/* Highest this month */}
                 <div className="bg-white rounded-2xl border border-[#E8E8E4] p-4 flex flex-col items-center text-center">
                   <div className="w-8 h-8 rounded-lg bg-[#FFFBEB] flex items-center justify-center mb-2">
                     <Trophy className="w-4 h-4 text-[#F59E0B]" />
@@ -391,56 +399,75 @@ export default function DashboardPage() {
                   <p className="text-2xl font-black text-[#F59E0B] leading-none mb-1">
                     {animatedBest ?? "—"}
                   </p>
-                  <p className="text-[11px] text-[#9B9B9B] font-medium">Best Score</p>
+                  <p className="text-[11px] text-[#9B9B9B] font-medium">Highest This Month</p>
                 </div>
 
-                {/* This month */}
-                <div className="bg-white rounded-2xl border border-[#E8E8E4] p-4 flex flex-col items-center text-center col-span-2 sm:col-span-1">
-                  <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] flex items-center justify-center mb-2">
-                    <Calendar className="w-4 h-4 text-[#3B82F6]" />
+                {/* Total savings */}
+                <div className="bg-white rounded-2xl border border-[#E8E8E4] p-4 flex flex-col items-center text-center">
+                  <div className="w-8 h-8 rounded-lg bg-[#F0FDF4] flex items-center justify-center mb-2">
+                    <DollarSign className="w-4 h-4 text-[#22C55E]" />
                   </div>
-                  <p className="text-2xl font-black text-[#3B82F6] leading-none mb-1">
-                    {animatedThisMonth ?? 0}
+                  <p className="text-2xl font-black text-[#22C55E] leading-none mb-1">
+                    {animatedSavings !== null ? `$${(animatedSavings / 1000).toFixed(1)}k` : "—"}
                   </p>
-                  <p className="text-[11px] text-[#9B9B9B] font-medium">This Month</p>
+                  <p className="text-[11px] text-[#9B9B9B] font-medium">Potential Savings</p>
                 </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* ── Filter tabs ── */}
+        {/* ── Filter / sort bar ── */}
         {hasReports && !loading && (
-          <div className="flex items-center gap-2 mb-5 flex-wrap">
-            <Filter className="w-4 h-4 text-[#9B9B9B] shrink-0" />
-            {(["all", "complete", "processing", "failed"] as StatusFilter[]).map((filter) => (
-              <button
-                key={filter}
-                onClick={() => setStatusFilter(filter)}
-                className={`text-xs px-3 py-1.5 rounded-full transition-colors capitalize font-medium ${
-                  statusFilter === filter
-                    ? "bg-[#FF6B35] text-white shadow-sm shadow-[#FF6B35]/20"
-                    : "bg-white border border-[#E8E8E4] text-[#6B6B6B] hover:border-[#FF6B35]/30 hover:text-[#FF6B35]"
-                }`}
-              >
-                {filter}
-                {filter !== "all" && (
-                  <span className="ml-1 opacity-75">
-                    (
-                    {reports.filter((r) =>
-                      filter === "complete"
-                        ? r.status === "complete" || r.status === "completed"
-                        : r.status === filter
-                    ).length}
-                    )
-                  </span>
-                )}
-              </button>
-            ))}
-            <span className="ml-auto text-xs text-[#9B9B9B]">
-              {filteredReports.length} report{filteredReports.length !== 1 ? "s" : ""}
-              {statusFilter !== "all" ? ` (${statusFilter})` : ""}
-            </span>
+          <div className="mb-5 space-y-3">
+            {/* Row 1: search + sort */}
+            <div className="flex gap-2 flex-wrap items-center">
+              <div className="relative flex-1 min-w-[160px]">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9B9B9B]" />
+                <input
+                  type="text"
+                  placeholder="Search by product name..."
+                  value={nameSearch}
+                  onChange={(e) => setNameSearch(e.target.value)}
+                  className="w-full bg-white border border-[#E8E8E4] focus:border-[#FF6B35] rounded-xl pl-9 pr-3 py-2 text-sm text-[#1A1A1A] placeholder:text-[#C0C0BC] outline-none transition-colors"
+                />
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <SortAsc className="w-4 h-4 text-[#9B9B9B]" />
+                <select
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value as SortOption)}
+                  className="bg-white border border-[#E8E8E4] rounded-xl px-3 py-2 text-sm text-[#1A1A1A] outline-none cursor-pointer hover:border-[#FF6B35]/40 transition-colors"
+                >
+                  <option value="newest">Newest</option>
+                  <option value="highest">Highest Score</option>
+                  <option value="oldest">Oldest</option>
+                </select>
+              </div>
+            </div>
+            {/* Row 2: score filter pills */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <Filter className="w-4 h-4 text-[#9B9B9B] shrink-0" />
+              {(["all", "high", "medium", "low"] as ScoreFilter[]).map((f) => {
+                const labels: Record<ScoreFilter, string> = { all: "All", high: "High (80+)", medium: "Medium (50–79)", low: "Low (<50)" }
+                return (
+                  <button
+                    key={f}
+                    onClick={() => setScoreFilter(f)}
+                    className={`text-xs px-3 py-1.5 rounded-full transition-colors font-medium ${
+                      scoreFilter === f
+                        ? "bg-[#FF6B35] text-white shadow-sm shadow-[#FF6B35]/20"
+                        : "bg-white border border-[#E8E8E4] text-[#6B6B6B] hover:border-[#FF6B35]/30 hover:text-[#FF6B35]"
+                    }`}
+                  >
+                    {labels[f]}
+                  </button>
+                )
+              })}
+              <span className="ml-auto text-xs text-[#9B9B9B]">
+                {filteredReports.length} report{filteredReports.length !== 1 ? "s" : ""}
+              </span>
+            </div>
           </div>
         )}
 
@@ -453,109 +480,185 @@ export default function DashboardPage() {
               const isFailed = report.status === "failed"
               const score = report.feasibilityScore
 
+              // Score badge color
+              const scoreBadgeCls =
+                score === undefined ? "bg-[#F5F5F0] text-[#9B9B9B]"
+                : score >= 80 ? "bg-[#DCFCE7] text-[#166534]"
+                : score >= 50 ? "bg-[#FEF3C7] text-[#92400E]"
+                : "bg-[#FEE2E2] text-[#991B1B]"
+
               return (
                 <ScrollReveal key={report.id} delay={i * 0.05}>
-                  <Link
-                    href={`/report/${report.id}`}
-                    className={`group flex items-stretch bg-white rounded-2xl border border-[#E8E8E4] border-l-4 ${getScoreBorderColor(score, report.status)} overflow-hidden hover:shadow-lg hover:border-[#FF6B35]/40 hover:border-l-4 transition-all duration-200`}
+                  <div
+                    className={`group bg-white rounded-2xl border border-[#E8E8E4] border-l-4 ${getScoreBorderColor(score, report.status)} overflow-hidden hover:shadow-lg hover:border-[#FF6B35]/40 transition-all duration-200`}
                   >
-                    {/* Score column (complete only) */}
-                    {isComplete && score !== undefined ? (
-                      <div className="flex flex-col items-center justify-center px-5 py-5 shrink-0 border-r border-[#F0F0EC] min-w-[80px]">
-                        <span className={`text-3xl font-black leading-none ${getScoreColor(score)}`}>
-                          {score}
-                        </span>
-                        <span className={`text-[10px] font-semibold mt-1 uppercase tracking-wide ${getScoreColor(score)}`}>
-                          {getScoreLabel(score)}
-                        </span>
-                      </div>
-                    ) : isProcessing ? (
-                      <div className="flex flex-col items-center justify-center px-5 py-5 shrink-0 border-r border-[#F0F0EC] min-w-[80px]">
-                        <div className="relative w-10 h-10">
-                          <div className="absolute inset-0 rounded-full border-2 border-[#F59E0B]/20" />
-                          <div className="absolute inset-0 rounded-full border-2 border-[#F59E0B] border-t-transparent animate-spin" />
+                    <Link
+                      href={`/report/${report.id}`}
+                      className="flex items-stretch"
+                    >
+                      {/* Score column (complete only) */}
+                      {isComplete && score !== undefined ? (
+                        <div className="flex flex-col items-center justify-center px-5 py-5 shrink-0 border-r border-[#F0F0EC] min-w-[80px]">
+                          <span className={`text-3xl font-black leading-none ${getScoreColor(score)}`}>
+                            {score}
+                          </span>
+                          <span className={`text-[10px] font-semibold mt-1 uppercase tracking-wide ${getScoreColor(score)}`}>
+                            {getScoreLabel(score)}
+                          </span>
                         </div>
+                      ) : isProcessing ? (
+                        <div className="flex flex-col items-center justify-center px-5 py-5 shrink-0 border-r border-[#F0F0EC] min-w-[80px]">
+                          <div className="relative w-10 h-10">
+                            <div className="absolute inset-0 rounded-full border-2 border-[#F59E0B]/20" />
+                            <div className="absolute inset-0 rounded-full border-2 border-[#F59E0B] border-t-transparent animate-spin" />
+                          </div>
+                        </div>
+                      ) : isFailed ? (
+                        <div className="flex flex-col items-center justify-center px-5 py-5 shrink-0 border-r border-[#F0F0EC] min-w-[80px]">
+                          <span className="text-2xl font-black text-[#EF4444] leading-none">!</span>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center px-5 py-5 shrink-0 border-r border-[#F0F0EC] min-w-[80px]">
+                          <FileText className="w-7 h-7 text-[#D1D5DB]" />
+                        </div>
+                      )}
+
+                      {/* Main content */}
+                      <div className="flex-1 min-w-0 p-5">
+                        {/* Top row */}
+                        <div className="flex items-start gap-2 mb-1.5">
+                          <h3 className="font-bold text-[#1A1A1A] text-[15px] truncate flex-1 leading-tight">
+                            {report.productName || "Untitled Product"}
+                          </h3>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {isComplete && score !== undefined && (
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${scoreBadgeCls}`}>
+                                Score {score}
+                              </span>
+                            )}
+                            <span
+                              className={`text-[11px] px-2 py-0.5 rounded-full shrink-0 font-medium capitalize ${getStatusBadge(report.status)}`}
+                            >
+                              {isComplete ? "Complete" : report.status}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Date */}
+                        <p className="text-xs text-[#9B9B9B] mb-3 flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          Analyzed {timeAgo(report.createdAt)}
+                        </p>
+
+                        {/* Score bar (complete) */}
+                        {isComplete && score !== undefined && (
+                          <div className="w-full h-1.5 bg-[#F0F0EC] rounded-full overflow-hidden mb-3">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${score}%` }}
+                              transition={{ duration: 0.8, delay: i * 0.05, ease: "easeOut" }}
+                              className={`h-full rounded-full ${getScoreBarColor(score)}`}
+                            />
+                          </div>
+                        )}
+
+                        {/* Processing animation */}
+                        {isProcessing && (
+                          <div className="w-full h-1.5 bg-[#F0F0EC] rounded-full overflow-hidden mb-3">
+                            <div
+                              className="h-full w-1/3 bg-[#F59E0B] rounded-full animate-pulse"
+                              style={{ animation: "shimmer 1.5s infinite" }}
+                            />
+                          </div>
+                        )}
+
+                        {/* Failed CTA */}
+                        {isFailed && (
+                          <p className="text-xs text-[#EF4444] mb-1">
+                            Analysis failed.{" "}
+                            <a
+                              href="mailto:hello@bottlecap.io"
+                              onClick={(e) => e.stopPropagation()}
+                              className="underline hover:no-underline"
+                            >
+                              Contact support
+                            </a>
+                          </p>
+                        )}
+
+                        {/* Processing note */}
+                        {isProcessing && (
+                          <p className="text-xs text-[#F59E0B] font-medium flex items-center gap-1">
+                            <Zap className="w-3 h-3" />
+                            Analyzing your product — check back in a minute
+                          </p>
+                        )}
                       </div>
-                    ) : isFailed ? (
-                      <div className="flex flex-col items-center justify-center px-5 py-5 shrink-0 border-r border-[#F0F0EC] min-w-[80px]">
-                        <span className="text-2xl font-black text-[#EF4444] leading-none">!</span>
+
+                      {/* Arrow */}
+                      <div className="flex items-center pr-5 shrink-0">
+                        <ArrowRight className="w-5 h-5 text-[#D1D5DB] group-hover:text-[#FF6B35] transition-colors" />
                       </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center px-5 py-5 shrink-0 border-r border-[#F0F0EC] min-w-[80px]">
-                        <FileText className="w-7 h-7 text-[#D1D5DB]" />
+                    </Link>
+
+                    {/* Quick action buttons */}
+                    {isComplete && (
+                      <div
+                        className="flex items-center gap-2 px-5 pb-3 border-t border-[#F5F5F0] pt-2.5"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <button
+                          onClick={() => {
+                            const url = `${window.location.origin}/report/${report.id}`
+                            navigator.clipboard.writeText(url).catch(() => {})
+                          }}
+                          className="inline-flex items-center gap-1.5 text-xs text-[#6B6B6B] hover:text-[#FF6B35] transition-colors font-medium py-1 px-2 rounded-lg hover:bg-[#FFF0EB]"
+                        >
+                          <Share2 className="w-3.5 h-3.5" />
+                          Share
+                        </button>
+                        <Link
+                          href="/analyze"
+                          className="inline-flex items-center gap-1.5 text-xs text-[#6B6B6B] hover:text-[#FF6B35] transition-colors font-medium py-1 px-2 rounded-lg hover:bg-[#FFF0EB]"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                          Re-analyze similar
+                        </Link>
                       </div>
                     )}
+                  </div>
 
-                    {/* Main content */}
-                    <div className="flex-1 min-w-0 p-5">
-                      {/* Top row */}
-                      <div className="flex items-start gap-2 mb-2">
-                        <h3 className="font-bold text-[#1A1A1A] text-[15px] truncate flex-1 leading-tight">
-                          {report.productName || "Untitled Product"}
-                        </h3>
-                        <span
-                          className={`text-[11px] px-2 py-0.5 rounded-full shrink-0 font-medium capitalize ${getStatusBadge(report.status)}`}
-                        >
-                          {isComplete ? "Complete" : report.status}
-                        </span>
-                      </div>
-
-                      {/* Date */}
-                      <p className="text-xs text-[#9B9B9B] mb-3 flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {timeAgo(report.createdAt)}
+                  {/* Subscription upsell banner — after first card, single-report users */}
+                  {i === 0 && reports.length === 1 && !dismissedUpsell && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3, delay: 0.2 }}
+                      className="flex items-center gap-3 bg-[#FFFBEB] border border-[#F59E0B]/30 rounded-2xl px-5 py-3.5 mt-3"
+                    >
+                      <Sparkles className="w-4 h-4 text-[#F59E0B] shrink-0" />
+                      <p className="text-sm text-[#92400E] flex-1">
+                        Running multiple analyses? Monthly plan is $199 &mdash; unlimited reports.
                       </p>
-
-                      {/* Score bar (complete) */}
-                      {isComplete && score !== undefined && (
-                        <div className="w-full h-1.5 bg-[#F0F0EC] rounded-full overflow-hidden mb-3">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: `${score}%` }}
-                            transition={{ duration: 0.8, delay: i * 0.05, ease: "easeOut" }}
-                            className={`h-full rounded-full ${getScoreBarColor(score)}`}
-                          />
-                        </div>
-                      )}
-
-                      {/* Processing animation */}
-                      {isProcessing && (
-                        <div className="w-full h-1.5 bg-[#F0F0EC] rounded-full overflow-hidden mb-3">
-                          <div
-                            className="h-full w-1/3 bg-[#F59E0B] rounded-full animate-pulse"
-                            style={{ animation: "shimmer 1.5s infinite" }}
-                          />
-                        </div>
-                      )}
-
-                      {/* Failed CTA */}
-                      {isFailed && (
-                        <p className="text-xs text-[#EF4444] mb-1">
-                          Analysis failed.{" "}
-                          <a
-                            href="mailto:hello@bottlecap.io"
-                            onClick={(e) => e.stopPropagation()}
-                            className="underline hover:no-underline"
-                          >
-                            Contact support
-                          </a>
-                        </p>
-                      )}
-
-                      {/* Processing note */}
-                      {isProcessing && (
-                        <p className="text-xs text-[#F59E0B] font-medium flex items-center gap-1">
-                          <Zap className="w-3 h-3" />
-                          Analyzing your product — check back in a minute
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Arrow */}
-                    <div className="flex items-center pr-5 shrink-0">
-                      <ArrowRight className="w-5 h-5 text-[#D1D5DB] group-hover:text-[#FF6B35] transition-colors" />
-                    </div>
-                  </Link>
+                      <Link
+                        href="/pricing"
+                        className="text-xs font-semibold text-[#F59E0B] hover:underline shrink-0"
+                      >
+                        Learn more &rarr;
+                      </Link>
+                      <button
+                        onClick={() => {
+                          localStorage.setItem("dismissed_upsell", "true")
+                          setDismissedUpsell(true)
+                        }}
+                        className="text-[#B45309] hover:text-[#92400E] transition-colors shrink-0"
+                        aria-label="Dismiss"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </motion.div>
+                  )}
                 </ScrollReveal>
               )
             })}
@@ -609,7 +712,7 @@ export default function DashboardPage() {
           )}
         </AnimatePresence>
 
-        {/* ── Pre-search state ── */}
+        {/* ── Pre-search / Quick Start state ── */}
         <AnimatePresence>
           {!searched && !loading && (
             <motion.div
@@ -618,47 +721,97 @@ export default function DashboardPage() {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.4, delay: 0.15 }}
             >
-              <div className="mt-2">
-                <p className="text-xs font-semibold text-[#9B9B9B] uppercase tracking-widest mb-4">
-                  What you&apos;ll find here
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
-                  {[
-                    {
-                      icon: "📊",
-                      title: "All your analyses",
-                      desc: "View every product report you've purchased, in one place.",
-                    },
-                    {
-                      icon: "🔗",
-                      title: "Shareable links",
-                      desc: "Share any report directly with co-founders or investors.",
-                    },
-                    {
-                      icon: "✅",
-                      title: "Progress tracking",
-                      desc: "Check off action items and monitor next steps across reports.",
-                    },
-                  ].map((item) => (
-                    <div
-                      key={item.title}
-                      className="bg-white border border-[#E8E8E4] rounded-2xl p-5 hover:border-[#FF6B35]/30 transition-colors"
-                    >
-                      <div className="text-2xl mb-3">{item.icon}</div>
-                      <p className="font-semibold text-[#1A1A1A] text-sm mb-1">{item.title}</p>
-                      <p className="text-xs text-[#9B9B9B] leading-relaxed">{item.desc}</p>
-                    </div>
-                  ))}
+              {/* Quick Start hero */}
+              <div className="text-center py-10 mb-8">
+                <div className="relative inline-flex items-center justify-center mb-6">
+                  <motion.div
+                    animate={{ scale: [1, 1.18, 1] }}
+                    transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
+                    className="absolute w-24 h-24 rounded-full bg-[#FF6B35]/10"
+                  />
+                  <motion.div
+                    animate={{ scale: [1, 1.08, 1] }}
+                    transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut", delay: 0.3 }}
+                    className="absolute w-16 h-16 rounded-full bg-[#FF6B35]/20"
+                  />
+                  <div className="relative w-14 h-14 rounded-full bg-[#FF6B35] flex items-center justify-center shadow-lg shadow-[#FF6B35]/30">
+                    <FileText className="w-7 h-7 text-white" />
+                  </div>
                 </div>
-                <div className="text-center">
+                <h2 className="text-2xl font-black text-[#1A1A1A] mb-2">No reports yet</h2>
+                <p className="text-sm text-[#9B9B9B] max-w-sm mx-auto">
+                  Enter your email above to retrieve existing reports, or get started below.
+                </p>
+              </div>
+
+              {/* Quick Start cards */}
+              <p className="text-xs font-semibold text-[#9B9B9B] uppercase tracking-widest mb-4">
+                Quick Start
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+                {/* Card 1: Try demo product */}
+                <div className="bg-white border border-[#E8E8E4] rounded-2xl p-5 hover:border-[#FF6B35]/40 hover:shadow-md transition-all flex flex-col">
+                  <div className="w-10 h-10 rounded-xl bg-[#FFF0EB] flex items-center justify-center mb-3">
+                    <FlaskConical className="w-5 h-5 text-[#FF6B35]" />
+                  </div>
+                  <p className="font-bold text-[#1A1A1A] text-sm mb-1">Try a demo product</p>
+                  <p className="text-xs text-[#9B9B9B] leading-relaxed mb-4 flex-1">
+                    See how a report looks — pre-filled with an insulated water bottle.
+                  </p>
                   <Link
-                    href="/analyze"
-                    className="inline-flex items-center gap-1.5 text-sm text-[#FF6B35] font-semibold hover:underline"
+                    href="/analyze?demo=bottle"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#FF6B35] hover:underline"
                   >
-                    Never analyzed a product? Start here
-                    <ArrowRight className="w-4 h-4" />
+                    Try it now
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
+
+                {/* Card 2: Quiz */}
+                <div className="bg-white border border-[#E8E8E4] rounded-2xl p-5 hover:border-[#FF6B35]/40 hover:shadow-md transition-all flex flex-col">
+                  <div className="w-10 h-10 rounded-xl bg-[#FFF0EB] flex items-center justify-center mb-3">
+                    <HelpCircle className="w-5 h-5 text-[#FF6B35]" />
+                  </div>
+                  <p className="font-bold text-[#1A1A1A] text-sm mb-1">Take the quiz first</p>
+                  <p className="text-xs text-[#9B9B9B] leading-relaxed mb-4 flex-1">
+                    Not sure what to manufacture? Start here and we will guide you.
+                  </p>
+                  <Link
+                    href="/tools/quiz"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#FF6B35] hover:underline"
+                  >
+                    Start quiz
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+
+                {/* Card 3: Sample report */}
+                <div className="bg-white border border-[#E8E8E4] rounded-2xl p-5 hover:border-[#FF6B35]/40 hover:shadow-md transition-all flex flex-col">
+                  <div className="w-10 h-10 rounded-xl bg-[#FFF0EB] flex items-center justify-center mb-3">
+                    <TrendingUp className="w-5 h-5 text-[#FF6B35]" />
+                  </div>
+                  <p className="font-bold text-[#1A1A1A] text-sm mb-1">See a sample report</p>
+                  <p className="text-xs text-[#9B9B9B] leading-relaxed mb-4 flex-1">
+                    Browse a full 12-section feasibility report before you commit.
+                  </p>
+                  <Link
+                    href="/report/demo"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#FF6B35] hover:underline"
+                  >
+                    View sample
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <Link
+                  href="/analyze"
+                  className="inline-flex items-center gap-1.5 text-sm text-[#FF6B35] font-semibold hover:underline"
+                >
+                  Ready to analyze your product? Start here
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
             </motion.div>
           )}
