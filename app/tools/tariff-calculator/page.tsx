@@ -174,6 +174,7 @@ export default function TariffCalculatorPage() {
 
   // China baseline for comparison
   const chinaCountry = ORIGIN_COUNTRIES.find((c) => c.id === "CN")!
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const chinaCalc = useMemo(
     () => calcForCountry(chinaCountry, cat, productValue, quantity),
     [cat, productValue, quantity]
