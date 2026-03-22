@@ -846,6 +846,46 @@ function ReportContent() {
           </div>
           </ScrollReveal>
 
+          {/* Next Steps */}
+          <ScrollReveal delay={0.1}>
+          <div className="bg-white rounded-2xl border border-[#E8E8E4] p-6">
+            <h3 className="font-bold text-[#1A1A1A] mb-4 flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-[#FF6B35] text-white text-xs font-black flex items-center justify-center">✓</span>
+              Your next 7 days
+            </h3>
+            <div className="space-y-3">
+              {[
+                { day: "Day 1–2", action: "Share this report with your co-founder or advisor for a second opinion.", done: false },
+                { day: "Day 3", action: "Use the factory spec sheet below to request RFQs from 3 suppliers on Alibaba or Global Sources.", done: false },
+                { day: "Day 4–5", action: "Compare quotes. Look for factories with Trade Assurance and verified certifications.", done: false },
+                { day: "Day 6", action: "Order samples ($200–400 budget). Inspect against the spec sheet.", done: false },
+                { day: "Day 7", action: "Book a freight forwarder and confirm HS code with your customs broker.", done: false },
+              ].map((step, i) => (
+                <div key={i} className="flex gap-3 items-start">
+                  <span className="text-[10px] font-black text-[#FF6B35] bg-[#FFF0EB] rounded px-1.5 py-0.5 shrink-0 mt-0.5 whitespace-nowrap">{step.day}</span>
+                  <p className="text-sm text-[#4B4B4B] leading-relaxed">{step.action}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          </ScrollReveal>
+
+          {/* Related Tools */}
+          <ScrollReveal delay={0.1}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {[
+              { label: "HS Code Lookup", href: "/tools/hs-lookup", desc: "Verify your tariff code" },
+              { label: "Cost Calculator", href: "/tools/cost-calculator", desc: "Detailed landed cost" },
+              { label: "MOQ Planner", href: "/tools/moq-calculator", desc: "Find your break-even qty" },
+            ].map((tool) => (
+              <a key={tool.label} href={tool.href} className="group flex flex-col bg-[#FAFAF8] border border-[#E8E8E4] rounded-xl p-4 hover:border-[#FF6B35] hover:shadow-sm transition-all">
+                <p className="text-sm font-bold text-[#1A1A1A] group-hover:text-[#FF6B35] transition-colors mb-1">{tool.label}</p>
+                <p className="text-xs text-[#9B9B9B]">{tool.desc}</p>
+              </a>
+            ))}
+          </div>
+          </ScrollReveal>
+
           {/* Upsell Card */}
           <ScrollReveal direction="scale" delay={0.15}>
           <div className="bg-gradient-to-r from-[#FF6B35] to-[#FF9F1C] rounded-2xl p-8 text-white mt-8">
