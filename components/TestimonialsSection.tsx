@@ -8,84 +8,96 @@ const testimonials = [
   {
     quote: "Bottlecap did in 3 minutes what a sourcing agent quoted me $5,000 for. Had samples from Vietnam within a month.",
     name: "Sarah Kim",
-    role: "Founder, DrinkWell",
+    title: "Founder",
+    company: "DrinkWell",
     metric: "Saved $4,900",
     metricColor: "#22C55E" as const,
   },
   {
     quote: "The full report \u2014 cost breakdown, country comparison, optimization tips \u2014 gave me confidence to place my first order.",
     name: "Marcus Torres",
-    role: "Product Designer, Layerform",
+    title: "Product Designer",
+    company: "Layerform",
     metric: "Score: 78/100",
     metricColor: "#FF6B35" as const,
   },
   {
     quote: "I\u2019ve launched 3 products now. Each time I start with a Bottlecap report. It\u2019s like a manufacturing consultant for $99.",
     name: "Priya Mehta",
-    role: "Serial Founder, Veda Goods",
+    title: "CEO",
+    company: "Earthen Goods",
     metric: "3 launches",
     metricColor: "#FF6B35" as const,
   },
   {
     quote: "The country comparison showed Vietnam would be 22% cheaper for my MOQ with better certifications. Almost went with China.",
     name: "James Rowan",
-    role: "Founder, PeakOutdoor",
+    title: "Founder",
+    company: "PeakOutdoor",
     metric: "22% cost cut",
     metricColor: "#22C55E" as const,
   },
   {
     quote: "Had no idea what an HS code was two weeks ago. Now I have factory samples en route. Months of learning compressed into one report.",
     name: "Amara Osei",
-    role: "Founder, NuGlow Skincare",
+    title: "Founder",
+    company: "NuGlow Skincare",
     metric: "Score: 88/100",
     metricColor: "#FF6B35" as const,
   },
   {
     quote: "Optimization tips flagged I could switch to injection-molded plastic and save $3.20 per unit. No quality hit.",
     name: "David Liang",
-    role: "CTO, Rayden Hardware",
+    title: "CTO",
+    company: "Rayden Hardware",
     metric: "$3.20/unit saved",
     metricColor: "#22C55E" as const,
   },
   {
     quote: "Bottlecap is now part of our discovery phase for every client. We save 40+ hours per engagement.",
     name: "Chen Wei",
-    role: "Founder, Arcbridge Agency",
+    title: "Founder",
+    company: "Arcbridge Agency",
     metric: "40+ hrs saved",
     metricColor: "#22C55E" as const,
   },
   {
     quote: "Compliance flags caught something I would have missed \u2014 my product needed FDA food-contact certification.",
     name: "Fatima Ali",
-    role: "Founder, ZestBites",
+    title: "Founder",
+    company: "ZestBites",
     metric: "Recall avoided",
     metricColor: "#F59E0B" as const,
   },
   {
     quote: "The report identified two alternative materials I hadn\u2019t considered \u2014 same performance, 28% cheaper. Paid for itself 10x.",
     name: "Noah Sandler",
-    role: "Founder, Helio D2C",
+    title: "Founder",
+    company: "Helio D2C",
     metric: "28% cheaper",
     metricColor: "#22C55E" as const,
   },
   {
     quote: "We\u2019ve done 6 analyses comparing product variations before committing to tooling. Basically replaces a part-time consultant.",
     name: "Yuki Tanaka",
-    role: "Product Manager, Omnicraft",
+    title: "Product Manager",
+    company: "Omnicraft",
     metric: "6 analyses",
     metricColor: "#FF6B35" as const,
   },
   {
     quote: "Sent the supplier spec sheet directly to 3 factories on Alibaba. Got responses within 48 hours. No more ghosting.",
     name: "Lena Hartwell",
-    role: "Founder, Sunridge Store",
+    title: "Founder",
+    company: "Sunridge Store",
     metric: "3 suppliers found",
     metricColor: "#22C55E" as const,
   },
   {
     quote: "Predicted my landed cost at $4.20/unit. Actual: $4.35. That\u2019s 3.5% variance. Never had a consultant that accurate.",
     name: "Raj Patel",
-    role: "Amazon FBA Seller, BoldPack",
+    title: "Amazon FBA Seller",
+    company: "BoldPack",
     metric: "3.5% variance",
     metricColor: "#22C55E" as const,
   },
@@ -117,9 +129,8 @@ function Card({ t }: { t: Testimonial }) {
           </div>
           <div>
             <p className="text-[12px] font-semibold text-[#1A1A1A] leading-none">
-              {t.name}
+              {t.name} <span className="text-[#1A1A1A]/30">&middot;</span> <span className="font-normal text-[#1A1A1A]/50">{t.title}, {t.company}</span>
             </p>
-            <p className="text-[11px] text-[#1A1A1A]/40 mt-0.5">{t.role}</p>
           </div>
         </div>
         <span
@@ -151,9 +162,8 @@ function MobileCard({ t }: { t: Testimonial }) {
           </div>
           <div>
             <p className="text-[12px] font-semibold text-[#1A1A1A] leading-none">
-              {t.name}
+              {t.name} <span className="text-[#1A1A1A]/30">&middot;</span> <span className="font-normal text-[#1A1A1A]/50">{t.title}, {t.company}</span>
             </p>
-            <p className="text-[11px] text-[#1A1A1A]/40 mt-0.5">{t.role}</p>
           </div>
         </div>
         <span
@@ -243,8 +253,8 @@ export default function TestimonialsSection() {
     <section className="py-20 relative z-0 overflow-hidden bg-[#FAFAF8]">
       {/* Header */}
       <div className="max-w-6xl mx-auto px-6 mb-12">
-        <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#FF6B35] mb-3 text-center">
-          What founders say
+        <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#767676] mb-3 text-center">
+          Trusted by product founders
         </p>
         <motion.h2
           initial={{ opacity: 0, y: 12 }}

@@ -173,13 +173,13 @@ export default function AgenticHero() {
             </button>
           </MagneticButton>
         </div>
-        <div className="flex items-center gap-3 mt-2 ml-1">
-          <p className="text-xs text-[#767676]">One report · $99 · 2-5 min delivery</p>
+        <div className="flex flex-col items-start gap-2 mt-3 ml-1">
+          <p className="text-xs text-[#767676]">One report · $99 · 2-5 min delivery · 72-hr money back</p>
           <a
             href="/report/demo"
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#FF6B35] hover:text-[#E85A25] transition-colors"
+            className="inline-flex items-center gap-1.5 border border-[#E8E8E4] rounded-xl px-5 py-2.5 text-sm font-medium text-[#6B6B6B] hover:border-[#FF6B35] hover:text-[#FF6B35] transition-colors"
           >
-            <FileText className="w-3 h-3" />
+            <FileText className="w-3.5 h-3.5" />
             See example report
           </a>
         </div>

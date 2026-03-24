@@ -219,6 +219,12 @@ export default function PricingContent() {
               >
                 Get your report
               </Link>
+              <Link
+                href="/report/demo"
+                className="mt-3 block text-center text-sm text-[#FF6B35] font-medium hover:underline"
+              >
+                See what you get &rarr;
+              </Link>
               <ul className="mt-8 space-y-3">
                 {singleFeatures.map((f) => (
                   <li key={f} className="flex items-start gap-3 text-sm text-[#3A3A32]">
@@ -256,6 +262,12 @@ export default function PricingContent() {
               >
                 Start Pro
               </Link>
+              <Link
+                href="/report/demo"
+                className="mt-3 block text-center text-sm text-[#FF6B35] font-medium hover:underline"
+              >
+                See what you get &rarr;
+              </Link>
               <ul className="mt-8 space-y-3">
                 {proFeatures.map((f) => (
                   <li key={f} className="flex items-start gap-3 text-sm text-[#3A3A32]">
@@ -287,6 +299,12 @@ export default function PricingContent() {
               >
                 Contact sales
               </a>
+              <Link
+                href="/report/demo"
+                className="mt-3 block text-center text-sm text-[#FF6B35] font-medium hover:underline"
+              >
+                See what you get &rarr;
+              </Link>
               <ul className="mt-8 space-y-3">
                 {agencyFeatures.map((f) => (
                   <li key={f} className="flex items-start gap-3 text-sm text-[#3A3A32]">

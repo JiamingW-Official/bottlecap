@@ -85,6 +85,12 @@ export default function Home() {
               factory specs, optimization tips, compliance flags, and more — generated in minutes,
               not weeks.
             </p>
+            <Link
+              href="/report/demo"
+              className="inline-flex items-center gap-1 text-sm font-medium text-[#FF6B35] hover:text-[#E85A25] transition-colors mt-3"
+            >
+              See a real example <span aria-hidden="true">&rarr;</span>
+            </Link>
           </div>
           <FeatureShowcase />
         </div>
@@ -97,7 +103,7 @@ export default function Home() {
       <section className="py-24">
         <div className="max-w-6xl mx-auto px-6">
           <div className="max-w-2xl mb-12">
-            <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#FF6B35] mb-3">
+            <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#767676] mb-3">
               Manufacturing intelligence
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-[1.1] text-[#1A1A1A] mb-4">
@@ -162,6 +168,12 @@ export default function Home() {
                 <p className="text-center text-white/30 text-xs mt-3">
                   2-5 min delivery · 72-hr money back
                 </p>
+                <Link
+                  href="/report/demo"
+                  className="block text-center text-sm font-medium text-[#FF6B35] hover:text-[#FF8555] transition-colors mt-4"
+                >
+                  See what&apos;s in the report <span aria-hidden="true">&rarr;</span>
+                </Link>
               </div>
 
               {/* Right: what's included */}
@@ -187,7 +199,7 @@ export default function Home() {
       <section className="py-24 bg-[#FAFAF8]" id="faq">
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-14">
-            <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#FF6B35] mb-3">
+            <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#767676] mb-3">
               Questions
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-[1.1] text-[#1A1A1A]">
