@@ -7,7 +7,7 @@ export default function Loading() {
           <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#FF6B35] animate-spin" />
           <div className="absolute inset-[6px] rounded-full border border-[#FF6B35]/20 border-t-[#FF6B35]/60 animate-spin [animation-direction:reverse] [animation-duration:0.8s]" />
         </div>
-        <p className="text-sm text-[#9B9B9B] font-medium tracking-wide">Loading…</p>
+        <p className="text-sm text-[#767676] font-medium tracking-wide">Loading…</p>
       </div>
     </div>
   )

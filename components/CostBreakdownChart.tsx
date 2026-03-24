@@ -118,7 +118,7 @@ export default function CostBreakdownChart({
                 {currency}
                 {arc.value.toFixed(2)}
               </span>
-              <span className="text-xs text-[#9B9B9B] ml-2">
+              <span className="text-xs text-[#767676] ml-2">
                 {(arc.fraction * 100).toFixed(0)}%
               </span>
             </div>

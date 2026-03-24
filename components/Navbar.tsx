@@ -215,7 +215,7 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard"
-            className="hidden md:inline-flex text-[13px] font-medium text-[#9B9B9B] hover:text-[#6B6B6B] transition-colors"
+            className="hidden md:inline-flex text-[13px] font-medium text-[#767676] hover:text-[#6B6B6B] transition-colors"
           >
             My Reports
           </Link>
@@ -271,14 +271,14 @@ export default function Navbar() {
                   className="flex items-center justify-between bg-[#F5F5F0] text-[#1A1A1A] rounded-xl px-4 py-3 text-sm font-medium"
                 >
                   See sample report
-                  <span className="text-[#9B9B9B]">→</span>
+                  <span className="text-[#767676]">→</span>
                 </Link>
               </div>
 
               <div className="h-px bg-[#F0F0EC] mb-4" />
 
               {/* Tools — top 4 */}
-              <p className="text-[10px] font-bold text-[#9B9B9B] uppercase tracking-widest mb-2">Tools</p>
+              <p className="text-[10px] font-bold text-[#767676] uppercase tracking-widest mb-2">Tools</p>
               <div className="grid grid-cols-2 gap-1 mb-4">
                 {toolsLinks.map((link) => (
                   <Link

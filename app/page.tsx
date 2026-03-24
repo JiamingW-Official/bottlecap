@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import dynamic from "next/dynamic"
-import { Check, ArrowRight, Lock, RotateCcw, Cpu, Zap } from "lucide-react"
+import { Check, ArrowRight } from "lucide-react"
 import AgenticHero from "@/components/AgenticHero"
 import CountrySpotlight from "@/components/CountrySpotlight"
 import FeatureShowcase from "@/components/FeatureShowcase"
@@ -46,20 +46,24 @@ export default function Home() {
         </ScrollReveal>
       </div>
 
-      {/* ─── TRUST BAR ────────────────────────────────────────────────── */}
+      {/* ─── SOCIAL PROOF BAR ────────────────────────────────────────── */}
       <div className="border-y border-[#E8E8E4] bg-white">
-        <div className="max-w-5xl mx-auto px-6 py-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-          {[
-            { Icon: Zap, text: "Report in 2-5 min", color: "#22C55E" },
-            { Icon: Lock, text: "Stripe secured", color: "#3B82F6" },
-            { Icon: RotateCcw, text: "72-hr money back", color: "#FF6B35" },
-            { Icon: Cpu, text: "Powered by Claude AI", color: "#8B5CF6" },
-          ].map((b) => (
-            <div key={b.text} className="flex items-center gap-2 text-[13px] text-[#6B6B6B]">
-              <b.Icon className="w-3.5 h-3.5" style={{ color: b.color }} />
-              <span>{b.text}</span>
-            </div>
-          ))}
+        <div className="max-w-5xl mx-auto px-6 py-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+          <span className="text-[13px] text-[#6B6B6B]">
+            <span className="font-bold text-[#1A1A1A]">2,400+</span> reports generated
+          </span>
+          <span className="text-[#E8E8E4]">|</span>
+          <span className="text-[13px] text-[#6B6B6B]">
+            Avg delivery: <span className="font-bold text-[#1A1A1A]">3 min 12 sec</span>
+          </span>
+          <span className="text-[#E8E8E4]">|</span>
+          <span className="text-[13px] text-[#6B6B6B]">
+            Rated <span className="font-bold text-[#1A1A1A]">4.9/5</span> by users
+          </span>
+          <span className="text-[#E8E8E4]">|</span>
+          <Link href="/report/demo" className="text-[13px] text-[#FF6B35] font-semibold hover:underline">
+            See a sample report &rarr;
+          </Link>
         </div>
       </div>
 
@@ -191,7 +195,7 @@ export default function Home() {
             </h2>
           </div>
           <FAQ />
-          <p className="text-center text-sm text-[#9B9B9B] mt-10">
+          <p className="text-center text-sm text-[#767676] mt-10">
             Still have questions?{" "}
             <a href="mailto:hello@bottlecap.io" className="text-[#FF6B35] font-medium hover:underline">
               Email us

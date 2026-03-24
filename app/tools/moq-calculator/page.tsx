@@ -380,7 +380,7 @@ export default function MoqCalculatorPage() {
                           </span>
                         )}
                       </div>
-                      <div className="text-[10px] text-[#9B9B9B] mt-0.5">
+                      <div className="text-[10px] text-[#767676] mt-0.5">
                         {Math.round((1 - tier.mult) * 100)}% cost reduction
                       </div>
                     </td>
@@ -412,7 +412,7 @@ export default function MoqCalculatorPage() {
             </tbody>
           </table>
         </div>
-        <p className="text-[10px] text-[#9B9B9B] mt-3">
+        <p className="text-[10px] text-[#767676] mt-3">
           Cost multipliers: 100% → 92% → 82% → 72% → 65% → 58% of base cost. Gross margin uses your retail price minus platform fee and shipping.
         </p>
       </motion.section>
@@ -458,7 +458,7 @@ export default function MoqCalculatorPage() {
                 >
                   ${calc.profitPerUnit.toFixed(2)}
                 </p>
-                <p className="text-[10px] text-[#9B9B9B] mt-1">after fees &amp; shipping</p>
+                <p className="text-[10px] text-[#767676] mt-1">after fees &amp; shipping</p>
               </div>
               <div className="bg-[#FAFAF8] rounded-xl p-4">
                 <p className="text-[10px] font-semibold text-[#6B6B6B] uppercase tracking-wide mb-1">
@@ -469,7 +469,7 @@ export default function MoqCalculatorPage() {
                     ? "N/A"
                     : `${calc.breakEvenUnitsPerMonth.toLocaleString()} units`}
                 </p>
-                <p className="text-[10px] text-[#9B9B9B] mt-1">to cover ${monthlyOverhead}/mo overhead</p>
+                <p className="text-[10px] text-[#767676] mt-1">to cover ${monthlyOverhead}/mo overhead</p>
               </div>
             </div>
 
@@ -533,7 +533,7 @@ export default function MoqCalculatorPage() {
                 <p className="text-2xl font-black text-[#1A1A1A]">
                   {calc.weeksToSellThrough}
                 </p>
-                <p className="text-[10px] text-[#9B9B9B] mt-1">at {weeklyUnitsSold} units/week</p>
+                <p className="text-[10px] text-[#767676] mt-1">at {weeklyUnitsSold} units/week</p>
               </div>
               <div className="bg-[#FAFAF8] rounded-xl p-4">
                 <p className="text-[10px] font-semibold text-[#6B6B6B] uppercase tracking-wide mb-1">
@@ -554,7 +554,7 @@ export default function MoqCalculatorPage() {
                 >
                   {calc.monthsToRecoup === Infinity ? "Never" : `${calc.monthsToRecoup} mo`}
                 </p>
-                <p className="text-[10px] text-[#9B9B9B] mt-1">full investment recovery</p>
+                <p className="text-[10px] text-[#767676] mt-1">full investment recovery</p>
               </div>
             </div>
 
@@ -669,7 +669,7 @@ export default function MoqCalculatorPage() {
             )
           })}
         </div>
-        <div className="mt-4 flex items-center gap-2 text-[10px] text-[#9B9B9B]">
+        <div className="mt-4 flex items-center gap-2 text-[10px] text-[#767676]">
           <div className="w-0.5 h-4 bg-[#1A1A1A]/40" />
           <span>Vertical line = your selected quantity ({selectedQty.toLocaleString()} units)</span>
         </div>

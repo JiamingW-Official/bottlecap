@@ -192,7 +192,7 @@ export default function CommandPalette() {
         >
           {/* Search input */}
           <div className="flex items-center gap-3 px-5 py-4 border-b border-[#E8E8E4]">
-            <Search className="w-5 h-5 text-[#9B9B9B] shrink-0" />
+            <Search className="w-5 h-5 text-[#767676] shrink-0" />
             <input
               ref={inputRef}
               type="text"
@@ -200,9 +200,9 @@ export default function CommandPalette() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="flex-1 text-sm text-[#1A1A1A] placeholder:text-[#9B9B9B] outline-none bg-transparent"
+              className="flex-1 text-sm text-[#1A1A1A] placeholder:text-[#767676] outline-none bg-transparent"
             />
-            <kbd className="hidden sm:inline-block text-[10px] text-[#9B9B9B] bg-[#F5F5F0] border border-[#E8E8E4] rounded px-1.5 py-0.5">
+            <kbd className="hidden sm:inline-block text-[10px] text-[#767676] bg-[#F5F5F0] border border-[#E8E8E4] rounded px-1.5 py-0.5">
               ESC
             </kbd>
           </div>
@@ -211,13 +211,13 @@ export default function CommandPalette() {
           <div ref={listRef} className="max-h-[50vh] overflow-y-auto py-2" data-lenis-prevent>
             {flatItems.length === 0 && (
               <div className="py-8 text-center">
-                <p className="text-sm text-[#9B9B9B]">No results for &ldquo;{query}&rdquo;</p>
+                <p className="text-sm text-[#767676]">No results for &ldquo;{query}&rdquo;</p>
               </div>
             )}
 
             {Object.entries(grouped).map(([category, items]) => (
               <div key={category}>
-                <p className="px-5 pt-3 pb-1 text-[10px] font-semibold text-[#9B9B9B] uppercase tracking-widest">
+                <p className="px-5 pt-3 pb-1 text-[10px] font-semibold text-[#767676] uppercase tracking-widest">
                   {CATEGORY_LABELS[category] || category}
                 </p>
                 {items.map((item) => {
@@ -241,7 +241,7 @@ export default function CommandPalette() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-[#1A1A1A]">{item.label}</p>
-                        <p className="text-xs text-[#9B9B9B] truncate">{item.desc}</p>
+                        <p className="text-xs text-[#767676] truncate">{item.desc}</p>
                       </div>
                       <ArrowRight className={`w-4 h-4 shrink-0 transition-opacity ${idx === selectedIndex ? "text-[#FF6B35] opacity-100" : "opacity-0"}`} />
                     </button>
@@ -252,7 +252,7 @@ export default function CommandPalette() {
           </div>
 
           {/* Footer */}
-          <div className="px-5 py-3 border-t border-[#E8E8E4] flex items-center gap-4 text-[10px] text-[#9B9B9B]">
+          <div className="px-5 py-3 border-t border-[#E8E8E4] flex items-center gap-4 text-[10px] text-[#767676]">
             <span className="flex items-center gap-1">
               <kbd className="bg-[#F5F5F0] border border-[#E8E8E4] rounded px-1 py-0.5">&uarr;</kbd>
               <kbd className="bg-[#F5F5F0] border border-[#E8E8E4] rounded px-1 py-0.5">&darr;</kbd>

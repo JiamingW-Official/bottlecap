@@ -240,7 +240,7 @@ function TipCard() {
               ))}
               <button
                 onClick={dismiss}
-                className="mt-1 text-[10px] text-[#9B9B9B] hover:text-[#6B6B6B] transition-colors"
+                className="mt-1 text-[10px] text-[#767676] hover:text-[#6B6B6B] transition-colors"
               >
                 Got it, don&apos;t show again
               </button>
@@ -290,7 +290,7 @@ function TestimonialStrip() {
               <p className="text-sm text-[#1A1A1A] font-medium leading-snug mt-1.5">
                 &ldquo;{t.quote}&rdquo;
               </p>
-              <p className="text-[11px] text-[#9B9B9B] mt-1.5">
+              <p className="text-[11px] text-[#767676] mt-1.5">
                 <span className="font-semibold text-[#4B4B4B]">{t.name}</span>
                 {" · "}
                 {t.role}
@@ -324,7 +324,7 @@ function TrendingChips({ onSelect }: { onSelect: (text: string) => void }) {
     <div className="mb-6">
       <div className="flex items-center gap-2 mb-3">
         <TrendingUp className="w-3.5 h-3.5 text-[#FF6B35]" />
-        <p className="text-[11px] font-bold tracking-[0.12em] uppercase text-[#9B9B9B]">
+        <p className="text-[11px] font-bold tracking-[0.12em] uppercase text-[#767676]">
           Most analyzed products
         </p>
       </div>
@@ -351,9 +351,9 @@ function TrendingChips({ onSelect }: { onSelect: (text: string) => void }) {
 function CharCount({ count, max = 500 }: { count: number; max?: number }) {
   const colorClass =
     count === 0
-      ? "text-[#9B9B9B]"
+      ? "text-[#767676]"
       : count < 50
-      ? "text-[#9B9B9B]"
+      ? "text-[#767676]"
       : count < 100
       ? "text-[#F59E0B]"
       : "text-[#22C55E]"
@@ -383,7 +383,7 @@ function CharCount({ count, max = 500 }: { count: number; max?: number }) {
           <span className="text-[#F59E0B] ml-1">— add a bit more for best accuracy</span>
         )}
         {count > 0 && count < 50 && (
-          <span className="text-[#9B9B9B] ml-1">— more detail = better results</span>
+          <span className="text-[#767676] ml-1">— more detail = better results</span>
         )}
       </p>
     </div>
@@ -399,7 +399,7 @@ function ExampleDescriptions({ onUse }: { onUse: (text: string) => void }) {
     <div className="mt-3 mb-4">
       <button
         onClick={() => setOpen(v => !v)}
-        className="flex items-center gap-1.5 text-xs text-[#9B9B9B] hover:text-[#FF6B35] transition-colors font-medium"
+        className="flex items-center gap-1.5 text-xs text-[#767676] hover:text-[#FF6B35] transition-colors font-medium"
       >
         <ChevronRight
           className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? "rotate-90" : ""}`}
@@ -425,7 +425,7 @@ function ExampleDescriptions({ onUse }: { onUse: (text: string) => void }) {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#9B9B9B] mb-1.5">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#767676] mb-1.5">
                         {ex.title}
                       </p>
                       <p className="text-xs text-[#4B4B4B] leading-relaxed">{ex.text}</p>
@@ -498,13 +498,13 @@ function FormEnhancements() {
 function SectionA() {
   return (
     <div className="bg-white rounded-2xl border border-[#E8E8E4] p-4">
-      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B9B9B] mb-3">
+      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#767676] mb-3">
         What you&apos;ll receive
       </p>
       <div className="space-y-1.5">
         {reportSections.map(({ num, label }) => (
           <div key={num} className="flex items-center gap-2.5">
-            <span className="text-[10px] font-mono font-bold text-[#9B9B9B] w-5 shrink-0">{num}</span>
+            <span className="text-[10px] font-mono font-bold text-[#767676] w-5 shrink-0">{num}</span>
             <CheckCircle className="w-3 h-3 text-[#22C55E] shrink-0" />
             <span className="text-xs text-[#4B4B4B] leading-snug">{label}</span>
           </div>
@@ -517,7 +517,7 @@ function SectionA() {
 function SectionB() {
   return (
     <div className="bg-[#F5F5F0] rounded-2xl border border-[#E8E8E4] p-4">
-      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B9B9B] mb-3">
+      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#767676] mb-3">
         Why trust us
       </p>
       <div className="space-y-3">
@@ -528,7 +528,7 @@ function SectionB() {
             </div>
             <div>
               <p className="text-xs font-semibold text-[#1A1A1A] leading-none">{label}</p>
-              <p className="text-[10px] text-[#9B9B9B] mt-0.5">{sub}</p>
+              <p className="text-[10px] text-[#767676] mt-0.5">{sub}</p>
             </div>
           </div>
         ))}
@@ -540,14 +540,14 @@ function SectionB() {
 function SectionC() {
   return (
     <div className="bg-white rounded-2xl border border-[#E8E8E4] p-4">
-      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B9B9B] mb-3">
+      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#767676] mb-3">
         Sample output — Smart Thermos
       </p>
 
       {/* Score */}
       <div className="flex items-end gap-2 mb-1">
         <span className="text-4xl font-black text-[#22C55E] leading-none">87</span>
-        <span className="text-sm text-[#9B9B9B] mb-0.5">/100</span>
+        <span className="text-sm text-[#767676] mb-0.5">/100</span>
       </div>
       <p className="text-xs font-semibold text-[#FF6B35] mb-3">
         Highly feasible — Vietnam recommended
@@ -562,7 +562,7 @@ function SectionC() {
           { label: "Tariff",     value: "5–15%" },
         ].map(({ label, value }) => (
           <div key={label} className="bg-[#F5F5F0] rounded-lg px-2.5 py-2">
-            <p className="text-[9px] text-[#9B9B9B] uppercase tracking-wide font-bold">{label}</p>
+            <p className="text-[9px] text-[#767676] uppercase tracking-wide font-bold">{label}</p>
             <p className="text-xs font-semibold text-[#1A1A1A] mt-0.5">{value}</p>
           </div>
         ))}
@@ -570,7 +570,7 @@ function SectionC() {
 
       {/* Cost breakdown bar */}
       <div className="mb-2">
-        <p className="text-[9px] text-[#9B9B9B] uppercase tracking-wide font-bold mb-1.5">Cost breakdown</p>
+        <p className="text-[9px] text-[#767676] uppercase tracking-wide font-bold mb-1.5">Cost breakdown</p>
         <div className="flex rounded-full overflow-hidden h-2">
           {costBreakdown.map(({ label, pct, color }) => (
             <div
@@ -584,7 +584,7 @@ function SectionC() {
           {costBreakdown.map(({ label, pct, color }) => (
             <div key={label} className="flex items-center gap-1">
               <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
-              <span className="text-[9px] text-[#9B9B9B]">{label} {pct}%</span>
+              <span className="text-[9px] text-[#767676]">{label} {pct}%</span>
             </div>
           ))}
         </div>
@@ -608,7 +608,7 @@ function SectionD() {
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-75" />
           <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22C55E]" />
         </span>
-        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B9B9B]">
+        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#767676]">
           Recent analyses
         </p>
       </div>
@@ -618,7 +618,7 @@ function SectionD() {
             <span className="text-base leading-none">{emoji}</span>
             <div className="flex-1 min-w-0">
               <p className="text-xs text-[#1A1A1A] font-medium truncate leading-snug">{name}</p>
-              <p className="text-[10px] text-[#9B9B9B]">{ago}</p>
+              <p className="text-[10px] text-[#767676]">{ago}</p>
             </div>
             <span className="text-xs font-bold text-[#22C55E] shrink-0">{score}/100</span>
           </div>
@@ -642,7 +642,7 @@ function ReportPreviewPanel() {
           </span>
           <p className="text-xs font-bold text-[#1A1A1A]">Your report will include:</p>
         </div>
-        <p className="text-[11px] text-[#9B9B9B] pl-4">8 detailed sections, AI-generated</p>
+        <p className="text-[11px] text-[#767676] pl-4">8 detailed sections, AI-generated</p>
       </div>
 
       {/* Sections list */}
@@ -654,7 +654,7 @@ function ReportPreviewPanel() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold text-[#1A1A1A] leading-snug">{label}</p>
-              <p className="text-[10px] text-[#9B9B9B] leading-snug mt-0.5">{desc}</p>
+              <p className="text-[10px] text-[#767676] leading-snug mt-0.5">{desc}</p>
             </div>
           </div>
         ))}
@@ -678,8 +678,8 @@ function ReportPreviewPanel() {
             <span className="text-xs font-bold text-[#1A1A1A]">$99 one-time</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <RotateCcw className="w-3 h-3 text-[#9B9B9B]" />
-            <span className="text-[11px] text-[#9B9B9B]">72-hr money-back</span>
+            <RotateCcw className="w-3 h-3 text-[#767676]" />
+            <span className="text-[11px] text-[#767676]">72-hr money-back</span>
           </div>
         </div>
 
@@ -794,7 +794,7 @@ function AnalyzeContent() {
       <div className="lg:hidden mt-8 pt-6 border-t border-[#E8E8E4]">
         <div className="flex flex-wrap gap-x-6 gap-y-3">
           {trustBadges.map(({ Icon, label }) => (
-            <div key={label} className="flex items-center gap-1.5 text-xs text-[#9B9B9B]">
+            <div key={label} className="flex items-center gap-1.5 text-xs text-[#767676]">
               <Icon className="w-3.5 h-3.5 text-[#FF6B35]" />
               <span>{label}</span>
             </div>
@@ -824,8 +824,8 @@ function MobileReportPreview() {
           <span className="text-sm font-semibold text-[#1A1A1A]">What your report includes</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-[#9B9B9B]">8 sections</span>
-          {open ? <ChevronUp className="w-4 h-4 text-[#9B9B9B]" /> : <ChevronDown className="w-4 h-4 text-[#9B9B9B]" />}
+          <span className="text-xs text-[#767676]">8 sections</span>
+          {open ? <ChevronUp className="w-4 h-4 text-[#767676]" /> : <ChevronDown className="w-4 h-4 text-[#767676]" />}
         </div>
       </button>
 
@@ -847,7 +847,7 @@ function MobileReportPreview() {
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-[#1A1A1A]">{label}</p>
-                    <p className="text-[10px] text-[#9B9B9B] mt-0.5 leading-snug">{desc}</p>
+                    <p className="text-[10px] text-[#767676] mt-0.5 leading-snug">{desc}</p>
                   </div>
                 </div>
               ))}
@@ -859,8 +859,8 @@ function MobileReportPreview() {
                   <span className="text-xs font-semibold text-[#15803D]">2–5 minutes</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <RotateCcw className="w-3 h-3 text-[#9B9B9B]" />
-                  <span className="text-[11px] text-[#9B9B9B]">72-hr money-back</span>
+                  <RotateCcw className="w-3 h-3 text-[#767676]" />
+                  <span className="text-[11px] text-[#767676]">72-hr money-back</span>
                 </div>
               </div>
             </div>

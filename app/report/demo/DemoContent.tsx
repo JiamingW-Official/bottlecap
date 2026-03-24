@@ -264,7 +264,7 @@ export default function DemoContent() {
                 <p className="text-xs text-[#6B6B6B] leading-tight mb-1">{item.label}</p>
                 <div className="flex items-baseline gap-1">
                   <span className="text-2xl font-black" style={{ color: item.color }}>{item.score}</span>
-                  <span className="text-xs text-[#9B9B9B]">/100</span>
+                  <span className="text-xs text-[#767676]">/100</span>
                 </div>
                 <ScoreBar value={item.score} color={item.color} />
               </div>
@@ -282,7 +282,7 @@ export default function DemoContent() {
 
             {/* Line items */}
             <div className="space-y-2 mt-2">
-              <div className="text-xs font-semibold text-[#9B9B9B] uppercase tracking-wide mb-2">Materials Breakdown</div>
+              <div className="text-xs font-semibold text-[#767676] uppercase tracking-wide mb-2">Materials Breakdown</div>
               {[
                 { label: "Stainless steel body (18/8)", value: "$2.80" },
                 { label: "Bamboo lid", value: "$0.90" },
@@ -334,26 +334,26 @@ export default function DemoContent() {
             <table className="w-full text-sm min-w-[560px]">
               <thead>
                 <tr>
-                  <th className="text-left text-xs font-semibold text-[#9B9B9B] uppercase tracking-wide py-2 pr-4 w-36"></th>
+                  <th className="text-left text-xs font-semibold text-[#767676] uppercase tracking-wide py-2 pr-4 w-36"></th>
                   <th className="text-center py-2 px-3">
                     <div className="inline-flex flex-col items-center">
                       <span className="text-lg">🇨🇳</span>
                       <span className="text-xs font-bold text-[#1A1A1A]">China</span>
-                      <span className="text-xs text-[#9B9B9B]">Zhejiang</span>
+                      <span className="text-xs text-[#767676]">Zhejiang</span>
                     </div>
                   </th>
                   <th className="text-center py-2 px-3">
                     <div className="inline-flex flex-col items-center">
                       <span className="text-lg">🇻🇳</span>
                       <span className="text-xs font-bold text-[#1A1A1A]">Vietnam</span>
-                      <span className="text-xs text-[#9B9B9B]">Ho Chi Minh</span>
+                      <span className="text-xs text-[#767676]">Ho Chi Minh</span>
                     </div>
                   </th>
                   <th className="text-center py-2 px-3">
                     <div className="inline-flex flex-col items-center">
                       <span className="text-lg">🇮🇳</span>
                       <span className="text-xs font-bold text-[#1A1A1A]">India</span>
-                      <span className="text-xs text-[#9B9B9B]">Mumbai</span>
+                      <span className="text-xs text-[#767676]">Mumbai</span>
                     </div>
                   </th>
                 </tr>
@@ -385,13 +385,13 @@ export default function DemoContent() {
                     <span className="text-xs text-[#F59E0B] font-semibold">Alternative</span>
                   </td>
                   <td className="py-3 px-3 text-center">
-                    <span className="text-xs text-[#9B9B9B]">Higher cost</span>
+                    <span className="text-xs text-[#767676]">Higher cost</span>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div className="mt-3 text-xs text-[#9B9B9B] bg-[#FFF5F0] border border-[#FF6B35]/20 rounded-lg px-3 py-2">
+          <div className="mt-3 text-xs text-[#767676] bg-[#FFF5F0] border border-[#FF6B35]/20 rounded-lg px-3 py-2">
             China (Zhejiang) is highlighted as the recommended source due to lowest landed cost and deepest supplier base for vacuum insulated drinkware. Section 301 tariff of 7.5% is budgeted into the $8.48 figure.
           </div>
         </Section>
@@ -412,17 +412,17 @@ export default function DemoContent() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="bg-[#F5F5F0] rounded-xl p-4">
-                <p className="text-xs text-[#9B9B9B] mb-1">MFN Base Rate</p>
+                <p className="text-xs text-[#767676] mb-1">MFN Base Rate</p>
                 <p className="text-xl font-black text-[#1A1A1A]">3.4%</p>
                 <p className="text-xs text-[#6B6B6B] mt-1">All countries</p>
               </div>
               <div className="bg-[#FFF0EB] rounded-xl p-4 border border-[#FF6B35]/20">
-                <p className="text-xs text-[#9B9B9B] mb-1">China (Section 301)</p>
+                <p className="text-xs text-[#767676] mb-1">China (Section 301)</p>
                 <p className="text-xl font-black text-[#EF4444]">+7.5%</p>
                 <p className="text-xs text-[#6B6B6B] mt-1">Total: 10.9%</p>
               </div>
               <div className="bg-[#F0FFF4] rounded-xl p-4 border border-[#22C55E]/20">
-                <p className="text-xs text-[#9B9B9B] mb-1">Vietnam / Mexico</p>
+                <p className="text-xs text-[#767676] mb-1">Vietnam / Mexico</p>
                 <p className="text-xl font-black text-[#22C55E]">3.4%</p>
                 <p className="text-xs text-[#6B6B6B] mt-1">No Section 301</p>
               </div>
@@ -630,7 +630,7 @@ export default function DemoContent() {
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }}
           className="bg-[#FAFAF8] border border-[#E8E8E4] rounded-2xl p-6"
         >
-          <p className="text-xs font-bold uppercase tracking-widest text-[#9B9B9B] mb-4">Demo vs Real Report</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-[#767676] mb-4">Demo vs Real Report</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
               <p className="text-xs font-bold text-amber-700 uppercase tracking-wide mb-3">This sample report</p>
@@ -685,7 +685,7 @@ export default function DemoContent() {
             <span className="w-8 h-8 rounded-full bg-[#FF6B35]/10 flex items-center justify-center text-xs font-black text-[#FF6B35]">JL</span>
             <div>
               <p className="text-sm font-semibold text-[#1A1A1A]">Jordan L.</p>
-              <p className="text-xs text-[#9B9B9B]">DTC founder, kitchen products</p>
+              <p className="text-xs text-[#767676]">DTC founder, kitchen products</p>
             </div>
           </footer>
         </motion.blockquote>

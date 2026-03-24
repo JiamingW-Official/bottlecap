@@ -77,7 +77,7 @@ export default function ReportCard({
         className="bg-white rounded-3xl border border-[#E8E8E4] p-8 shadow-[0_8px_40px_rgba(0,0,0,0.12)] w-full max-w-[480px]"
       >
         {/* Top bar */}
-        <div className="flex justify-between items-center text-sm text-[#9B9B9B]">
+        <div className="flex justify-between items-center text-sm text-[#767676]">
           <span>Bottlecap</span>
           <span>{formattedDate}</span>
         </div>
@@ -177,7 +177,7 @@ export default function ReportCard({
         )}
 
         {/* Encouraging note */}
-        <p className="mt-4 text-sm text-[#9B9B9B] italic text-center">
+        <p className="mt-4 text-sm text-[#767676] italic text-center">
           &ldquo;{analysis.encouragingNote}&rdquo;
         </p>
 

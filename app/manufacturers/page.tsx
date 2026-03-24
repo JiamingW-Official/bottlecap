@@ -179,7 +179,7 @@ function CountryCard({ country }: { country: ManufacturingCountry }) {
         {/* Quality rating dots */}
         <div className="mb-4">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-semibold text-[#9B9B9B] uppercase tracking-wide">Quality Rating</span>
+            <span className="text-[10px] font-semibold text-[#767676] uppercase tracking-wide">Quality Rating</span>
             <span className="text-xs font-bold text-[#1A1A1A]">{country.qualityRating}/10</span>
           </div>
           <div className="flex gap-1">
@@ -200,8 +200,8 @@ function CountryCard({ country }: { country: ManufacturingCountry }) {
           {/* Labor */}
           <div className="bg-[#FAFAF8] rounded-xl p-3">
             <div className="flex items-center gap-1.5 mb-1">
-              <DollarSign className="w-3.5 h-3.5 text-[#9B9B9B]" />
-              <span className="text-[10px] font-semibold text-[#9B9B9B] uppercase tracking-wide">
+              <DollarSign className="w-3.5 h-3.5 text-[#767676]" />
+              <span className="text-[10px] font-semibold text-[#767676] uppercase tracking-wide">
                 Labor/hr
               </span>
             </div>
@@ -216,8 +216,8 @@ function CountryCard({ country }: { country: ManufacturingCountry }) {
           {/* Lead Time */}
           <div className="bg-[#FAFAF8] rounded-xl p-3">
             <div className="flex items-center gap-1.5 mb-1">
-              <Clock className="w-3.5 h-3.5 text-[#9B9B9B]" />
-              <span className="text-[10px] font-semibold text-[#9B9B9B] uppercase tracking-wide">
+              <Clock className="w-3.5 h-3.5 text-[#767676]" />
+              <span className="text-[10px] font-semibold text-[#767676] uppercase tracking-wide">
                 Lead Time
               </span>
             </div>
@@ -229,8 +229,8 @@ function CountryCard({ country }: { country: ManufacturingCountry }) {
           {/* Tariff */}
           <div className="bg-[#FAFAF8] rounded-xl p-3">
             <div className="flex items-center gap-1.5 mb-1">
-              <Shield className="w-3.5 h-3.5 text-[#9B9B9B]" />
-              <span className="text-[10px] font-semibold text-[#9B9B9B] uppercase tracking-wide">
+              <Shield className="w-3.5 h-3.5 text-[#767676]" />
+              <span className="text-[10px] font-semibold text-[#767676] uppercase tracking-wide">
                 Tariff
               </span>
             </div>
@@ -242,8 +242,8 @@ function CountryCard({ country }: { country: ManufacturingCountry }) {
           {/* Quality */}
           <div className="bg-[#FAFAF8] rounded-xl p-3">
             <div className="flex items-center gap-1.5 mb-1">
-              <BarChart3 className="w-3.5 h-3.5 text-[#9B9B9B]" />
-              <span className="text-[10px] font-semibold text-[#9B9B9B] uppercase tracking-wide">
+              <BarChart3 className="w-3.5 h-3.5 text-[#767676]" />
+              <span className="text-[10px] font-semibold text-[#767676] uppercase tracking-wide">
                 Quality
               </span>
             </div>
@@ -492,7 +492,7 @@ function TariffChart() {
               </div>
             </motion.div>
           ))}
-          <p className="text-xs text-[#9B9B9B] pt-2 border-t border-[#F0F0EC]">
+          <p className="text-xs text-[#767676] pt-2 border-t border-[#F0F0EC]">
             * Rates are estimates for illustrative purposes. Actual duties vary by HS code. Verify with a licensed customs broker.
           </p>
         </div>
@@ -588,7 +588,7 @@ export default function ManufacturersPage() {
         <div className="max-w-6xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4">
           {/* Region pills */}
           <div className="flex items-center gap-2 flex-wrap">
-            <Filter className="w-4 h-4 text-[#9B9B9B] flex-shrink-0" />
+            <Filter className="w-4 h-4 text-[#767676] flex-shrink-0" />
             {ALL_REGIONS.map((region) => (
               <RegionPill
                 key={region}
@@ -614,7 +614,7 @@ export default function ManufacturersPage() {
       <section className="py-14">
         <div className="max-w-6xl mx-auto px-6">
           {/* Result count */}
-          <p className="text-sm text-[#9B9B9B] mb-6 font-medium">
+          <p className="text-sm text-[#767676] mb-6 font-medium">
             Showing{" "}
             <span className="text-[#1A1A1A] font-bold">{filteredCountries.length}</span>{" "}
             {filteredCountries.length === 1 ? "country" : "countries"}
@@ -624,7 +624,7 @@ export default function ManufacturersPage() {
               </>
             )}
             {viewMode === "grid" && (
-              <span className="ml-2 text-[#9B9B9B]">· sorted by quality rating</span>
+              <span className="ml-2 text-[#767676]">· sorted by quality rating</span>
             )}
           </p>
 

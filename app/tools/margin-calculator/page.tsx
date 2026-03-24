@@ -152,7 +152,7 @@ function ChannelCard({
           ${netProfit.toFixed(2)}
         </span>
       </div>
-      <p className="text-[10px] text-[#9B9B9B] leading-relaxed">{details}</p>
+      <p className="text-[10px] text-[#767676] leading-relaxed">{details}</p>
     </motion.div>
   )
 }
@@ -657,7 +657,7 @@ export default function MarginCalculatorPage() {
                       >
                         {t.pct}% — {t.label}
                       </p>
-                      <p className="text-[10px] text-[#9B9B9B] mt-0.5">
+                      <p className="text-[10px] text-[#767676] mt-0.5">
                         {t.label === "Survival" && "Minimum to stay viable"}
                         {t.label === "Healthy" && "Good unit economics"}
                         {t.label === "Strong" && "Ready for paid acquisition"}
@@ -867,7 +867,7 @@ export default function MarginCalculatorPage() {
             )
           })}
         </div>
-        <div className="mt-4 flex items-center gap-2 text-[10px] text-[#9B9B9B]">
+        <div className="mt-4 flex items-center gap-2 text-[10px] text-[#767676]">
           <div className="w-0.5 h-4 bg-[#1A1A1A]" />
           <span>Vertical line = your current gross margin ({calc.grossMarginPct.toFixed(1)}%)</span>
         </div>

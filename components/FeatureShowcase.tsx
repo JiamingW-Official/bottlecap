@@ -315,7 +315,7 @@ export default function FeatureShowcase() {
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }}
                   >
-                    <ChevronDown className={`w-4 h-4 transition-colors ${isOpen ? "text-[#FF6B35]" : "text-[#9B9B9B] group-hover:text-[#6B6B6B]"}`} />
+                    <ChevronDown className={`w-4 h-4 transition-colors ${isOpen ? "text-[#FF6B35]" : "text-[#767676] group-hover:text-[#6B6B6B]"}`} />
                   </motion.div>
                 </div>
               </button>
@@ -338,7 +338,7 @@ export default function FeatureShowcase() {
                       {/* Stat pill */}
                       <div className="inline-flex items-baseline gap-1.5">
                         <span className="text-lg font-black text-[#FF6B35]">{f.stat}</span>
-                        <span className="text-xs text-[#9B9B9B] font-medium">{f.statLabel}</span>
+                        <span className="text-xs text-[#767676] font-medium">{f.statLabel}</span>
                       </div>
 
                       {/* Detailed explanation */}

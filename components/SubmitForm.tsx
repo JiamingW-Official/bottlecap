@@ -128,16 +128,16 @@ export default function SubmitForm() {
               : <span className="text-[9px] font-bold text-white">1</span>
             }
           </div>
-          <span className={`text-sm font-medium transition-colors ${step === 1 ? "text-[#1A1A1A]" : "text-[#9B9B9B]"}`}>
+          <span className={`text-sm font-medium transition-colors ${step === 1 ? "text-[#1A1A1A]" : "text-[#767676]"}`}>
             Your product
           </span>
         </div>
         <div className={`flex-1 h-px transition-colors ${step > 1 ? "bg-[#22C55E]" : "bg-[#E8E8E4]"}`} />
         <div className="flex items-center gap-2">
           <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors ${step === 2 ? "bg-[#FF6B35]" : "bg-[#E8E8E4]"}`}>
-            <span className={`text-[9px] font-bold ${step === 2 ? "text-white" : "text-[#9B9B9B]"}`}>2</span>
+            <span className={`text-[9px] font-bold ${step === 2 ? "text-white" : "text-[#767676]"}`}>2</span>
           </div>
-          <span className={`text-sm font-medium transition-colors ${step === 2 ? "text-[#1A1A1A]" : "text-[#9B9B9B]"}`}>
+          <span className={`text-sm font-medium transition-colors ${step === 2 ? "text-[#1A1A1A]" : "text-[#767676]"}`}>
             Get report
           </span>
         </div>
@@ -157,7 +157,7 @@ export default function SubmitForm() {
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-1">
               What do you want to make?
             </h2>
-            <p className="text-sm text-[#9B9B9B] mb-5">
+            <p className="text-sm text-[#767676] mb-5">
               2–3 sentences is enough. Materials, size, features — whatever you know.
             </p>
 
@@ -171,7 +171,7 @@ export default function SubmitForm() {
 
             {/* Char feedback */}
             <div className="flex justify-between items-center mt-1.5 mb-4 px-0.5">
-              <span className={`text-xs transition-colors ${!descriptionValid && descriptionLength > 0 ? "text-[#FF6B35]" : "text-[#9B9B9B]"}`}>
+              <span className={`text-xs transition-colors ${!descriptionValid && descriptionLength > 0 ? "text-[#FF6B35]" : "text-[#767676]"}`}>
                 {descriptionLength === 0
                   ? "Start typing…"
                   : !descriptionValid
@@ -209,7 +209,7 @@ export default function SubmitForm() {
                 <button
                   type="button"
                   onClick={() => setShowImageUpload(true)}
-                  className="text-sm text-[#9B9B9B] hover:text-[#6B6B6B] transition-colors flex items-center gap-1.5"
+                  className="text-sm text-[#767676] hover:text-[#6B6B6B] transition-colors flex items-center gap-1.5"
                 >
                   <Upload className="w-3.5 h-3.5" />
                   Add reference image (optional)
@@ -223,8 +223,8 @@ export default function SubmitForm() {
                   <label className="block border-2 border-dashed border-[#E8E8E4] rounded-xl p-5 text-center cursor-pointer hover:border-[#FF6B35] transition-colors">
                     {!imagePreview ? (
                       <div className="flex flex-col items-center gap-2">
-                        <Upload className="w-5 h-5 text-[#9B9B9B]" />
-                        <span className="text-sm text-[#9B9B9B]">Upload image or sketch</span>
+                        <Upload className="w-5 h-5 text-[#767676]" />
+                        <span className="text-sm text-[#767676]">Upload image or sketch</span>
                       </div>
                     ) : (
                       <div className="flex flex-col items-center gap-2">
@@ -361,7 +361,7 @@ export default function SubmitForm() {
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-1">
               Where should we send it?
             </h2>
-            <p className="text-sm text-[#9B9B9B] mb-6">
+            <p className="text-sm text-[#767676] mb-6">
               Report ready in 2–5 minutes. Permanent link in your inbox.
             </p>
 
@@ -379,7 +379,7 @@ export default function SubmitForm() {
             <div className="mt-5 bg-[#FAFAF8] rounded-xl border border-[#E8E8E4] p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#9B9B9B] mb-1">Analyzing</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#767676] mb-1">Analyzing</p>
                   <p className="text-sm text-[#1A1A1A] font-medium leading-snug line-clamp-2">
                     {formData.productDescription?.slice(0, 90)}
                     {(formData.productDescription?.length || 0) > 90 ? "…" : ""}
@@ -406,7 +406,7 @@ export default function SubmitForm() {
                 </div>
                 <div className="text-right shrink-0">
                   <p className="text-2xl font-black text-[#1A1A1A] leading-none">$99</p>
-                  <p className="text-xs text-[#9B9B9B] mt-0.5">one-time</p>
+                  <p className="text-xs text-[#767676] mt-0.5">one-time</p>
                 </div>
               </div>
             </div>
@@ -421,7 +421,7 @@ export default function SubmitForm() {
                 <div key={item.n} className="p-3 bg-[#F5F5F0] rounded-xl">
                   <p className="text-[10px] font-black text-[#FF6B35]/30 leading-none mb-0.5">{item.n}</p>
                   <p className="text-xs font-semibold text-[#1A1A1A]">{item.label}</p>
-                  <p className="text-[10px] text-[#9B9B9B]">{item.sub}</p>
+                  <p className="text-[10px] text-[#767676]">{item.sub}</p>
                 </div>
               ))}
             </div>
@@ -449,16 +449,16 @@ export default function SubmitForm() {
               {/* Trust strip */}
               <div className="mt-4 flex items-center justify-center gap-1.5 flex-wrap">
                 {/* Stripe badge */}
-                <span className="inline-flex items-center gap-1 text-[10px] text-[#9B9B9B] bg-[#F5F5F0] rounded-full px-2.5 py-1 font-medium">
+                <span className="inline-flex items-center gap-1 text-[10px] text-[#767676] bg-[#F5F5F0] rounded-full px-2.5 py-1 font-medium">
                   <svg className="w-3 h-3" viewBox="0 0 24 24" fill="#635BFF">
                     <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C4.502 22.914 7.232 24 10.734 24c2.654 0 4.88-.61 6.417-1.76 1.695-1.254 2.554-3.082 2.554-5.528 0-4.208-2.497-5.941-5.729-7.562z"/>
                   </svg>
                   Stripe secure
                 </span>
                 <span className="text-[#D0D0C8]">·</span>
-                <span className="text-[10px] text-[#9B9B9B]">72-hour money-back</span>
+                <span className="text-[10px] text-[#767676]">72-hour money-back</span>
                 <span className="text-[#D0D0C8]">·</span>
-                <span className="text-[10px] text-[#9B9B9B]">Report in 2–5 min</span>
+                <span className="text-[10px] text-[#767676]">Report in 2–5 min</span>
               </div>
 
               {/* Card icons */}
@@ -486,7 +486,7 @@ export default function SubmitForm() {
             {/* Edit back */}
             <button
               onClick={() => setStep(1)}
-              className="mt-5 text-sm text-[#9B9B9B] hover:text-[#6B6B6B] transition-colors flex items-center gap-1.5"
+              className="mt-5 text-sm text-[#767676] hover:text-[#6B6B6B] transition-colors flex items-center gap-1.5"
             >
               ← Edit product description
             </button>

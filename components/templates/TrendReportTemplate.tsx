@@ -176,7 +176,7 @@ function ProductCard({ product, isBestMargin }: { product: TrendingProduct; isBe
 
       {/* Trend Score Bar */}
       <div className="mb-4">
-        <div className="flex items-center justify-between text-xs text-[#9B9B9B] mb-1">
+        <div className="flex items-center justify-between text-xs text-[#767676] mb-1">
           <span>Trend Score</span>
           <span>{product.trendScore}/100</span>
         </div>
@@ -191,25 +191,25 @@ function ProductCard({ product, isBestMargin }: { product: TrendingProduct; isBe
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div>
-          <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">Search Volume</p>
+          <p className="text-xs text-[#767676] uppercase tracking-wide">Search Volume</p>
           <p className="font-semibold text-[#1A1A1A] text-sm">
             {product.searchVolume}
           </p>
         </div>
         <div>
-          <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">YoY Growth</p>
+          <p className="text-xs text-[#767676] uppercase tracking-wide">YoY Growth</p>
           <p className={`font-semibold text-sm ${product.yoyGrowth.startsWith("-") ? "text-[#EF4444]" : "text-[#22C55E]"}`}>
             {product.yoyGrowth}
           </p>
         </div>
         <div>
-          <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">Retail Price</p>
+          <p className="text-xs text-[#767676] uppercase tracking-wide">Retail Price</p>
           <p className="font-semibold text-[#1A1A1A] text-sm">
             {formatCurrency(product.avgRetailPrice.min)} &ndash; {formatCurrency(product.avgRetailPrice.max)}
           </p>
         </div>
         <div>
-          <p className="text-xs text-[#9B9B9B] uppercase tracking-wide">Mfg. Cost</p>
+          <p className="text-xs text-[#767676] uppercase tracking-wide">Mfg. Cost</p>
           <p className="font-semibold text-[#1A1A1A] text-sm">
             {formatCurrency(product.avgManufacturingCost.min)} &ndash; {formatCurrency(product.avgManufacturingCost.max)}
           </p>
@@ -258,7 +258,7 @@ function TrendVelocityIndicator({ yoyGrowth }: { yoyGrowth: string }) {
       className="bg-white rounded-2xl border border-[#E8E8E4] p-6 mb-8"
     >
       <div className="flex items-center justify-between mb-3">
-        <p className="text-xs text-[#9B9B9B] uppercase tracking-wide font-semibold">
+        <p className="text-xs text-[#767676] uppercase tracking-wide font-semibold">
           Trend Velocity
         </p>
         <span
@@ -279,7 +279,7 @@ function TrendVelocityIndicator({ yoyGrowth }: { yoyGrowth: string }) {
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
         />
       </div>
-      <div className="flex justify-between text-xs text-[#9B9B9B] mt-1.5">
+      <div className="flex justify-between text-xs text-[#767676] mt-1.5">
         <span>Cooling</span>
         <span>Steady</span>
         <span>Rising Fast</span>
@@ -309,7 +309,7 @@ function SearchVolumeChart({
       viewport={{ once: true, margin: "-60px" }}
       className="bg-white rounded-2xl border border-[#E8E8E4] p-6 mb-8"
     >
-      <p className="text-xs text-[#9B9B9B] uppercase tracking-wide font-semibold mb-4">
+      <p className="text-xs text-[#767676] uppercase tracking-wide font-semibold mb-4">
         Relative Search Volume — Last 6 Months
       </p>
       <div className="flex items-end gap-3 h-28">
@@ -331,12 +331,12 @@ function SearchVolumeChart({
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: i * 0.07 }}
               />
-              <span className="text-[10px] text-[#9B9B9B]">{monthLabels[i]}</span>
+              <span className="text-[10px] text-[#767676]">{monthLabels[i]}</span>
             </div>
           )
         })}
       </div>
-      <p className="text-xs text-[#9B9B9B] mt-3 italic">
+      <p className="text-xs text-[#767676] mt-3 italic">
         Estimated relative volume based on trend score trajectory.
       </p>
     </motion.div>
@@ -384,7 +384,7 @@ function MarketInsightsSection({ product }: { product: TrendingProduct }) {
             <span className="text-2xl" role="img" aria-label={card.label}>
               {card.icon}
             </span>
-            <p className="text-xs text-[#9B9B9B] uppercase tracking-wide font-semibold">
+            <p className="text-xs text-[#767676] uppercase tracking-wide font-semibold">
               {card.label}
             </p>
             <p className="text-sm font-medium text-[#1A1A1A] leading-snug">{card.value}</p>
@@ -413,7 +413,7 @@ function SourcingReadinessChecklist() {
 
   const counterColor =
     readyCount === 0
-      ? "text-[#9B9B9B]"
+      ? "text-[#767676]"
       : readyCount < 3
       ? "text-[#F59E0B]"
       : readyCount < 5
@@ -468,7 +468,7 @@ function SourcingReadinessChecklist() {
               </span>
               <span
                 className={`text-sm transition-colors ${
-                  checked[i] ? "text-[#9B9B9B] line-through" : "text-[#1A1A1A]"
+                  checked[i] ? "text-[#767676] line-through" : "text-[#1A1A1A]"
                 }`}
                 onClick={() => toggle(i)}
               >
@@ -511,7 +511,7 @@ function RelatedTrendsSection({
       <h2 className="text-xl font-bold text-[#1A1A1A] mb-1">
         Also Trending in {topCategory}
       </h2>
-      <p className="text-sm text-[#9B9B9B] mb-5">
+      <p className="text-sm text-[#767676] mb-5">
         Other products gaining momentum this month.
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -533,7 +533,7 @@ function RelatedTrendsSection({
               </div>
               <p className="text-xs text-[#6B6B6B] mb-3 line-clamp-2">{product.whyTrending}</p>
               <div className="flex gap-3 text-xs">
-                <span className="text-[#9B9B9B]">
+                <span className="text-[#767676]">
                   {formatCurrency(product.avgRetailPrice.min)}–{formatCurrency(product.avgRetailPrice.max)}
                 </span>
                 <span className={margin >= 60 ? "text-[#22C55E] font-semibold" : "text-[#F59E0B] font-semibold"}>
@@ -631,7 +631,7 @@ export default function TrendReportTemplate({ report }: TrendReportTemplateProps
           className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12"
         >
           <div className="bg-white rounded-2xl border border-[#E8E8E4] p-6">
-            <p className="text-xs text-[#9B9B9B] uppercase tracking-wide mb-2">
+            <p className="text-xs text-[#767676] uppercase tracking-wide mb-2">
               Top Category This Month
             </p>
             <span className="inline-block bg-[#FF6B35] text-white text-sm font-semibold px-4 py-1.5 rounded-full">
@@ -740,11 +740,11 @@ export default function TrendReportTemplate({ report }: TrendReportTemplateProps
               href={`/trends/${prev.slug}`}
               className="group flex items-center gap-2 text-sm"
             >
-              <span className="text-[#9B9B9B] group-hover:text-[#FF6B35] transition-colors">
+              <span className="text-[#767676] group-hover:text-[#FF6B35] transition-colors">
                 &larr;
               </span>
               <div>
-                <p className="text-xs text-[#9B9B9B]">Previous</p>
+                <p className="text-xs text-[#767676]">Previous</p>
                 <p className="font-semibold text-[#1A1A1A] group-hover:text-[#FF6B35] transition-colors">
                   {prev.title}
                 </p>
@@ -759,12 +759,12 @@ export default function TrendReportTemplate({ report }: TrendReportTemplateProps
               className="group flex items-center gap-2 text-sm text-right"
             >
               <div>
-                <p className="text-xs text-[#9B9B9B]">Next</p>
+                <p className="text-xs text-[#767676]">Next</p>
                 <p className="font-semibold text-[#1A1A1A] group-hover:text-[#FF6B35] transition-colors">
                   {next.title}
                 </p>
               </div>
-              <span className="text-[#9B9B9B] group-hover:text-[#FF6B35] transition-colors">
+              <span className="text-[#767676] group-hover:text-[#FF6B35] transition-colors">
                 &rarr;
               </span>
             </Link>
@@ -806,7 +806,7 @@ export default function TrendReportTemplate({ report }: TrendReportTemplateProps
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
               Analyze {spotlightProduct.name} for manufacturing feasibility
             </h2>
-            <p className="text-[#9B9B9B] mb-8 max-w-xl mx-auto">
+            <p className="text-[#767676] mb-8 max-w-xl mx-auto">
               Get a full cost breakdown, supplier recommendations, and country-by-country
               comparison in under 5 minutes — powered by Claude AI.
             </p>

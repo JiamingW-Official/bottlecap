@@ -294,7 +294,7 @@ export default function ToolsPage() {
         {/* Search + badge row */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="relative w-full sm:max-w-sm">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9B9B9B]" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#767676]" />
             <input
               type="text"
               value={query}
@@ -393,7 +393,7 @@ export default function ToolsPage() {
               <Search className="w-7 h-7 text-[#C8C8C4]" />
             </div>
             <p className="font-semibold text-[#1A1A1A] mb-1">No tools found for &ldquo;{query}&rdquo;</p>
-            <p className="text-sm text-[#9B9B9B]">Try a different keyword</p>
+            <p className="text-sm text-[#767676]">Try a different keyword</p>
           </motion.div>
         ) : (
           <motion.div key="groups" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
@@ -403,15 +403,15 @@ export default function ToolsPage() {
                   <div className="flex items-start justify-between mb-6">
                     <div className="w-full">
                       <div className="flex items-center gap-3 mb-1.5">
-                        <h2 className="text-xs font-bold text-[#9B9B9B] uppercase tracking-widest">
+                        <h2 className="text-xs font-bold text-[#767676] uppercase tracking-widest">
                           {group.category}
                         </h2>
                         <div className="flex-1 h-px bg-[#E8E8E4]" />
-                        <span className="text-xs text-[#9B9B9B] flex-shrink-0">
+                        <span className="text-xs text-[#767676] flex-shrink-0">
                           {group.tools.length} tool{group.tools.length !== 1 ? "s" : ""}
                         </span>
                       </div>
-                      <p className="text-sm text-[#9B9B9B]">{group.description}</p>
+                      <p className="text-sm text-[#767676]">{group.description}</p>
                     </div>
                   </div>
                 </ScrollReveal>
@@ -440,7 +440,7 @@ export default function ToolsPage() {
                                   {tool.badge}
                                 </span>
                               )}
-                              <span className="text-xs text-[#9B9B9B] bg-[#F5F5F0] px-2.5 py-1 rounded-full">
+                              <span className="text-xs text-[#767676] bg-[#F5F5F0] px-2.5 py-1 rounded-full">
                                 Free
                               </span>
                             </div>
@@ -456,12 +456,12 @@ export default function ToolsPage() {
 
                           {/* Meta row */}
                           <div className="flex items-center gap-3 mt-4 mb-1">
-                            <span className="flex items-center gap-1 text-xs text-[#9B9B9B]">
+                            <span className="flex items-center gap-1 text-xs text-[#767676]">
                               <Clock className="w-3 h-3" />
                               {tool.time}
                             </span>
                             {wfCount > 0 && (
-                              <span className="flex items-center gap-1 text-xs text-[#9B9B9B]">
+                              <span className="flex items-center gap-1 text-xs text-[#767676]">
                                 <FileText className="w-3 h-3" />
                                 Used in {wfCount} workflow{wfCount !== 1 ? "s" : ""}
                               </span>
@@ -496,7 +496,7 @@ export default function ToolsPage() {
           >
             Want a complete analysis?
           </TextReveal>
-          <p className="text-[#9B9B9B] mb-7 max-w-lg mx-auto text-sm leading-relaxed">
+          <p className="text-[#767676] mb-7 max-w-lg mx-auto text-sm leading-relaxed">
             These tools give quick estimates. For a full manufacturing
             feasibility report — 3-country comparison, cost breakdown, HS
             codes, and optimization tips — get a Bottlecap analysis in 2–5 min.

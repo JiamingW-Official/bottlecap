@@ -1687,7 +1687,7 @@ function PhaseRFQ() {
             </tbody>
           </table>
         </div>
-        <p className="text-[10px] text-[#9B9B9B] mt-3">
+        <p className="text-[10px] text-[#767676] mt-3">
           These multipliers account for: FOB cost + shipping + customs + Amazon/platform fees + marketing + your profit margin. If your FOB target seems unrealistically low, you may need to adjust retail price or product specifications.
         </p>
       </div>
@@ -1776,7 +1776,7 @@ function PhaseSample() {
                   <td className="py-2.5 pr-2 text-[#FF6B35] font-bold text-xs">{i + 1}</td>
                   <td className="py-2.5 pr-4 text-[#1A1A1A] font-medium">{item.criteria}</td>
                   <td className="py-2.5 pr-4 text-[#6B6B6B] text-xs hidden sm:table-cell">{item.description}</td>
-                  <td className="py-2.5 text-center text-[#9B9B9B] text-xs">_ / 5</td>
+                  <td className="py-2.5 text-center text-[#767676] text-xs">_ / 5</td>
                 </tr>
               ))}
               <tr className="border-t-2 border-[#1A1A1A]">
@@ -2133,7 +2133,7 @@ function PhaseQA() {
             </tbody>
           </table>
         </div>
-        <p className="text-[10px] text-[#9B9B9B] mt-3">
+        <p className="text-[10px] text-[#767676] mt-3">
           Accept = max defects to pass. Reject = number of defects that triggers lot rejection. For critical defects, ALWAYS use 0% AQL (accept 0, reject 1) regardless of inspection level.
         </p>
       </div>

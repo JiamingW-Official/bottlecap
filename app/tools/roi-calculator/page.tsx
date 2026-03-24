@@ -307,7 +307,7 @@ export default function RoiCalculatorPage() {
             </label>
             <p className="text-xs text-[#6B6B6B] mb-2">What you pay the factory per unit (ex-works)</p>
             <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9B9B9B]" />
+              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#767676]" />
               <input
                 type="number"
                 value={unitCost}
@@ -326,7 +326,7 @@ export default function RoiCalculatorPage() {
             </label>
             <p className="text-xs text-[#6B6B6B] mb-2">What customers pay (your listed price)</p>
             <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9B9B9B]" />
+              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#767676]" />
               <input
                 type="number"
                 value={retailPrice}
@@ -355,7 +355,7 @@ export default function RoiCalculatorPage() {
               onChange={(e) => handleManualChange(setOrderQty, Number(e.target.value))}
               className="w-full accent-[#FF6B35]"
             />
-            <div className="flex justify-between text-xs text-[#9B9B9B] mt-1">
+            <div className="flex justify-between text-xs text-[#767676] mt-1">
               <span>100</span>
               <span>5,000</span>
               <span>10,000</span>
@@ -413,7 +413,7 @@ export default function RoiCalculatorPage() {
                     <span className={`font-semibold ${isActive ? "text-[#FF6B35]" : "text-[#1A1A1A]"}`}>
                       {opt.label}
                     </span>
-                    <span className={`text-xs ${isActive ? "text-[#FF6B35]" : "text-[#9B9B9B]"}`}>
+                    <span className={`text-xs ${isActive ? "text-[#FF6B35]" : "text-[#767676]"}`}>
                       {opt.desc}
                     </span>
                   </button>
@@ -466,7 +466,7 @@ export default function RoiCalculatorPage() {
                 <p className="text-xl font-black" style={{ color: item.color === "#6B6B6B" ? "#1A1A1A" : item.color }}>
                   {item.value}
                 </p>
-                <p className="text-xs text-[#9B9B9B] mt-0.5">{item.sub}</p>
+                <p className="text-xs text-[#767676] mt-0.5">{item.sub}</p>
               </div>
             ))}
           </div>
@@ -487,7 +487,7 @@ export default function RoiCalculatorPage() {
             </div>
           </div>
 
-          <p className="text-xs text-[#9B9B9B] text-center">
+          <p className="text-xs text-[#767676] text-center">
             Savings are estimates based on industry averages. Actual results vary by product and supplier.
           </p>
         </div>
@@ -627,7 +627,7 @@ export default function RoiCalculatorPage() {
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-[#9B9B9B] mt-3 text-center">
+        <p className="text-xs text-[#767676] mt-3 text-center">
           Based on {orderQty.toLocaleString()} units at {fmt$2(unitCost)}/unit manufacturing cost.
         </p>
       </section>

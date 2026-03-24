@@ -105,7 +105,7 @@ function SectionDivider({ label }: { label: string }) {
         className="pt-6 pb-2 px-0"
       >
         <div className="flex items-center gap-3">
-          <span className="text-[10px] font-bold tracking-widest uppercase text-[#9B9B9B] whitespace-nowrap">
+          <span className="text-[10px] font-bold tracking-widest uppercase text-[#767676] whitespace-nowrap">
             {label}
           </span>
           <div className="flex-1 h-px bg-[#E8E8E4]" />
@@ -141,7 +141,7 @@ export default function IndustryComparison() {
             <tr>
               {/* Feature label column */}
               <th className="text-left pb-5 pr-4 w-[26%] align-bottom">
-                <span className="text-xs font-semibold text-[#9B9B9B] tracking-wide uppercase">
+                <span className="text-xs font-semibold text-[#767676] tracking-wide uppercase">
                   Feature
                 </span>
               </th>

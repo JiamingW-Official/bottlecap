@@ -327,7 +327,7 @@ export default function CategoryShowcase() {
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         {/* Search */}
         <div className="relative flex-1 max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9B9B9B]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#767676]" />
           <input
             type="text"
             value={query}
@@ -338,7 +338,7 @@ export default function CategoryShowcase() {
           {query && (
             <button
               onClick={() => setQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9B9B9B] hover:text-[#6B6B6B]"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#767676] hover:text-[#6B6B6B]"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -364,7 +364,7 @@ export default function CategoryShowcase() {
       </div>
 
       {/* Results count */}
-      <p className="text-xs text-[#9B9B9B] mb-4">
+      <p className="text-xs text-[#767676] mb-4">
         {filtered.length} categor{filtered.length !== 1 ? "ies" : "y"}
         {activeTag !== "all" || query ? " found" : " \u00b7 click any to start analysis"}
       </p>
@@ -411,7 +411,7 @@ export default function CategoryShowcase() {
               </p>
 
               {/* One-liner description */}
-              <p className="text-xs text-[#9B9B9B] mt-1 leading-snug line-clamp-2">
+              <p className="text-xs text-[#767676] mt-1 leading-snug line-clamp-2">
                 {cat.description}
               </p>
 
@@ -436,7 +436,7 @@ export default function CategoryShowcase() {
 
       {/* Empty state */}
       {filtered.length === 0 && (
-        <div className="text-center py-12 text-[#9B9B9B]">
+        <div className="text-center py-12 text-[#767676]">
           <Search className="w-8 h-8 mx-auto mb-3 opacity-30" />
           <p className="text-sm">No categories match &ldquo;{query}&rdquo;</p>
           <button

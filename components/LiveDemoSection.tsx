@@ -445,7 +445,7 @@ export default function LiveDemoSection() {
               <div className="space-y-3 mb-10">
                 {[
                   { label: "HS code classification", sub: "99.2% accuracy rate across 5,000+ product categories" },
-                  { label: "3-country cost model", sub: "Within ±5% of actual landed cost — materials, labor, freight, duty" },
+                  { label: "Top-3 country comparison (from 12)", sub: "Within ±5% of actual landed cost — materials, labor, freight, duty" },
                   { label: "Tariff + compliance scan", sub: "All 99 HTS chapters, FDA, FCC, CE, Prop 65 flagged automatically" },
                   { label: "Margin & ROI projection", sub: "Retail price benchmarking against 14M Amazon listings" },
                   { label: "Optimization suggestions", sub: "Avg. $2.10/unit savings found per report" },
@@ -456,7 +456,7 @@ export default function LiveDemoSection() {
                     </div>
                     <div>
                       <span className="text-sm font-semibold text-[#1A1A1A]">{item.label}</span>
-                      <span className="text-xs text-[#9B9B9B] block leading-relaxed">{item.sub}</span>
+                      <span className="text-xs text-[#767676] block leading-relaxed">{item.sub}</span>
                     </div>
                   </div>
                 ))}
@@ -464,7 +464,7 @@ export default function LiveDemoSection() {
 
               {/* Product selector pills */}
               <div>
-                <p className="text-xs text-[#9B9B9B] font-semibold uppercase tracking-widest mb-3">
+                <p className="text-xs text-[#767676] font-semibold uppercase tracking-widest mb-3">
                   Try a different product:
                 </p>
                 <div className="flex flex-wrap gap-2">

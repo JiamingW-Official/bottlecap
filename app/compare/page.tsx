@@ -210,7 +210,7 @@ function FeaturedCard({
                   key={m.label}
                   className="bg-[#FAFAF8] rounded-xl p-3 border border-[#E8E8E4]"
                 >
-                  <p className="text-[11px] text-[#9B9B9B] font-medium uppercase tracking-wide mb-1">
+                  <p className="text-[11px] text-[#767676] font-medium uppercase tracking-wide mb-1">
                     {m.label}
                   </p>
                   <div className="flex items-center gap-2 text-sm font-semibold text-[#1A1A1A]">
@@ -218,7 +218,7 @@ function FeaturedCard({
                       className={
                         m.winner === "A"
                           ? "text-[#FF6B35]"
-                          : "text-[#9B9B9B] line-through decoration-1"
+                          : "text-[#767676] line-through decoration-1"
                       }
                     >
                       {m.valueA}
@@ -228,7 +228,7 @@ function FeaturedCard({
                       className={
                         m.winner === "B"
                           ? "text-[#FF6B35]"
-                          : "text-[#9B9B9B] line-through decoration-1"
+                          : "text-[#767676] line-through decoration-1"
                       }
                     >
                       {m.valueB}
@@ -241,7 +241,7 @@ function FeaturedCard({
 
           {/* Footer */}
           <div className="flex items-center justify-between mt-auto pt-2">
-            <span className="text-xs text-[#9B9B9B]">
+            <span className="text-xs text-[#767676]">
               {comparison.metrics.length} metrics compared &middot;{" "}
               {readTime(comparison.metrics.length)}
             </span>
@@ -298,7 +298,7 @@ function CompactCard({
         </p>
 
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#F0F0EC]">
-          <span className="text-[11px] text-[#9B9B9B]">
+          <span className="text-[11px] text-[#767676]">
             {comparison.metrics.length} metrics &middot; {readTime(comparison.metrics.length)}
           </span>
           <span className="text-xs font-semibold text-[#FF6B35] group-hover:translate-x-0.5 transition-transform inline-block">
@@ -347,7 +347,7 @@ export default function ComparePage() {
         <div className="max-w-5xl mx-auto px-6">
 
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-sm text-[#9B9B9B] mb-8">
+          <nav className="flex items-center gap-2 text-sm text-[#767676] mb-8">
             <Link href="/" className="hover:text-[#FF6B35] transition-colors">
               Home
             </Link>
@@ -401,7 +401,7 @@ export default function ComparePage() {
         <div className="max-w-5xl mx-auto px-6">
           <div className="relative max-w-xl">
             <svg
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#9B9B9B]"
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#767676]"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={2}
@@ -419,7 +419,7 @@ export default function ComparePage() {
             {query && (
               <button
                 onClick={() => setQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9B9B9B] hover:text-[#1A1A1A] transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#767676] hover:text-[#1A1A1A] transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -428,7 +428,7 @@ export default function ComparePage() {
             )}
           </div>
           {isSearching && (
-            <p className="mt-2.5 text-xs text-[#9B9B9B]">
+            <p className="mt-2.5 text-xs text-[#767676]">
               {filtered.length === 0
                 ? "No comparisons match that search."
                 : `${filtered.length} comparison${filtered.length === 1 ? "" : "s"} found`}
@@ -449,14 +449,14 @@ export default function ComparePage() {
             className="py-12"
           >
             <div className="max-w-5xl mx-auto px-6">
-              <h2 className="text-sm font-semibold text-[#9B9B9B] uppercase tracking-wider mb-6">
+              <h2 className="text-sm font-semibold text-[#767676] uppercase tracking-wider mb-6">
                 Search results
               </h2>
               {filtered.length === 0 ? (
                 <div className="text-center py-20">
                   <p className="text-4xl mb-4">🔍</p>
                   <p className="text-[#6B6B6B] font-medium">No comparisons found for &ldquo;{query}&rdquo;</p>
-                  <p className="text-sm text-[#9B9B9B] mt-2">Try a country name, material, or method.</p>
+                  <p className="text-sm text-[#767676] mt-2">Try a country name, material, or method.</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -513,7 +513,7 @@ export default function ComparePage() {
             {/* ── Popular strip ────────────────────────────────────────────── */}
             <section className="py-8 bg-white border-y border-[#E8E8E4]">
               <div className="max-w-5xl mx-auto px-6">
-                <p className="text-xs font-semibold text-[#9B9B9B] uppercase tracking-wider mb-4">
+                <p className="text-xs font-semibold text-[#767676] uppercase tracking-wider mb-4">
                   Most searched
                 </p>
                 <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-hide">
@@ -548,7 +548,7 @@ export default function ComparePage() {
             {/* ── Quick decision strip ────────────────────────────────────── */}
             <section className="py-10">
               <div className="max-w-5xl mx-auto px-6">
-                <p className="text-xs font-bold uppercase tracking-widest text-[#9B9B9B] mb-4">Quick decisions</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-[#767676] mb-4">Quick decisions</p>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {[
                     {
@@ -584,7 +584,7 @@ export default function ComparePage() {
                         href={item.href}
                         className="group flex flex-col h-full bg-white border border-[#E8E8E4] rounded-2xl p-5 hover:border-[#FF6B35] hover:shadow-md transition-all"
                       >
-                        <p className="text-xs text-[#9B9B9B] mb-2 leading-snug">{item.question}</p>
+                        <p className="text-xs text-[#767676] mb-2 leading-snug">{item.question}</p>
                         <p className="text-2xl font-black mb-2" style={{ color: item.color }}>{item.answer}</p>
                         <p className="text-xs text-[#6B6B6B] leading-relaxed flex-1">{item.detail}</p>
                         <p className="text-xs font-semibold text-[#FF6B35] mt-3 group-hover:underline">Read comparison →</p>
@@ -664,7 +664,7 @@ export default function ComparePage() {
                       <p className="font-bold text-[#1A1A1A] text-sm group-hover:text-[#FF6B35] transition-colors">
                         Country Compare Tool
                       </p>
-                      <p className="text-xs text-[#9B9B9B] leading-relaxed">
+                      <p className="text-xs text-[#767676] leading-relaxed">
                         Compare any two countries side-by-side across cost, speed, and risk.
                       </p>
                     </Link>
@@ -681,7 +681,7 @@ export default function ComparePage() {
                       <p className="font-bold text-[#1A1A1A] text-sm group-hover:text-[#FF6B35] transition-colors">
                         Landed Cost Calculator
                       </p>
-                      <p className="text-xs text-[#9B9B9B] leading-relaxed">
+                      <p className="text-xs text-[#767676] leading-relaxed">
                         Factor in tariffs, freight, and duties to find your true unit cost.
                       </p>
                     </Link>
@@ -698,7 +698,7 @@ export default function ComparePage() {
                       <p className="font-bold text-[#1A1A1A] text-sm group-hover:text-[#FF6B35] transition-colors">
                         AI Analysis Report
                       </p>
-                      <p className="text-xs text-[#9B9B9B] leading-relaxed">
+                      <p className="text-xs text-[#767676] leading-relaxed">
                         Custom sourcing report for your product in under 5 minutes. $99.
                       </p>
                     </Link>

@@ -272,7 +272,7 @@ export default function GlossaryPage() {
                     className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
                       isActive
                         ? "bg-white/20 text-white"
-                        : "bg-[#F5F5F0] text-[#9B9B9B]"
+                        : "bg-[#F5F5F0] text-[#767676]"
                     }`}
                   >
                     {count}

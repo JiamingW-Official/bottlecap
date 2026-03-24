@@ -38,7 +38,7 @@ export default function NotFound() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-[#E8E8E4]">
-          <p className="text-xs text-[#9B9B9B] mb-4">Popular pages</p>
+          <p className="text-xs text-[#767676] mb-4">Popular pages</p>
           <div className="flex flex-wrap justify-center gap-4">
             {[
               { href: "/analyze", label: "Analyze my product" },
@@ -57,7 +57,7 @@ export default function NotFound() {
           </div>
         </div>
 
-        <p className="text-xs text-[#9B9B9B] mt-8">
+        <p className="text-xs text-[#767676] mt-8">
           Need help?{" "}
           <a href="mailto:hello@bottlecap.io" className="text-[#FF6B35] hover:underline">
             hello@bottlecap.io

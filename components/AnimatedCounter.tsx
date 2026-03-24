@@ -60,7 +60,7 @@ export default function AnimatedCounter({
       </p>
       <p className="text-base font-semibold text-[#FF6B35] mt-2">{label}</p>
       {sublabel && (
-        <p className="text-sm text-[#9B9B9B] mt-1">{sublabel}</p>
+        <p className="text-sm text-[#767676] mt-1">{sublabel}</p>
       )}
     </div>
   )

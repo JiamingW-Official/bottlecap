@@ -195,7 +195,7 @@ function ResultCard({ entry }: { entry: HsEntry }) {
           </span>
           <div>
             <p className="font-semibold text-[#1A1A1A] leading-snug">{entry.description}</p>
-            <p className="text-xs text-[#9B9B9B] mt-0.5">{entry.chapter}</p>
+            <p className="text-xs text-[#767676] mt-0.5">{entry.chapter}</p>
           </div>
         </div>
 
@@ -206,7 +206,7 @@ function ResultCard({ entry }: { entry: HsEntry }) {
             className="flex flex-col items-center px-3 py-1.5 rounded-xl text-center min-w-[72px]"
             style={{ background: rateBg(entry.mfnRate) }}
           >
-            <span className="text-[10px] font-medium text-[#9B9B9B] uppercase tracking-wide">MFN</span>
+            <span className="text-[10px] font-medium text-[#767676] uppercase tracking-wide">MFN</span>
             <span className="text-lg font-black leading-tight" style={{ color: rateColor(entry.mfnRate) }}>
               {entry.mfnRate}%
             </span>
@@ -216,7 +216,7 @@ function ResultCard({ entry }: { entry: HsEntry }) {
           {entry.china301 && (
             <div className="flex flex-col items-center px-3 py-1.5 rounded-xl text-center min-w-[72px]"
               style={{ background: "rgba(239,68,68,0.08)" }}>
-              <span className="text-[10px] font-medium text-[#9B9B9B] uppercase tracking-wide">China</span>
+              <span className="text-[10px] font-medium text-[#767676] uppercase tracking-wide">China</span>
               <span className="text-lg font-black leading-tight text-[#EF4444]">
                 +{CHINA_301_RATE}%
               </span>
@@ -226,7 +226,7 @@ function ResultCard({ entry }: { entry: HsEntry }) {
           {/* Vietnam / Mexico */}
           <div className="flex flex-col items-center px-3 py-1.5 rounded-xl text-center min-w-[72px]"
             style={{ background: rateBg(entry.mfnRate) }}>
-            <span className="text-[10px] font-medium text-[#9B9B9B] uppercase tracking-wide">VN/MX</span>
+            <span className="text-[10px] font-medium text-[#767676] uppercase tracking-wide">VN/MX</span>
             <span className="text-lg font-black leading-tight" style={{ color: rateColor(entry.mfnRate) }}>
               {entry.mfnRate}%
             </span>
@@ -321,7 +321,7 @@ export default function HsLookupPage() {
 
       {/* Search */}
       <div className="relative mb-5">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9B9B9B] pointer-events-none" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#767676] pointer-events-none" />
         <input
           type="text"
           placeholder="Search by product name or HS code…"
@@ -394,7 +394,7 @@ export default function HsLookupPage() {
           >
             <div className="text-4xl mb-4">🔍</div>
             <p className="text-[#1A1A1A] font-semibold text-lg mb-2">No matching HS codes found</p>
-            <p className="text-[#9B9B9B] text-sm mb-6 max-w-sm mx-auto">
+            <p className="text-[#767676] text-sm mb-6 max-w-sm mx-auto">
               Try a broader search term, or use Bottlecap&rsquo;s AI classifier to get an exact HS code for any product.
             </p>
             <Link
@@ -557,7 +557,7 @@ export default function HsLookupPage() {
               <span className="text-2xl font-black text-[#FF6B35] leading-none shrink-0 font-mono">{s.step}</span>
               <div>
                 <p className="font-semibold text-white text-sm mb-0.5">{s.title}</p>
-                <p className="text-xs text-[#9B9B9B] leading-relaxed">{s.body}</p>
+                <p className="text-xs text-[#767676] leading-relaxed">{s.body}</p>
               </div>
             </div>
           ))}

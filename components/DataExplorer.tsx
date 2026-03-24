@@ -118,14 +118,14 @@ export default function DataExplorer() {
           >
             <tab.icon className="w-4 h-4" />
             {tab.label}
-            <span className="text-xs text-[#9B9B9B]">({tab.count})</span>
+            <span className="text-xs text-[#767676]">({tab.count})</span>
           </button>
         ))}
       </div>
 
       {/* Search */}
       <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9B9B9B]" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#767676]" />
         <input
           type="text"
           placeholder={
@@ -193,25 +193,25 @@ export default function DataExplorer() {
                       animate={{ rotate: expandedItem === country.code ? 180 : 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <ChevronDown className="w-4 h-4 text-[#9B9B9B]" />
+                      <ChevronDown className="w-4 h-4 text-[#767676]" />
                     </motion.div>
                   </div>
 
                   <div className="space-y-2 mb-3">
                     <div>
-                      <div className="flex justify-between text-[10px] text-[#9B9B9B] mb-0.5">
+                      <div className="flex justify-between text-[10px] text-[#767676] mb-0.5">
                         <span>Quality</span>
                       </div>
                       <RatingBar value={country.qualityRating} color="#22C55E" />
                     </div>
                     <div>
-                      <div className="flex justify-between text-[10px] text-[#9B9B9B] mb-0.5">
+                      <div className="flex justify-between text-[10px] text-[#767676] mb-0.5">
                         <span>IP Protection</span>
                       </div>
                       <RatingBar value={country.ipProtection} color="#3B82F6" />
                     </div>
                     <div>
-                      <div className="flex justify-between text-[10px] text-[#9B9B9B] mb-0.5">
+                      <div className="flex justify-between text-[10px] text-[#767676] mb-0.5">
                         <span>Infrastructure</span>
                       </div>
                       <RatingBar value={country.infrastructure} color="#F59E0B" />
@@ -275,21 +275,21 @@ export default function DataExplorer() {
                           </div>
                           <div className="grid grid-cols-2 gap-2 text-[10px]">
                             <div>
-                              <span className="text-[#9B9B9B]">Ports:</span>{" "}
+                              <span className="text-[#767676]">Ports:</span>{" "}
                               <span className="text-[#6B6B6B]">
                                 {country.keyPorts.join(", ")}
                               </span>
                             </div>
                             <div>
-                              <span className="text-[#9B9B9B]">Currency:</span>{" "}
+                              <span className="text-[#767676]">Currency:</span>{" "}
                               <span className="text-[#6B6B6B]">{country.currency}</span>
                             </div>
                             <div>
-                              <span className="text-[#9B9B9B]">Language:</span>{" "}
+                              <span className="text-[#767676]">Language:</span>{" "}
                               <span className="text-[#6B6B6B]">{country.language}</span>
                             </div>
                             <div>
-                              <span className="text-[#9B9B9B]">Timezone:</span>{" "}
+                              <span className="text-[#767676]">Timezone:</span>{" "}
                               <span className="text-[#6B6B6B]">{country.timezone}</span>
                             </div>
                           </div>
@@ -323,7 +323,7 @@ export default function DataExplorer() {
                       animate={{ rotate: expandedItem === mat.name ? 180 : 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <ChevronDown className="w-4 h-4 text-[#9B9B9B]" />
+                      <ChevronDown className="w-4 h-4 text-[#767676]" />
                     </motion.div>
                   </div>
 
@@ -383,7 +383,7 @@ export default function DataExplorer() {
                               {mat.commonUses.join(" · ")}
                             </p>
                           </div>
-                          <p className="text-[10px] text-[#9B9B9B]">
+                          <p className="text-[10px] text-[#767676]">
                             Min. order: {mat.minOrderKg.toLocaleString()} kg
                           </p>
                         </div>
@@ -393,7 +393,7 @@ export default function DataExplorer() {
                 </div>
               ))}
               {filteredMaterials.length > 18 && (
-                <div className="sm:col-span-2 lg:col-span-3 text-center text-xs text-[#9B9B9B] py-2">
+                <div className="sm:col-span-2 lg:col-span-3 text-center text-xs text-[#767676] py-2">
                   Showing 18 of {filteredMaterials.length} materials. Use search to narrow results.
                 </div>
               )}
@@ -423,7 +423,7 @@ export default function DataExplorer() {
                       }}
                       transition={{ duration: 0.2 }}
                     >
-                      <ChevronDown className="w-4 h-4 text-[#9B9B9B]" />
+                      <ChevronDown className="w-4 h-4 text-[#767676]" />
                     </motion.div>
                   </div>
 
@@ -439,7 +439,7 @@ export default function DataExplorer() {
 
                   {/* Cost range bar */}
                   <div className="mb-2">
-                    <div className="flex justify-between text-[10px] text-[#9B9B9B] mb-1">
+                    <div className="flex justify-between text-[10px] text-[#767676] mb-1">
                       <span>Unit cost</span>
                       <span>
                         ${product.avgUnitCost.min} – ${product.avgUnitCost.max}
@@ -482,27 +482,27 @@ export default function DataExplorer() {
                           </p>
                           <div className="grid grid-cols-2 gap-2 text-[10px]">
                             <div>
-                              <span className="text-[#9B9B9B]">Lead time:</span>{" "}
+                              <span className="text-[#767676]">Lead time:</span>{" "}
                               <span className="text-[#6B6B6B]">
                                 {product.avgLeadTimeDays} days
                               </span>
                             </div>
                             <div>
-                              <span className="text-[#9B9B9B]">Tooling:</span>{" "}
+                              <span className="text-[#767676]">Tooling:</span>{" "}
                               <span className="text-[#6B6B6B]">
                                 ${product.toolingCost.min.toLocaleString()}–$
                                 {product.toolingCost.max.toLocaleString()}
                               </span>
                             </div>
                             <div>
-                              <span className="text-[#9B9B9B]">Shipping:</span>{" "}
+                              <span className="text-[#767676]">Shipping:</span>{" "}
                               <span className="text-[#6B6B6B]">
                                 ${product.shippingPerUnit.min}–$
                                 {product.shippingPerUnit.max}/unit
                               </span>
                             </div>
                             <div>
-                              <span className="text-[#9B9B9B]">Materials:</span>{" "}
+                              <span className="text-[#767676]">Materials:</span>{" "}
                               <span className="text-[#6B6B6B]">
                                 {product.materials.slice(0, 3).join(", ")}
                               </span>
@@ -523,7 +523,7 @@ export default function DataExplorer() {
                 </div>
               ))}
               {filteredProducts.length > 16 && (
-                <div className="sm:col-span-2 text-center text-xs text-[#9B9B9B] py-2">
+                <div className="sm:col-span-2 text-center text-xs text-[#767676] py-2">
                   Showing 16 of {filteredProducts.length} products. Use search to narrow results.
                 </div>
               )}

@@ -609,7 +609,7 @@ export default function CountryComparePage() {
             </option>
           ))}
         </select>
-        <p className="text-xs text-[#9B9B9B] mt-2">
+        <p className="text-xs text-[#767676] mt-2">
           Scoring weights: {PRODUCT_TYPES[productType].description}
         </p>
       </div>
@@ -658,7 +658,7 @@ export default function CountryComparePage() {
           <p className="text-[#6B6B6B] text-lg font-medium">
             Select at least 2 countries to compare
           </p>
-          <p className="text-[#9B9B9B] text-sm mt-2">
+          <p className="text-[#767676] text-sm mt-2">
             Click the country pills above to add them to the comparison
           </p>
         </div>
@@ -695,7 +695,7 @@ export default function CountryComparePage() {
                     <p className="text-sm font-semibold text-[#1A1A1A]">
                       {metric.label}
                     </p>
-                    <p className="text-xs text-[#9B9B9B]">
+                    <p className="text-xs text-[#767676]">
                       {metric.higherIsBetter ? "Higher is better" : "Lower is better"}
                     </p>
                   </div>
@@ -844,7 +844,7 @@ export default function CountryComparePage() {
                   >
                     {c.score.toFixed(1)}
                   </p>
-                  <p className="text-xs text-[#9B9B9B] mt-1">weighted score</p>
+                  <p className="text-xs text-[#767676] mt-1">weighted score</p>
 
                   {/* Mini specialization tags */}
                   <div className="flex flex-wrap justify-center gap-1 mt-3">
@@ -897,7 +897,7 @@ export default function CountryComparePage() {
             </div>
 
             {/* Ranked recommendation list */}
-            <p className="text-xs text-[#9B9B9B] mb-3 uppercase tracking-wide font-semibold">
+            <p className="text-xs text-[#767676] mb-3 uppercase tracking-wide font-semibold">
               Based on your priority: {PRIORITY_LABELS[priority]}
             </p>
             <div className="space-y-3">
@@ -908,7 +908,7 @@ export default function CountryComparePage() {
                   <div key={c.id} className="flex items-center gap-4">
                     <span
                       className={`text-sm font-black w-6 text-center ${
-                        i === 0 ? "text-[#FF6B35]" : "text-[#9B9B9B]"
+                        i === 0 ? "text-[#FF6B35]" : "text-[#767676]"
                       }`}
                     >
                       #{i + 1}
@@ -961,7 +961,7 @@ export default function CountryComparePage() {
               <Sparkles className="w-4 h-4" />
               Get Your AI Sourcing Report
             </Link>
-            <p className="text-xs text-[#9B9B9B] mt-3">
+            <p className="text-xs text-[#767676] mt-3">
               2-5 min delivery &middot; $99 one-time &middot; Money-back guarantee
             </p>
           </div>
@@ -991,7 +991,7 @@ export default function CountryComparePage() {
                   onChange={(e) => setHsCode(e.target.value.replace(/\D/g, ""))}
                   className="w-full border border-[#E8E8E4] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] bg-[#FAFAF8] focus:outline-none focus:ring-2 focus:ring-[#FF6B35]"
                 />
-                <p className="text-[10px] text-[#9B9B9B] mt-1">
+                <p className="text-[10px] text-[#767676] mt-1">
                   Leave blank to use country default tariff rates
                 </p>
               </div>
@@ -1058,12 +1058,12 @@ export default function CountryComparePage() {
                       ))}
                   </tbody>
                 </table>
-                <p className="text-[10px] text-[#9B9B9B] mt-3">
+                <p className="text-[10px] text-[#767676] mt-3">
                   Margin impact assumes 3x retail markup on order value. Rates are illustrative MFN estimates — verify with a customs broker before importing.
                 </p>
               </div>
             ) : (
-              <div className="text-center py-6 text-[#9B9B9B] text-sm">
+              <div className="text-center py-6 text-[#767676] text-sm">
                 Enter an order value above to calculate duty exposure
               </div>
             )}
@@ -1160,7 +1160,7 @@ export default function CountryComparePage() {
               })}
             </div>
 
-            <p className="text-[10px] text-[#9B9B9B] mt-4">
+            <p className="text-[10px] text-[#767676] mt-4">
               Estimates assume sea freight to US West Coast. Air freight reduces transit by ~80%. Production times vary by factory and order size.
             </p>
           </div>
@@ -1193,7 +1193,7 @@ export default function CountryComparePage() {
                 Decision Matrix
               </h2>
             </div>
-            <p className="text-xs text-[#9B9B9B] mb-4 flex items-center gap-1">
+            <p className="text-xs text-[#767676] mb-4 flex items-center gap-1">
               <Camera className="w-3 h-3" />
               Screenshot this summary to share with your team
             </p>
@@ -1205,7 +1205,7 @@ export default function CountryComparePage() {
                   <Globe className="w-4 h-4 text-[#FF6B35]" />
                   <span className="text-white text-sm font-bold">Bottlecap Country Matrix</span>
                 </div>
-                <span className="text-[#9B9B9B] text-xs">bottlecap.ai</span>
+                <span className="text-[#767676] text-xs">bottlecap.ai</span>
               </div>
 
               {/* Matrix table */}
@@ -1278,7 +1278,7 @@ export default function CountryComparePage() {
 
               {/* Card footer */}
               <div className="px-5 py-3 bg-[#F5F5F0] border-t border-[#E8E8E4]">
-                <p className="text-[10px] text-[#9B9B9B]">
+                <p className="text-[10px] text-[#767676]">
                   Generated by Bottlecap AI &middot; Product type: {PRODUCT_TYPES[productType].label} &middot; Green cells = winner in that metric
                 </p>
               </div>

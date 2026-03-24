@@ -116,7 +116,7 @@ export default function FormInsightPanel({
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF6B35] opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FF6B35]" />
           </span>
-          <span className="text-xs font-semibold text-[#9B9B9B] uppercase tracking-wider">
+          <span className="text-xs font-semibold text-[#767676] uppercase tracking-wider">
             AI Preview
           </span>
         </div>

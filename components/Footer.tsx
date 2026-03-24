@@ -52,9 +52,9 @@ const resourceLinks = [
   { href: "/glossary",            label: "Glossary" },
   { href: "/comparisons",         label: "Comparisons" },
   { href: "/manufacturers",       label: "Manufacturer Profiles" },
-  { href: "/trending",            label: "Trending Products" },
+  { href: "/trends",              label: "Trending Products" },
   { href: "/suppliers",           label: "Verified Suppliers" },
-  { href: "/cost-guides",         label: "Cost Guides" },
+  { href: "/cost-to-manufacture", label: "Cost Guides" },
   { href: "/about",               label: "About" },
   { href: "/blog",                label: "Blog" },
   { href: "/contact",             label: "Contact" },
@@ -110,11 +110,11 @@ export default function Footer() {
               {stats.map((s) => (
                 <div key={s.label} className="flex items-baseline gap-1.5">
                   <span className="text-xl font-black text-[#1A1A1A]">{s.value}</span>
-                  <span className="text-xs text-[#9B9B9B]">{s.label}</span>
+                  <span className="text-xs text-[#767676]">{s.label}</span>
                 </div>
               ))}
             </div>
-            <div className="flex items-center gap-4 text-xs text-[#9B9B9B]">
+            <div className="flex items-center gap-4 text-xs text-[#767676]">
               <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> 72-hr money-back</span>
               <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> 2-5 min delivery</span>
               <span className="flex items-center gap-1"><Lock className="w-3 h-3" /> Stripe secure</span>
@@ -174,13 +174,13 @@ export default function Footer() {
             <p className="text-sm text-[#6B6B6B] leading-relaxed mb-3">
               Manufacturing feasibility analysis for founders. $99. 2-5 minutes. No guessing.
             </p>
-            <p className="text-xs text-[#9B9B9B] mb-4">Powered by Claude AI · Made in San Francisco</p>
+            <p className="text-xs text-[#767676] mb-4">Powered by Claude AI · Made in San Francisco</p>
             <div className="flex items-center gap-2">
               <a
                 href="https://twitter.com/bottlecap_io"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-[#E8E8E4] text-[#9B9B9B] hover:text-[#1A1A1A] hover:border-[#D0D0D0] transition-colors"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-[#E8E8E4] text-[#767676] hover:text-[#1A1A1A] hover:border-[#D0D0D0] transition-colors"
                 aria-label="Twitter"
               >
                 <Twitter className="w-4 h-4" />
@@ -189,7 +189,7 @@ export default function Footer() {
                 href="https://github.com/bottlecap-io"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-[#E8E8E4] text-[#9B9B9B] hover:text-[#1A1A1A] hover:border-[#D0D0D0] transition-colors"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-[#E8E8E4] text-[#767676] hover:text-[#1A1A1A] hover:border-[#D0D0D0] transition-colors"
                 aria-label="GitHub"
               >
                 <Github className="w-4 h-4" />
@@ -199,7 +199,7 @@ export default function Footer() {
 
           {/* Product */}
           <div>
-            <p className="text-xs font-bold text-[#9B9B9B] uppercase tracking-widest mb-4">
+            <p className="text-xs font-bold text-[#767676] uppercase tracking-widest mb-4">
               Product
             </p>
             <ul className="space-y-2.5">
@@ -222,7 +222,7 @@ export default function Footer() {
 
           {/* Tools */}
           <div>
-            <p className="text-xs font-bold text-[#9B9B9B] uppercase tracking-widest mb-4">
+            <p className="text-xs font-bold text-[#767676] uppercase tracking-widest mb-4">
               Tools
             </p>
             <ul className="space-y-2.5">
@@ -238,7 +238,7 @@ export default function Footer() {
 
           {/* Learn */}
           <div>
-            <p className="text-xs font-bold text-[#9B9B9B] uppercase tracking-widest mb-4">
+            <p className="text-xs font-bold text-[#767676] uppercase tracking-widest mb-4">
               Learn
             </p>
             <ul className="space-y-2.5">
@@ -254,7 +254,7 @@ export default function Footer() {
 
           {/* Resources */}
           <div>
-            <p className="text-xs font-bold text-[#9B9B9B] uppercase tracking-widest mb-4">
+            <p className="text-xs font-bold text-[#767676] uppercase tracking-widest mb-4">
               Resources
             </p>
             <ul className="space-y-2.5">
@@ -285,7 +285,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <p className="text-xs text-[#9B9B9B]">
+            <p className="text-xs text-[#767676]">
               &copy; {new Date().getFullYear()} Bottlecap. All rights reserved.
             </p>
             <p className="text-xs text-[#C0C0C0] mt-1">
@@ -293,10 +293,10 @@ export default function Footer() {
             </p>
           </div>
           <div className="flex items-center gap-5 flex-wrap justify-center">
-            <Link href="/privacy"           className="text-xs text-[#9B9B9B] hover:text-[#6B6B6B] transition-colors">Privacy Policy</Link>
-            <Link href="/terms"             className="text-xs text-[#9B9B9B] hover:text-[#6B6B6B] transition-colors">Terms of Service</Link>
-            <a href="mailto:hello@bottlecap.io" className="text-xs text-[#9B9B9B] hover:text-[#6B6B6B] transition-colors">hello@bottlecap.io</a>
-            <button onClick={scrollToTop}   className="text-xs text-[#9B9B9B] hover:text-[#6B6B6B] transition-colors">Back to top ↑</button>
+            <Link href="/privacy"           className="text-xs text-[#767676] hover:text-[#6B6B6B] transition-colors">Privacy Policy</Link>
+            <Link href="/terms"             className="text-xs text-[#767676] hover:text-[#6B6B6B] transition-colors">Terms of Service</Link>
+            <a href="mailto:hello@bottlecap.io" className="text-xs text-[#767676] hover:text-[#6B6B6B] transition-colors">hello@bottlecap.io</a>
+            <button onClick={scrollToTop}   className="text-xs text-[#767676] hover:text-[#6B6B6B] transition-colors">Back to top ↑</button>
           </div>
         </div>
       </div>

@@ -328,7 +328,7 @@ function DifficultyPill({ difficulty }: { difficulty: Difficulty }) {
 
 function ReadTimeBadge({ readTime }: { readTime: string }) {
   return (
-    <span className="flex items-center gap-1 text-[10px] text-[#9B9B9B] font-medium">
+    <span className="flex items-center gap-1 text-[10px] text-[#767676] font-medium">
       <Clock className="w-3 h-3" />
       {readTime} read
     </span>
@@ -462,7 +462,7 @@ function ReadingPathway() {
                     >
                       {level.badge}
                     </span>
-                    <span className="text-[11px] text-[#9B9B9B] font-medium">
+                    <span className="text-[11px] text-[#767676] font-medium">
                       {level.level}
                     </span>
                   </div>
@@ -512,7 +512,7 @@ function ReadingPathway() {
                             >
                               {node.title}
                             </p>
-                            <p className="flex items-center gap-1 text-[10px] text-[#9B9B9B] mt-0.5">
+                            <p className="flex items-center gap-1 text-[10px] text-[#767676] mt-0.5">
                               <Clock className="w-2.5 h-2.5" />
                               {node.readTime} read
                             </p>
@@ -632,7 +632,7 @@ export default function GuidePage() {
                 </div>
                 <div className="leading-tight">
                   <span className="font-black text-[#1A1A1A] text-xl">{stat.value}</span>
-                  <span className="text-xs text-[#9B9B9B] ml-1">{stat.label}</span>
+                  <span className="text-xs text-[#767676] ml-1">{stat.label}</span>
                 </div>
               </div>
             ))}
@@ -669,7 +669,7 @@ export default function GuidePage() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div>
               <h2 className="text-2xl font-black text-[#1A1A1A]">All Guides</h2>
-              <p className="text-sm text-[#9B9B9B] mt-0.5">
+              <p className="text-sm text-[#767676] mt-0.5">
                 {filteredGuides.length} of {ALL_GUIDES.length} guides
               </p>
             </div>
@@ -696,10 +696,10 @@ export default function GuidePage() {
               className="py-16 text-center"
             >
               <div className="w-12 h-12 rounded-2xl bg-[#F5F5F0] flex items-center justify-center mx-auto mb-4">
-                <Search className="w-5 h-5 text-[#9B9B9B]" />
+                <Search className="w-5 h-5 text-[#767676]" />
               </div>
               <p className="font-semibold text-[#1A1A1A] mb-1">No guides found</p>
-              <p className="text-sm text-[#9B9B9B]">
+              <p className="text-sm text-[#767676]">
                 Try a different filter above.
               </p>
             </motion.div>
@@ -711,7 +711,7 @@ export default function GuidePage() {
       <section className="pb-10">
         <div className="max-w-5xl mx-auto px-6">
           <div className="bg-white rounded-2xl border border-[#E8E8E4] p-5 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-[#9B9B9B] shrink-0">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-[#767676] shrink-0">
               Difficulty key
             </p>
             <div className="flex items-center gap-5 flex-wrap">
@@ -724,7 +724,7 @@ export default function GuidePage() {
                       style={{ backgroundColor: cfg.dot }}
                     />
                     <span className="text-xs font-semibold text-[#4B4B4B]">{d}</span>
-                    <span className="text-[11px] text-[#9B9B9B]">
+                    <span className="text-[11px] text-[#767676]">
                       {d === "Beginner"
                         ? "— No experience needed"
                         : d === "Intermediate"
@@ -751,7 +751,7 @@ export default function GuidePage() {
               <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight leading-[1.1]">
                 Turn knowledge into a real manufacturing plan.
               </h2>
-              <p className="text-[#9B9B9B] leading-relaxed text-[15px]">
+              <p className="text-[#767676] leading-relaxed text-[15px]">
                 Get a complete manufacturing feasibility report with cost
                 breakdowns, country comparisons, and optimization tips — in 2 to 5
                 minutes.

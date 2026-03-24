@@ -273,7 +273,7 @@ export default function DemoReportClient() {
                   <p className="text-lg font-bold text-[#1A1A1A]">
                     {analysis.hsCode}
                   </p>
-                  <p className="text-xs text-[#9B9B9B] mt-1">
+                  <p className="text-xs text-[#767676] mt-1">
                     Confidence: {analysis.hsCodeConfidence}%
                   </p>
                 </div>
@@ -340,15 +340,15 @@ export default function DemoReportClient() {
                   </div>
                   <div className="grid grid-cols-3 gap-3 mb-3 text-sm">
                     <div>
-                      <p className="text-[#9B9B9B] text-xs">Tariff</p>
+                      <p className="text-[#767676] text-xs">Tariff</p>
                       <p className="font-semibold">{c.tariffRate}%</p>
                     </div>
                     <div>
-                      <p className="text-[#9B9B9B] text-xs">Lead Time</p>
+                      <p className="text-[#767676] text-xs">Lead Time</p>
                       <p className="font-semibold">{c.leadTimeDays} days</p>
                     </div>
                     <div>
-                      <p className="text-[#9B9B9B] text-xs">MOQ</p>
+                      <p className="text-[#767676] text-xs">MOQ</p>
                       <p className="font-semibold">
                         {c.moq.toLocaleString()}
                       </p>
@@ -443,7 +443,7 @@ export default function DemoReportClient() {
                   </div>
                   <button
                     onClick={() => handleCopySpec(spec, i)}
-                    className="text-[#9B9B9B] hover:text-[#1A1A1A] transition-colors"
+                    className="text-[#767676] hover:text-[#1A1A1A] transition-colors"
                     aria-label={`Copy spec ${i + 1}`}
                   >
                     {copiedIndex === i ? (

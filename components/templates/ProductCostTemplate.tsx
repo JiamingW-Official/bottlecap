@@ -737,7 +737,7 @@ export default function ProductCostTemplate({
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
             Get the full breakdown for your product
           </h2>
-          <p className="text-[#9B9B9B] mb-8 max-w-xl mx-auto">
+          <p className="text-[#767676] mb-8 max-w-xl mx-auto">
             Our AI analyzes your exact specifications and delivers a
             comprehensive manufacturing feasibility report in 2–5 minutes.
           </p>

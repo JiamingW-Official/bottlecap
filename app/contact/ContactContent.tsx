@@ -87,7 +87,7 @@ export default function ContactContent() {
                         required
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg border border-[#E8E8E4] bg-[#FAFAF8] text-[#1A1A1A] text-sm placeholder:text-[#9B9B9B] focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/30 focus:border-[#FF6B35] transition"
+                        className="w-full px-3 py-2 rounded-lg border border-[#E8E8E4] bg-[#FAFAF8] text-[#1A1A1A] text-sm placeholder:text-[#767676] focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/30 focus:border-[#FF6B35] transition"
                         placeholder="Your name"
                       />
                     </div>
@@ -101,7 +101,7 @@ export default function ContactContent() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg border border-[#E8E8E4] bg-[#FAFAF8] text-[#1A1A1A] text-sm placeholder:text-[#9B9B9B] focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/30 focus:border-[#FF6B35] transition"
+                        className="w-full px-3 py-2 rounded-lg border border-[#E8E8E4] bg-[#FAFAF8] text-[#1A1A1A] text-sm placeholder:text-[#767676] focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/30 focus:border-[#FF6B35] transition"
                         placeholder="you@example.com"
                       />
                     </div>
@@ -133,7 +133,7 @@ export default function ContactContent() {
                       rows={5}
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-[#E8E8E4] bg-[#FAFAF8] text-[#1A1A1A] text-sm placeholder:text-[#9B9B9B] focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/30 focus:border-[#FF6B35] transition resize-none"
+                      className="w-full px-3 py-2 rounded-lg border border-[#E8E8E4] bg-[#FAFAF8] text-[#1A1A1A] text-sm placeholder:text-[#767676] focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/30 focus:border-[#FF6B35] transition resize-none"
                       placeholder="How can we help?"
                     />
                   </div>

@@ -148,7 +148,11 @@ export default function AgenticHero() {
       <div className="mt-10 max-w-2xl">
         {/* Input */}
         <div className="bg-white border-2 border-[#E8E8E4] focus-within:border-[#FF6B35] rounded-2xl p-2 flex items-end transition-colors shadow-sm">
+          <label htmlFor="product-input" className="sr-only">
+            Describe your product idea
+          </label>
           <textarea
+            id="product-input"
             className="border-none flex-1 resize-none outline-none p-3 text-[#1A1A1A] bg-transparent min-h-[60px]"
             placeholder={showPlaceholderAnim ? PLACEHOLDERS[placeholderIdx] : ""}
             rows={2}
@@ -156,7 +160,7 @@ export default function AgenticHero() {
             onChange={handleChange}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault() // Prevent accidental submission; use the button instead
+                e.preventDefault()
               }
             }}
           />
@@ -170,7 +174,7 @@ export default function AgenticHero() {
           </MagneticButton>
         </div>
         <div className="flex items-center gap-3 mt-2 ml-1">
-          <p className="text-xs text-[#9B9B9B]">One report · $99 · 2-5 min delivery</p>
+          <p className="text-xs text-[#767676]">One report · $99 · 2-5 min delivery</p>
           <a
             href="/report/demo"
             className="inline-flex items-center gap-1.5 text-xs font-medium text-[#FF6B35] hover:text-[#E85A25] transition-colors"
@@ -249,7 +253,7 @@ export default function AgenticHero() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.2 }}
-              className="text-xs text-[#9B9B9B] mt-1 flex items-center gap-1.5"
+              className="text-xs text-[#767676] mt-1 flex items-center gap-1.5"
             >
               <Sparkles className="w-3 h-3 text-[#FF6B35]" />
               {statusText}
@@ -271,11 +275,11 @@ export default function AgenticHero() {
               <div className="flex-1">
                 <span className="text-xs font-semibold text-[#1A1A1A]">Typical cost: </span>
                 <span className="text-xs font-black text-[#FF6B35]">{costHint.range}/unit</span>
-                <span className="text-xs text-[#9B9B9B] ml-2">
+                <span className="text-xs text-[#767676] ml-2">
                   · from {costHint.countries.join(", ")}
                 </span>
               </div>
-              <Zap className="w-3 h-3 text-[#9B9B9B] shrink-0" />
+              <Zap className="w-3 h-3 text-[#767676] shrink-0" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -304,7 +308,7 @@ export default function AgenticHero() {
                     </div>
                     <span className="text-xs font-semibold text-[#1A1A1A]">{card.title}</span>
                   </div>
-                  <p className="text-[10px] text-[#9B9B9B] leading-relaxed">{card.desc}</p>
+                  <p className="text-[10px] text-[#767676] leading-relaxed">{card.desc}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -321,7 +325,7 @@ export default function AgenticHero() {
               transition={{ delay: 0.45 }}
               className="mt-3 flex flex-wrap gap-2 items-center"
             >
-              <span className="text-[10px] text-[#9B9B9B] font-medium">Similar products:</span>
+              <span className="text-[10px] text-[#767676] font-medium">Similar products:</span>
               {classification.relatedProducts.map((p) => (
                 <span
                   key={p.name}

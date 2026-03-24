@@ -124,7 +124,7 @@ function getScoreBarColor(score: number): string {
 }
 
 function getAvgScoreColor(score: number | null): string {
-  if (score === null) return "text-[#9B9B9B]"
+  if (score === null) return "text-[#767676]"
   if (score >= 80) return "text-[#22C55E]"
   if (score >= 50) return "text-[#F59E0B]"
   return "text-[#EF4444]"
@@ -236,7 +236,7 @@ export default function DashboardPage() {
 
         {/* ── Breadcrumb ── */}
         <ScrollReveal>
-          <nav className="flex items-center gap-1.5 text-sm text-[#9B9B9B] mb-6">
+          <nav className="flex items-center gap-1.5 text-sm text-[#767676] mb-6">
             <Link href="/" className="flex items-center gap-1 hover:text-[#FF6B35] transition-colors">
               <Home className="w-3.5 h-3.5" />
               Home
@@ -296,7 +296,7 @@ export default function DashboardPage() {
         <ScrollReveal delay={0.1}>
           <div className="flex gap-3 mb-2">
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9B9B9B]" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#767676]" />
               <input
                 type="email"
                 placeholder="you@example.com"
@@ -324,7 +324,7 @@ export default function DashboardPage() {
               </button>
             </MagneticButton>
           </div>
-          <p className="text-xs text-[#9B9B9B] pl-1 mb-8">
+          <p className="text-xs text-[#767676] pl-1 mb-8">
             Use the email from your Stripe receipt.
           </p>
         </ScrollReveal>
@@ -377,7 +377,7 @@ export default function DashboardPage() {
                   <p className="text-2xl font-black text-[#1A1A1A] leading-none mb-1">
                     {animatedTotal ?? 0}
                   </p>
-                  <p className="text-[11px] text-[#9B9B9B] font-medium">Analyses Run</p>
+                  <p className="text-[11px] text-[#767676] font-medium">Analyses Run</p>
                 </div>
 
                 {/* Avg score */}
@@ -388,7 +388,7 @@ export default function DashboardPage() {
                   <p className={`text-2xl font-black leading-none mb-1 ${getAvgScoreColor(avgScore)}`}>
                     {animatedAvgScore ?? "—"}
                   </p>
-                  <p className="text-[11px] text-[#9B9B9B] font-medium">Avg Score</p>
+                  <p className="text-[11px] text-[#767676] font-medium">Avg Score</p>
                 </div>
 
                 {/* Highest this month */}
@@ -399,7 +399,7 @@ export default function DashboardPage() {
                   <p className="text-2xl font-black text-[#F59E0B] leading-none mb-1">
                     {animatedBest ?? "—"}
                   </p>
-                  <p className="text-[11px] text-[#9B9B9B] font-medium">Highest This Month</p>
+                  <p className="text-[11px] text-[#767676] font-medium">Highest This Month</p>
                 </div>
 
                 {/* Total savings */}
@@ -410,7 +410,7 @@ export default function DashboardPage() {
                   <p className="text-2xl font-black text-[#22C55E] leading-none mb-1">
                     {animatedSavings !== null ? `$${(animatedSavings / 1000).toFixed(1)}k` : "—"}
                   </p>
-                  <p className="text-[11px] text-[#9B9B9B] font-medium">Potential Savings</p>
+                  <p className="text-[11px] text-[#767676] font-medium">Potential Savings</p>
                 </div>
               </div>
             </motion.div>
@@ -423,7 +423,7 @@ export default function DashboardPage() {
             {/* Row 1: search + sort */}
             <div className="flex gap-2 flex-wrap items-center">
               <div className="relative flex-1 min-w-[160px]">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9B9B9B]" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#767676]" />
                 <input
                   type="text"
                   placeholder="Search by product name..."
@@ -433,7 +433,7 @@ export default function DashboardPage() {
                 />
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
-                <SortAsc className="w-4 h-4 text-[#9B9B9B]" />
+                <SortAsc className="w-4 h-4 text-[#767676]" />
                 <select
                   value={sortOption}
                   onChange={(e) => setSortOption(e.target.value as SortOption)}
@@ -447,7 +447,7 @@ export default function DashboardPage() {
             </div>
             {/* Row 2: score filter pills */}
             <div className="flex items-center gap-2 flex-wrap">
-              <Filter className="w-4 h-4 text-[#9B9B9B] shrink-0" />
+              <Filter className="w-4 h-4 text-[#767676] shrink-0" />
               {(["all", "high", "medium", "low"] as ScoreFilter[]).map((f) => {
                 const labels: Record<ScoreFilter, string> = { all: "All", high: "High (80+)", medium: "Medium (50–79)", low: "Low (<50)" }
                 return (
@@ -464,7 +464,7 @@ export default function DashboardPage() {
                   </button>
                 )
               })}
-              <span className="ml-auto text-xs text-[#9B9B9B]">
+              <span className="ml-auto text-xs text-[#767676]">
                 {filteredReports.length} report{filteredReports.length !== 1 ? "s" : ""}
               </span>
             </div>
@@ -482,7 +482,7 @@ export default function DashboardPage() {
 
               // Score badge color
               const scoreBadgeCls =
-                score === undefined ? "bg-[#F5F5F0] text-[#9B9B9B]"
+                score === undefined ? "bg-[#F5F5F0] text-[#767676]"
                 : score >= 80 ? "bg-[#DCFCE7] text-[#166534]"
                 : score >= 50 ? "bg-[#FEF3C7] text-[#92400E]"
                 : "bg-[#FEE2E2] text-[#991B1B]"
@@ -545,7 +545,7 @@ export default function DashboardPage() {
                         </div>
 
                         {/* Date */}
-                        <p className="text-xs text-[#9B9B9B] mb-3 flex items-center gap-1">
+                        <p className="text-xs text-[#767676] mb-3 flex items-center gap-1">
                           <Clock className="w-3 h-3" />
                           Analyzed {timeAgo(report.createdAt)}
                         </p>
@@ -686,7 +686,7 @@ export default function DashboardPage() {
                   Double-check you&apos;re using the same email as your Stripe receipt.
                   Reports can take 2–5 minutes to appear after purchase.
                 </p>
-                <p className="text-xs text-[#9B9B9B] mb-8 max-w-xs mx-auto">
+                <p className="text-xs text-[#767676] mb-8 max-w-xs mx-auto">
                   Recently purchased? New reports may take a minute to show up — try again shortly.
                 </p>
                 <div className="flex flex-col items-center gap-3">
@@ -739,13 +739,13 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <h2 className="text-2xl font-black text-[#1A1A1A] mb-2">No reports yet</h2>
-                <p className="text-sm text-[#9B9B9B] max-w-sm mx-auto">
+                <p className="text-sm text-[#767676] max-w-sm mx-auto">
                   Enter your email above to retrieve existing reports, or get started below.
                 </p>
               </div>
 
               {/* Quick Start cards */}
-              <p className="text-xs font-semibold text-[#9B9B9B] uppercase tracking-widest mb-4">
+              <p className="text-xs font-semibold text-[#767676] uppercase tracking-widest mb-4">
                 Quick Start
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
@@ -755,7 +755,7 @@ export default function DashboardPage() {
                     <FlaskConical className="w-5 h-5 text-[#FF6B35]" />
                   </div>
                   <p className="font-bold text-[#1A1A1A] text-sm mb-1">Try a demo product</p>
-                  <p className="text-xs text-[#9B9B9B] leading-relaxed mb-4 flex-1">
+                  <p className="text-xs text-[#767676] leading-relaxed mb-4 flex-1">
                     See how a report looks — pre-filled with an insulated water bottle.
                   </p>
                   <Link
@@ -773,7 +773,7 @@ export default function DashboardPage() {
                     <HelpCircle className="w-5 h-5 text-[#FF6B35]" />
                   </div>
                   <p className="font-bold text-[#1A1A1A] text-sm mb-1">Take the quiz first</p>
-                  <p className="text-xs text-[#9B9B9B] leading-relaxed mb-4 flex-1">
+                  <p className="text-xs text-[#767676] leading-relaxed mb-4 flex-1">
                     Not sure what to manufacture? Start here and we will guide you.
                   </p>
                   <Link
@@ -791,7 +791,7 @@ export default function DashboardPage() {
                     <TrendingUp className="w-5 h-5 text-[#FF6B35]" />
                   </div>
                   <p className="font-bold text-[#1A1A1A] text-sm mb-1">See a sample report</p>
-                  <p className="text-xs text-[#9B9B9B] leading-relaxed mb-4 flex-1">
+                  <p className="text-xs text-[#767676] leading-relaxed mb-4 flex-1">
                     Browse a full 12-section feasibility report before you commit.
                   </p>
                   <Link

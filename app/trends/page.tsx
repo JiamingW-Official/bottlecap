@@ -299,7 +299,7 @@ function CountryBar({ country, index }: { country: (typeof COUNTRIES)[number]; i
           transition={{ duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] as const, delay: index * 0.1 }}
         />
       </div>
-      <div className="mt-1.5 text-right text-xs text-[#9B9B9B]">{country.pct}% of max range</div>
+      <div className="mt-1.5 text-right text-xs text-[#767676]">{country.pct}% of max range</div>
     </motion.div>
   )
 }
@@ -337,7 +337,7 @@ function ArchiveCard({ report }: { report: (typeof ARCHIVE)[number] }) {
           <span className="text-xs font-bold text-[#FF6B35] bg-[#FF6B3518] px-2.5 py-0.5 rounded-full">
             {report.quarter}
           </span>
-          <span className="text-xs text-[#9B9B9B]">{report.date}</span>
+          <span className="text-xs text-[#767676]">{report.date}</span>
         </div>
         <h3 className="font-bold text-[#1A1A1A] mb-2 group-hover:text-[#FF6B35] transition-colors">
           {report.title}
@@ -687,7 +687,7 @@ export default function TrendsPage() {
                   >
                     <span className="text-[10px] font-black text-[#FF6B35] mb-2">#{item.rank}</span>
                     <span className="text-sm font-bold text-[#1A1A1A] leading-snug mb-1 group-hover:text-[#FF6B35] transition-colors">{item.name}</span>
-                    <span className="text-xs text-[#9B9B9B]">{item.cost}/unit</span>
+                    <span className="text-xs text-[#767676]">{item.cost}/unit</span>
                     <span className="text-[10px] font-semibold text-[#FF6B35] mt-2 opacity-0 group-hover:opacity-100 transition-opacity">Analyze this →</span>
                   </Link>
                 </motion.div>

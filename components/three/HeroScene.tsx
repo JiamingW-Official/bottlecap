@@ -49,26 +49,61 @@ export default function HeroScene({ tier }: HeroSceneProps) {
         gl={{ alpha: true, antialias: tier !== "low" }}
         style={{ background: "transparent" }}
       >
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[5, 5, 5]} intensity={0.8} />
-        <pointLight position={[-3, 2, 4]} intensity={0.4} color="#FF6B35" />
+        {/* Soft ambient fill */}
+        <ambientLight intensity={0.4} />
+
+        {/* Key light — warm from top-right */}
+        <directionalLight
+          position={[4, 6, 4]}
+          intensity={0.7}
+          color="#FFFFFF"
+        />
+
+        {/* Orange accent rim light — brand color */}
+        <pointLight
+          position={[-4, 2, 3]}
+          intensity={0.5}
+          color="#FF6B35"
+          distance={12}
+        />
+
+        {/* Cool blue fill from below-left (contrast) */}
+        <pointLight
+          position={[3, -3, 2]}
+          intensity={0.25}
+          color="#3B82F6"
+          distance={10}
+        />
+
+        {/* Subtle back light for depth */}
+        <pointLight
+          position={[0, 0, -3]}
+          intensity={0.15}
+          color="#FFD166"
+          distance={8}
+        />
 
         <FloatingObjects mouse={mouse} scrollY={scrollY} tier={tier} />
 
         {tier === "high" && (
           <EffectComposer>
             <Bloom
-              luminanceThreshold={0.8}
-              luminanceSmoothing={0.9}
-              intensity={0.3}
+              luminanceThreshold={0.6}
+              luminanceSmoothing={0.8}
+              intensity={0.4}
             />
-            <Noise opacity={0.02} />
-            <Vignette eskil={false} offset={0.1} darkness={0.3} />
+            <Noise opacity={0.015} />
+            <Vignette eskil={false} offset={0.1} darkness={0.35} />
           </EffectComposer>
         )}
 
         {tier === "medium" && (
           <EffectComposer>
+            <Bloom
+              luminanceThreshold={0.8}
+              luminanceSmoothing={0.9}
+              intensity={0.2}
+            />
             <Vignette eskil={false} offset={0.1} darkness={0.2} />
           </EffectComposer>
         )}

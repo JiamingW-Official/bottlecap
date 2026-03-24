@@ -341,7 +341,7 @@ export default function FAQ() {
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         {/* Search */}
         <div className="relative flex-1 max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9B9B9B]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#767676]" />
           <input
             type="text"
             value={query}
@@ -350,7 +350,7 @@ export default function FAQ() {
             className="w-full bg-white border border-[#E8E8E4] focus:border-[#FF6B35] rounded-xl pl-9 pr-9 py-2 text-sm outline-none transition-colors"
           />
           {query && (
-            <button onClick={() => setQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9B9B9B] hover:text-[#6B6B6B]">
+            <button onClick={() => setQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#767676] hover:text-[#6B6B6B]">
               <X className="w-3.5 h-3.5" />
             </button>
           )}
@@ -378,7 +378,7 @@ export default function FAQ() {
       </div>
 
       {/* Results count */}
-      <p className="text-xs text-[#9B9B9B] mb-4">
+      <p className="text-xs text-[#767676] mb-4">
         {filtered.length} question{filtered.length !== 1 ? "s" : ""}
         {query || activeCategory !== "All" ? " found" : ""}
       </p>
@@ -442,7 +442,7 @@ export default function FAQ() {
       </AnimatePresence>
 
       {filtered.length === 0 && (
-        <div className="text-center py-12 text-[#9B9B9B]">
+        <div className="text-center py-12 text-[#767676]">
           <Search className="w-8 h-8 mx-auto mb-3 opacity-30" />
           <p className="text-sm">No questions match &ldquo;{query}&rdquo;</p>
           <button
@@ -457,12 +457,12 @@ export default function FAQ() {
       {/* Progress indicator */}
       <div className="mt-8 mb-2">
         <div className="flex items-center justify-between mb-1.5">
-          <p className="text-xs text-[#9B9B9B]">
+          <p className="text-xs text-[#767676]">
             You&apos;ve explored{" "}
             <span className="font-semibold text-[#6B6B6B]">{exploredCount}/{totalWithFeatured}</span>{" "}
             questions
           </p>
-          <span className="text-xs text-[#9B9B9B]">{progressPct}%</span>
+          <span className="text-xs text-[#767676]">{progressPct}%</span>
         </div>
         <div className="h-1.5 bg-[#E8E8E4] rounded-full overflow-hidden">
           <motion.div
@@ -474,7 +474,7 @@ export default function FAQ() {
       </div>
 
       {/* CTA */}
-      <p className="text-sm text-center text-[#9B9B9B] mt-6">
+      <p className="text-sm text-center text-[#767676] mt-6">
         Still have questions?{" "}
         <a href="mailto:hello@bottlecap.io" className="text-[#FF6B35] hover:underline font-medium">
           Email hello@bottlecap.io

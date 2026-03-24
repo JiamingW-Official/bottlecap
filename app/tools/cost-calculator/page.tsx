@@ -357,7 +357,7 @@ export default function CostCalculatorPage() {
 
       {/* ── Category presets ──────────────────────────────────────────────── */}
       <div className="mb-8">
-        <p className="text-xs font-semibold text-[#9B9B9B] uppercase tracking-wider mb-3">
+        <p className="text-xs font-semibold text-[#767676] uppercase tracking-wider mb-3">
           Quick-fill presets
         </p>
         <div className="flex flex-wrap gap-2">
@@ -454,7 +454,7 @@ export default function CostCalculatorPage() {
               className="w-full accent-[#FF6B35]"
             />
             {/* Tick labels */}
-            <div className="flex justify-between text-xs text-[#9B9B9B] mt-1 px-0.5">
+            <div className="flex justify-between text-xs text-[#767676] mt-1 px-0.5">
               {QTY_STEPS.map((v) => (
                 <span key={v}>{v >= 1000 ? `${v / 1000}k` : v}</span>
               ))}
@@ -527,7 +527,7 @@ export default function CostCalculatorPage() {
 
             {/* Animated per-unit cost */}
             <div className="mb-6 text-center">
-              <p className="text-xs text-[#9B9B9B] uppercase tracking-widest mb-1">
+              <p className="text-xs text-[#767676] uppercase tracking-widest mb-1">
                 Per Unit Cost
               </p>
               <AnimatePresence mode="wait">
@@ -569,7 +569,7 @@ export default function CostCalculatorPage() {
             </div>
           </div>
 
-          <p className="text-xs text-[#9B9B9B] mt-4 text-center">
+          <p className="text-xs text-[#767676] mt-4 text-center">
             Estimates based on industry averages. Actual costs vary by factory,
             specifications, and market conditions.
           </p>
@@ -620,7 +620,7 @@ export default function CostCalculatorPage() {
                   <span className="font-semibold text-[#1A1A1A]">
                     ${seg.value.toFixed(2)}
                   </span>
-                  <span className="text-[#9B9B9B] text-xs">
+                  <span className="text-[#767676] text-xs">
                     ({((seg.value / stackedTotal) * 100).toFixed(0)}%)
                   </span>
                 </div>
@@ -685,7 +685,7 @@ export default function CostCalculatorPage() {
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-[#9B9B9B] mt-3">
+        <p className="text-xs text-[#767676] mt-3">
           Highlighted row = your current quantity. Margin is colored green (&ge;60%), amber (&ge;50%), or red (&lt;50%).
         </p>
       </section>
@@ -742,7 +742,7 @@ export default function CostCalculatorPage() {
             )
           })}
         </div>
-        <p className="text-xs text-[#9B9B9B] mt-3">
+        <p className="text-xs text-[#767676] mt-3">
           Tariff rates are approximate averages. Actual duties depend on HS code and current trade policy.
         </p>
       </section>
@@ -800,7 +800,7 @@ export default function CostCalculatorPage() {
                     </td>
                     <td className="px-5 py-3 text-right">
                       {row.vsChina === null ? (
-                        <span className="text-[#9B9B9B]">—</span>
+                        <span className="text-[#767676]">—</span>
                       ) : row.vsChina > 0 ? (
                         <span className="text-[#22C55E] font-semibold">
                           −${row.vsChina.toFixed(2)}/unit
@@ -817,7 +817,7 @@ export default function CostCalculatorPage() {
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-[#9B9B9B] mt-3">
+        <p className="text-xs text-[#767676] mt-3">
           Click a row to switch the main calculator to that country. &ldquo;vs China&rdquo; shows savings (green) or premium (red) per unit.
         </p>
       </section>

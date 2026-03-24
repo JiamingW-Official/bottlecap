@@ -441,14 +441,14 @@ Best regards,
       </div>
       <div className="p-6">
         {!category && (
-          <p className="text-sm text-[#9B9B9B] mb-4">
+          <p className="text-sm text-[#767676] mb-4">
             Select a product category above to pre-fill this template.
           </p>
         )}
         <pre className="text-xs text-[#1A1A1A] font-mono bg-[#FAFAF8] rounded-xl p-5 whitespace-pre-wrap leading-relaxed border border-[#E8E8E4]">
           {template}
         </pre>
-        <p className="text-xs text-[#9B9B9B] mt-3">
+        <p className="text-xs text-[#767676] mt-3">
           Replace all placeholders in brackets before sending. Customize the
           certifications row for your product (e.g. CE, FDA, REACH, ISO 9001).
         </p>
@@ -540,7 +540,7 @@ function OutreachScripts() {
           className="p-6"
         >
           <div className="flex items-center justify-between mb-3">
-            <p className="text-xs text-[#9B9B9B]">
+            <p className="text-xs text-[#767676]">
               Replace all bracketed placeholders before sending.
             </p>
             <CopyButton text={activeScript.content} label="Copy script" />
@@ -913,7 +913,7 @@ export default function SupplierFinderPage() {
                                         Best for: {CATEGORY_TOP[topCat] ?? topCat}
                                       </span>
                                     )}
-                                    <span className="text-xs text-[#9B9B9B]">
+                                    <span className="text-xs text-[#767676]">
                                       MOQ from {region.moqFloor.toLocaleString()} units
                                     </span>
                                   </div>
@@ -1005,7 +1005,7 @@ export default function SupplierFinderPage() {
                             {/* Footer: platforms + CTA */}
                             <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#E8E8E4]">
                               <div className="flex flex-wrap items-center gap-2">
-                                <span className="text-xs text-[#9B9B9B]">Source on:</span>
+                                <span className="text-xs text-[#767676]">Source on:</span>
                                 {region.platforms.map((p) => (
                                   <span
                                     key={p}
@@ -1056,7 +1056,7 @@ export default function SupplierFinderPage() {
               <h2 className="text-xl font-black text-white mb-2">
                 Want a full analysis for your specific product?
               </h2>
-              <p className="text-[#9B9B9B] text-sm max-w-md mx-auto mb-6">
+              <p className="text-[#767676] text-sm max-w-md mx-auto mb-6">
                 Get a complete sourcing report in 2–5 minutes — supplier recommendations, tariff
                 exposure, real MOQs, and a vetted shortlist tailored to your exact product.
               </p>

@@ -34,7 +34,7 @@ const STEPS: ProcessStep[] = [
     ],
     visual: (
       <div className="bg-[#F5F5F0] rounded-xl p-4 space-y-2">
-        <div className="text-[10px] font-bold text-[#9B9B9B] uppercase tracking-wider mb-3">Your product description</div>
+        <div className="text-[10px] font-bold text-[#767676] uppercase tracking-wider mb-3">Your product description</div>
         <div className="bg-white rounded-lg p-3 border border-[#E8E8E4]">
           <p className="text-xs text-[#4B4B4B] leading-relaxed">
             &ldquo;A stainless steel insulated water bottle with a
@@ -49,7 +49,7 @@ const STEPS: ProcessStep[] = [
             { label: "Images",       value: "2 uploaded" },
           ].map((item) => (
             <div key={item.label} className="bg-white rounded-lg px-3 py-2 border border-[#E8E8E4]">
-              <p className="text-[9px] text-[#9B9B9B] uppercase tracking-wide">{item.label}</p>
+              <p className="text-[9px] text-[#767676] uppercase tracking-wide">{item.label}</p>
               <p className="text-xs font-semibold text-[#1A1A1A]">{item.value}</p>
             </div>
           ))}
@@ -79,7 +79,7 @@ const STEPS: ProcessStep[] = [
     ],
     visual: (
       <div className="bg-[#F5F5F0] rounded-xl p-4">
-        <div className="text-[10px] font-bold text-[#9B9B9B] uppercase tracking-wider mb-3">Processing</div>
+        <div className="text-[10px] font-bold text-[#767676] uppercase tracking-wider mb-3">Processing</div>
         <div className="space-y-2">
           {[
             { label: "HS Code lookup",       done: true },
@@ -97,7 +97,7 @@ const STEPS: ProcessStep[] = [
                 {item.active && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
               </div>
               <span className={`text-xs ${
-                item.done ? "text-[#6B6B6B] line-through" : item.active ? "text-[#1A1A1A] font-medium" : "text-[#9B9B9B]"
+                item.done ? "text-[#6B6B6B] line-through" : item.active ? "text-[#1A1A1A] font-medium" : "text-[#767676]"
               }`}>
                 {item.label}
               </span>
@@ -112,7 +112,7 @@ const STEPS: ProcessStep[] = [
             transition={{ duration: 1.5, ease: "easeOut" }}
           />
         </div>
-        <p className="text-[10px] text-[#9B9B9B] mt-1.5">65% complete</p>
+        <p className="text-[10px] text-[#767676] mt-1.5">65% complete</p>
       </div>
     ),
   },
@@ -140,7 +140,7 @@ const STEPS: ProcessStep[] = [
       <div className="bg-[#F5F5F0] rounded-xl p-4">
         <div className="flex items-baseline gap-2 mb-3">
           <span className="text-4xl font-black text-[#22C55E]">87</span>
-          <span className="text-sm text-[#9B9B9B]">/100</span>
+          <span className="text-sm text-[#767676]">/100</span>
           <span className="text-xs px-2 py-0.5 bg-[#DCFCE7] text-[#166534] rounded-full font-medium ml-auto">Highly Feasible</span>
         </div>
         <div className="space-y-1.5 mb-3">
@@ -152,7 +152,7 @@ const STEPS: ProcessStep[] = [
             { label: "Shipping",  pct: 5,  color: "#F59E0B" },
           ].map((row) => (
             <div key={row.label} className="flex items-center gap-2">
-              <span className="text-[9px] text-[#9B9B9B] w-14 text-right shrink-0">{row.label}</span>
+              <span className="text-[9px] text-[#767676] w-14 text-right shrink-0">{row.label}</span>
               <div className="flex-1 h-1.5 bg-[#E8E8E4] rounded-full overflow-hidden">
                 <div className="h-full rounded-full" style={{ width: `${row.pct}%`, backgroundColor: row.color }} />
               </div>
@@ -168,7 +168,7 @@ const STEPS: ProcessStep[] = [
           ].map((c) => (
             <div key={c.label} className={`rounded-lg p-2 text-center border ${c.best ? "border-[#22C55E] bg-[#F0FDF4]" : "border-[#E8E8E4] bg-white"}`}>
               <p className="text-[10px] font-semibold text-[#1A1A1A]">{c.label}</p>
-              <p className={`text-[9px] font-bold ${c.best ? "text-[#22C55E]" : "text-[#9B9B9B]"}`}>{c.sub}</p>
+              <p className={`text-[9px] font-bold ${c.best ? "text-[#22C55E]" : "text-[#767676]"}`}>{c.sub}</p>
               {c.best && <p className="text-[8px] text-[#22C55E] font-bold">BEST</p>}
             </div>
           ))}
@@ -194,7 +194,7 @@ const STEPS: ProcessStep[] = [
     ],
     visual: (
       <div className="bg-[#F5F5F0] rounded-xl p-4">
-        <div className="text-[10px] font-bold text-[#9B9B9B] uppercase tracking-wider mb-3">7-Step Action Checklist</div>
+        <div className="text-[10px] font-bold text-[#767676] uppercase tracking-wider mb-3">7-Step Action Checklist</div>
         <div className="space-y-2">
           {(
             [
@@ -216,7 +216,7 @@ const STEPS: ProcessStep[] = [
                 {item.done   && <Check className="w-2.5 h-2.5 text-white" />}
                 {item.active && <div className="w-1.5 h-1.5 rounded-full bg-[#FF6B35]" />}
               </div>
-              <span className={`text-xs ${item.done ? "line-through text-[#9B9B9B]" : item.active ? "text-[#1A1A1A] font-medium" : "text-[#6B6B6B]"}`}>
+              <span className={`text-xs ${item.done ? "line-through text-[#767676]" : item.active ? "text-[#1A1A1A] font-medium" : "text-[#6B6B6B]"}`}>
                 {item.label}
               </span>
             </div>
@@ -287,7 +287,7 @@ export default function ProcessDiagram() {
               {i < activeStep ? (
                 <Check className="w-6 h-6 text-white" />
               ) : (
-                <s.Icon className={`w-6 h-6 ${i <= activeStep ? "text-white" : "text-[#9B9B9B]"}`} />
+                <s.Icon className={`w-6 h-6 ${i <= activeStep ? "text-white" : "text-[#767676]"}`} />
               )}
             </button>
             {i < STEPS.length - 1 && (

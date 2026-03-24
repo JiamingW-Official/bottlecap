@@ -726,7 +726,7 @@ export default function TariffCalculatorPage() {
                       ${fmt(s.netLandedPerUnit, 2)}
                     </span>
                   </div>
-                  <p className="text-xs text-[#9B9B9B]">Incl. FOB + duty + freight + broker</p>
+                  <p className="text-xs text-[#767676]">Incl. FOB + duty + freight + broker</p>
                 </div>
               </div>
             ))}
@@ -835,7 +835,7 @@ export default function TariffCalculatorPage() {
                           <td className="px-6 py-3 text-[#1A1A1A]">
                             {row.label}
                             {row.note && (
-                              <span className="ml-2 text-xs text-[#9B9B9B]">{row.note}</span>
+                              <span className="ml-2 text-xs text-[#767676]">{row.note}</span>
                             )}
                           </td>
                           <td className="text-right px-4 py-3 font-medium text-[#1A1A1A]">${fmt(row.total, 2)}</td>
@@ -1005,7 +1005,7 @@ export default function TariffCalculatorPage() {
                             <CheckCircle className="w-3.5 h-3.5" /> {row.country.ftaName}
                           </span>
                         ) : (
-                          <span className="text-[#9B9B9B] text-xs">—</span>
+                          <span className="text-[#767676] text-xs">—</span>
                         )}
                       </td>
                       <td className="text-right px-4 py-3 text-[#6B6B6B]">{row.mfnRate}%</td>
@@ -1013,7 +1013,7 @@ export default function TariffCalculatorPage() {
                         {row.additionalRate > 0 ? (
                           <span className="text-[#EF4444] font-semibold">+{row.additionalRate}%</span>
                         ) : (
-                          <span className="text-[#9B9B9B]">—</span>
+                          <span className="text-[#767676]">—</span>
                         )}
                       </td>
                       <td className="text-right px-4 py-3">
@@ -1051,7 +1051,7 @@ export default function TariffCalculatorPage() {
                             -${fmt(Math.abs(row.savingsVsChina))}
                           </span>
                         ) : (
-                          <span className="text-[#9B9B9B] text-xs">same</span>
+                          <span className="text-[#767676] text-xs">same</span>
                         )}
                       </td>
                     </motion.tr>
@@ -1136,7 +1136,7 @@ export default function TariffCalculatorPage() {
         >
           <div>
             <p className="font-black text-white text-xl mb-1">Need exact tariff classification?</p>
-            <p className="text-[#9B9B9B] text-sm max-w-md">
+            <p className="text-[#767676] text-sm max-w-md">
               Get a full Bottlecap analysis — includes HS code lookup with confidence score, supplier-country risk breakdown, and a sourcing action plan. Delivered in 2–5 minutes.
             </p>
           </div>

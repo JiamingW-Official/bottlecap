@@ -52,7 +52,7 @@ function ProcessingState() {
         </div>
 
         {/* Step counter */}
-        <p className="text-xs text-[#9B9B9B] text-center mb-2 uppercase tracking-wide font-medium">
+        <p className="text-xs text-[#767676] text-center mb-2 uppercase tracking-wide font-medium">
           Step {step + 1} of {PROGRESS_STEPS.length}
         </p>
 
@@ -68,14 +68,14 @@ function ProcessingState() {
             style={{ width: `${progress}%` }}
           />
         </div>
-        <p className="text-xs text-[#9B9B9B] text-right">{progress}%</p>
+        <p className="text-xs text-[#767676] text-right">{progress}%</p>
 
         {/* Reassurance */}
         <div className="mt-8 bg-[#F5F5F0] rounded-xl p-4 text-center">
           <p className="text-sm text-[#6B6B6B]">
             This page auto-updates &mdash; no need to refresh.
           </p>
-          <p className="text-xs text-[#9B9B9B] mt-1">Usually takes 2&ndash;5 minutes</p>
+          <p className="text-xs text-[#767676] mt-1">Usually takes 2&ndash;5 minutes</p>
         </div>
       </div>
     </div>
@@ -414,7 +414,7 @@ function ReportContent() {
                   <p className="text-lg font-bold text-[#1A1A1A]">
                     {analysis.hsCode}
                   </p>
-                  <p className="text-xs text-[#9B9B9B] mt-1">
+                  <p className="text-xs text-[#767676] mt-1">
                     Confidence: {analysis.hsCodeConfidence}%
                   </p>
                 </div>
@@ -487,14 +487,14 @@ function ReportContent() {
                   <p className="text-2xl font-black text-[#22C55E]">
                     ${analysis.costEstimate.min.toFixed(2)}
                   </p>
-                  <p className="text-xs text-[#9B9B9B]">per unit</p>
+                  <p className="text-xs text-[#767676]">per unit</p>
                 </div>
                 <div className="bg-[#F5F5F0] rounded-xl p-4 text-center">
                   <p className="text-xs text-[#6B6B6B]">High Estimate</p>
                   <p className="text-2xl font-black text-[#EF4444]">
                     ${analysis.costEstimate.max.toFixed(2)}
                   </p>
-                  <p className="text-xs text-[#9B9B9B]">per unit</p>
+                  <p className="text-xs text-[#767676]">per unit</p>
                 </div>
               </div>
             </div>
@@ -570,15 +570,15 @@ function ReportContent() {
 
                   <div className="grid grid-cols-3 gap-3 mb-3 text-sm">
                     <div>
-                      <p className="text-[#9B9B9B] text-xs">Tariff</p>
+                      <p className="text-[#767676] text-xs">Tariff</p>
                       <p className="font-semibold">{c.tariffRate}%</p>
                     </div>
                     <div>
-                      <p className="text-[#9B9B9B] text-xs">Lead Time</p>
+                      <p className="text-[#767676] text-xs">Lead Time</p>
                       <p className="font-semibold">{c.leadTimeDays} days</p>
                     </div>
                     <div>
-                      <p className="text-[#9B9B9B] text-xs">MOQ</p>
+                      <p className="text-[#767676] text-xs">MOQ</p>
                       <p className="font-semibold">
                         {c.moq.toLocaleString()}
                       </p>
@@ -681,7 +681,7 @@ function ReportContent() {
                   </div>
                   <button
                     onClick={() => handleCopySpec(spec, i)}
-                    className="text-[#9B9B9B] hover:text-[#1A1A1A] transition-colors"
+                    className="text-[#767676] hover:text-[#1A1A1A] transition-colors"
                     aria-label={`Copy spec ${i + 1}`}
                   >
                     {copiedIndex === i ? (
@@ -741,7 +741,7 @@ function ReportContent() {
                       className="w-5 h-5 rounded accent-[#FF6B35]"
                     />
                     <span
-                      className={`text-sm ${checkedItems.has(i) ? "line-through text-[#9B9B9B]" : "text-[#1A1A1A]"}`}
+                      className={`text-sm ${checkedItems.has(i) ? "line-through text-[#767676]" : "text-[#1A1A1A]"}`}
                     >
                       {item}
                     </span>
@@ -880,7 +880,7 @@ function ReportContent() {
             ].map((tool) => (
               <a key={tool.label} href={tool.href} className="group flex flex-col bg-[#FAFAF8] border border-[#E8E8E4] rounded-xl p-4 hover:border-[#FF6B35] hover:shadow-sm transition-all">
                 <p className="text-sm font-bold text-[#1A1A1A] group-hover:text-[#FF6B35] transition-colors mb-1">{tool.label}</p>
-                <p className="text-xs text-[#9B9B9B]">{tool.desc}</p>
+                <p className="text-xs text-[#767676]">{tool.desc}</p>
               </a>
             ))}
           </div>

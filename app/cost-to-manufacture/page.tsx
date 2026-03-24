@@ -192,7 +192,7 @@ function CostBar({ min, max }: CostBarProps) {
   const wide = isWideRange(min, max)
   return (
     <div className="mt-3 mb-4">
-      <div className="flex justify-between text-xs text-[#9B9B9B] mb-1">
+      <div className="flex justify-between text-xs text-[#767676] mb-1">
         <span>${min}</span>
         <span>${max}</span>
       </div>
@@ -273,28 +273,28 @@ function ProductCard({ product, featured = false }: ProductCardProps) {
         <div className="flex items-center gap-1.5 bg-[#FAFAF8] rounded-xl px-3 py-2">
           <DollarSign size={13} className="text-[#FF6B35] shrink-0" />
           <div>
-            <div className="text-[10px] text-[#9B9B9B] leading-none mb-0.5">Min Cost</div>
+            <div className="text-[10px] text-[#767676] leading-none mb-0.5">Min Cost</div>
             <div className="text-xs font-bold text-[#1A1A1A]">${product.avgUnitCost.min}</div>
           </div>
         </div>
         <div className="flex items-center gap-1.5 bg-[#FAFAF8] rounded-xl px-3 py-2">
           <DollarSign size={13} className="text-[#FF6B35] shrink-0" />
           <div>
-            <div className="text-[10px] text-[#9B9B9B] leading-none mb-0.5">Max Cost</div>
+            <div className="text-[10px] text-[#767676] leading-none mb-0.5">Max Cost</div>
             <div className="text-xs font-bold text-[#1A1A1A]">${product.avgUnitCost.max}</div>
           </div>
         </div>
         <div className="flex items-center gap-1.5 bg-[#FAFAF8] rounded-xl px-3 py-2">
           <Clock size={13} className="text-[#6B6B6B] shrink-0" />
           <div>
-            <div className="text-[10px] text-[#9B9B9B] leading-none mb-0.5">Lead Time</div>
+            <div className="text-[10px] text-[#767676] leading-none mb-0.5">Lead Time</div>
             <div className="text-xs font-bold text-[#1A1A1A]">{product.avgLeadTimeDays}d</div>
           </div>
         </div>
         <div className="flex items-center gap-1.5 bg-[#FAFAF8] rounded-xl px-3 py-2">
           <Package size={13} className="text-[#6B6B6B] shrink-0" />
           <div>
-            <div className="text-[10px] text-[#9B9B9B] leading-none mb-0.5">MOQ</div>
+            <div className="text-[10px] text-[#767676] leading-none mb-0.5">MOQ</div>
             <div className="text-xs font-bold text-[#1A1A1A]">
               {product.moqRange.min.toLocaleString()}–{product.moqRange.max.toLocaleString()}
             </div>
@@ -377,7 +377,7 @@ function CategoryExplorer() {
                 </div>
 
                 {/* Cost range visual */}
-                <p className="text-xs font-bold text-[#9B9B9B] uppercase tracking-widest mb-2">Average Unit Cost Range</p>
+                <p className="text-xs font-bold text-[#767676] uppercase tracking-widest mb-2">Average Unit Cost Range</p>
                 <div className="flex justify-between text-sm font-bold text-[#1A1A1A] mb-2">
                   <span>${entry.costMin}</span>
                   <span>${entry.costMax}</span>
@@ -394,7 +394,7 @@ function CategoryExplorer() {
                     transition={{ duration: 0.5, ease: CARD_EASE }}
                   />
                 </div>
-                <p className="text-xs text-[#9B9B9B] mb-6">
+                <p className="text-xs text-[#767676] mb-6">
                   Range: ${entry.costMin} – ${entry.costMax} per unit (ex-works)
                 </p>
 
@@ -402,7 +402,7 @@ function CategoryExplorer() {
                 <div className="flex items-center gap-3 bg-white rounded-xl border border-[#E8E8E4] px-4 py-3">
                   <Package className="w-4 h-4 text-[#FF6B35] flex-shrink-0" />
                   <div>
-                    <p className="text-[10px] font-bold text-[#9B9B9B] uppercase tracking-wide">Typical MOQ</p>
+                    <p className="text-[10px] font-bold text-[#767676] uppercase tracking-wide">Typical MOQ</p>
                     <p className="text-sm font-bold text-[#1A1A1A]">{entry.moq}</p>
                   </div>
                 </div>
@@ -410,7 +410,7 @@ function CategoryExplorer() {
 
               {/* Right */}
               <div>
-                <p className="text-xs font-bold text-[#9B9B9B] uppercase tracking-widest mb-3">Main Cost Drivers</p>
+                <p className="text-xs font-bold text-[#767676] uppercase tracking-widest mb-3">Main Cost Drivers</p>
                 <ul className="space-y-3 mb-6">
                   {entry.costDrivers.map((driver, i) => (
                     <li key={i} className="flex items-start gap-3">
@@ -425,7 +425,7 @@ function CategoryExplorer() {
                 <div className="flex items-center gap-3 bg-white rounded-xl border border-[#E8E8E4] px-4 py-3">
                   <span className="text-2xl">{entry.bestCountryEmoji}</span>
                   <div>
-                    <p className="text-[10px] font-bold text-[#9B9B9B] uppercase tracking-wide">Best Country to Manufacture</p>
+                    <p className="text-[10px] font-bold text-[#767676] uppercase tracking-wide">Best Country to Manufacture</p>
                     <p className="text-sm font-bold text-[#1A1A1A]">{entry.bestCountry}</p>
                   </div>
                 </div>
@@ -516,7 +516,7 @@ function BenchmarkTable() {
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-[#9B9B9B] mt-3">
+        <p className="text-xs text-[#767676] mt-3">
           * Ex-works (EXW) pricing. Does not include tooling, shipping, duties, or QC costs. Ranges reflect MOQ variance.
         </p>
       </div>
@@ -737,7 +737,7 @@ function LandedCostEstimator() {
                       )
                     )}
                   </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9B9B9B] pointer-events-none" />
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#767676] pointer-events-none" />
                 </div>
               </div>
             </div>
@@ -917,7 +917,7 @@ export default function CostToManufacturePage() {
           <div className="relative">
             <Search
               size={16}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9B9B9B] pointer-events-none"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-[#767676] pointer-events-none"
             />
             <input
               type="text"
@@ -929,7 +929,7 @@ export default function CostToManufacturePage() {
             {search && (
               <button
                 onClick={() => setSearch("")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9B9B9B] hover:text-[#1A1A1A] transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#767676] hover:text-[#1A1A1A] transition-colors"
               >
                 <X size={15} />
               </button>
@@ -938,7 +938,7 @@ export default function CostToManufacturePage() {
 
           {/* Category pills + Sort */}
           <div className="flex flex-wrap items-center gap-2">
-            <Filter size={14} className="text-[#9B9B9B] shrink-0" />
+            <Filter size={14} className="text-[#767676] shrink-0" />
             <button
               onClick={() => setActiveCategory(null)}
               className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition-all ${
@@ -967,7 +967,7 @@ export default function CostToManufacturePage() {
 
             {/* Sort */}
             <div className="ml-auto flex items-center gap-2">
-              <span className="text-xs text-[#9B9B9B] whitespace-nowrap">Sort:</span>
+              <span className="text-xs text-[#767676] whitespace-nowrap">Sort:</span>
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortKey)}
@@ -983,7 +983,7 @@ export default function CostToManufacturePage() {
           </div>
 
           {/* Result count */}
-          <p className="text-xs text-[#9B9B9B]">
+          <p className="text-xs text-[#767676]">
             Showing{" "}
             <span className="font-semibold text-[#1A1A1A]">
               {filteredProducts.length}
@@ -1019,7 +1019,7 @@ export default function CostToManufacturePage() {
                 exit={{ opacity: 0 }}
                 className="text-center py-24"
               >
-                <p className="text-[#9B9B9B] text-lg">
+                <p className="text-[#767676] text-lg">
                   No products match your search.
                 </p>
                 <button
