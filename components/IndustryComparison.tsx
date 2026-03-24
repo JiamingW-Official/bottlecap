@@ -24,7 +24,7 @@ const SECTIONS: SectionGroup[] = [
     section: "Speed & Cost",
     rows: [
       { label: "Time to insight",       bottlecap: "2–5 min",    agent: "2–4 weeks",      alibaba: "Days–weeks",    consultant: "1–2 weeks",    diy: "40+ hours" },
-      { label: "Cost",                   bottlecap: "$99",         agent: "$3K–$10K",       alibaba: "Free",          consultant: "$500–$2K/hr",  diy: "Free (your time)" },
+      { label: "Cost",                   bottlecap: "$99",         agent: "$3K–$10K",       alibaba: "Free",          consultant: "$500–$2K/hr",  diy: "$1,200–$5,000 (opportunity cost)" },
       { label: "Money-back guarantee",   bottlecap: "72 hours",   agent: "None",           alibaba: "N/A",           consultant: "None",         diy: "N/A" },
       { label: "Available 24/7",         bottlecap: true,          agent: false,            alibaba: true,            consultant: false,          diy: true },
     ],
@@ -52,6 +52,8 @@ const SECTIONS: SectionGroup[] = [
   {
     section: "Platform",
     rows: [
+      { label: "Tariff accuracy",           bottlecap: "Cross-checked against USITC live data", agent: "Network knowledge", alibaba: "None", consultant: "Manual lookup", diy: "Self-research" },
+      { label: "Data freshness",           bottlecap: "Updated weekly", agent: "Network (months stale)", alibaba: "Supplier self-reported", consultant: "Engagement-based", diy: "At time of research" },
       { label: "Data sources",             bottlecap: "5 live",     agent: "Their network", alibaba: "Supplier data", consultant: "Their network", diy: "Public data" },
       { label: "Shareable report",         bottlecap: true,         agent: false,           alibaba: false,           consultant: false,          diy: false },
     ],

@@ -21,7 +21,7 @@ const STEPS: ProcessStep[] = [
     number: 1,
     title: "Describe Your Product",
     description:
-      "Tell us what you want to make. Include materials, features, target price — even a rough sketch is enough to get started.",
+      "Describe your product in detail — materials, dimensions, features, target cost. The more specific you are, the more precise your report. Typical input: 3–8 sentences.",
     duration: "60 seconds",
     durationColor: "#22C55E",
     Icon: PenTool,
@@ -61,7 +61,7 @@ const STEPS: ProcessStep[] = [
     number: 2,
     title: "AI Analysis (50+ Dimensions)",
     description:
-      <>Claude AI — the same model used by enterprises — analyzes your product in parallel across cost, materials, <GlossaryTooltip term="Tariff">tariffs</GlossaryTooltip>, countries, compliance, and optimization opportunities.</>,
+      <>Claude AI — the same model used by enterprises — analyzes your product in parallel across cost, materials, <GlossaryTooltip term="Tariff">tariffs</GlossaryTooltip>, countries, compliance, and optimization opportunities. <span className="block mt-2 text-xs text-[#767676] leading-relaxed">Dimensions analyzed: Cost modeling (materials, labor, overhead, packaging, freight, duties) · Tariff classification (HTS 10-digit) · 3-country comparison · Quality metrics · Lead time modeling · Regulatory screening (FDA, FCC, CE, Prop 65) · IP risk assessment · Optimization potential</span></>,
     duration: "2–5 min",
     durationColor: "#3B82F6",
     Icon: Cpu,
@@ -185,12 +185,12 @@ const STEPS: ProcessStep[] = [
     durationColor: "#8B5CF6",
     Icon: Rocket,
     details: [
-      "Follow the 7-step checklist in sequence",
-      "Copy the 10 specs into your factory RFQ email",
-      "Contact 3+ factories in your recommended region",
+      "Factory-ready specs formatted for RFQ emails",
+      "Pre-classified HS code with tariff rate",
+      "Dollar-amount optimization tips",
+      "7-step action plan with timeline",
       "Unlock Verified Supplier List add-on ($199)",
       "Share your report card with co-founders or investors",
-      "Run follow-up analyses as your design evolves",
     ],
     visual: (
       <div className="bg-[#F5F5F0] rounded-xl p-4">

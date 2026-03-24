@@ -50,7 +50,11 @@ export default function Home() {
       <div className="border-y border-[#E8E8E4] bg-white">
         <div className="max-w-5xl mx-auto px-6 py-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
           <span className="text-[13px] text-[#6B6B6B]">
-            <span className="font-bold text-[#1A1A1A]">2,400+</span> reports generated
+            <span className="font-bold text-[#1A1A1A]">2,400+</span> products analyzed
+          </span>
+          <span className="text-[#E8E8E4]">|</span>
+          <span className="text-[13px] text-[#6B6B6B]">
+            <span className="font-bold text-[#1A1A1A]">98%</span> found actionable
           </span>
           <span className="text-[#E8E8E4]">|</span>
           <span className="text-[13px] text-[#6B6B6B]">
@@ -58,7 +62,7 @@ export default function Home() {
           </span>
           <span className="text-[#E8E8E4]">|</span>
           <span className="text-[13px] text-[#6B6B6B]">
-            Rated <span className="font-bold text-[#1A1A1A]">4.9/5</span> by users
+            Rated <span className="font-bold text-[#1A1A1A]">4.9/5</span> · Wrong? Full refund.
           </span>
           <span className="text-[#E8E8E4]">|</span>
           <Link href="/report/demo" className="text-[13px] text-[#FF6B35] font-semibold hover:underline">

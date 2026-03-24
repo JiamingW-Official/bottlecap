@@ -12,9 +12,9 @@ const PERSONAS = [
     roleBg: "#FFF0EB",
     roleColor: "#FF6B35",
     quote:
-      "I had a bamboo toothbrush idea but no idea if it was manufacturable at scale. Bottlecap told me the tooling cost ($4,200) and that Vietnam was 40% cheaper than China for bamboo products. I ordered samples the next week.",
-    outcomeStat: "3 weeks",
-    outcomeLabel: "of research saved",
+      "I assumed my ceramic planter would be $8/unit from China. Bottlecap showed Portugal could do $6.20 with zero Section 301 tariffs. Switched suppliers, hit 45% gross margin on my first order.",
+    outcomeStat: "45%",
+    outcomeLabel: "gross margin on first 500-unit order",
   },
   {
     initials: "MT",
@@ -24,9 +24,9 @@ const PERSONAS = [
     roleBg: "#EFF6FF",
     roleColor: "#2563EB",
     quote:
-      "I run 4 Amazon brands. I use Bottlecap Pro for every new product — 5+ reports a month. It&apos;s the fastest way to kill bad ideas before they cost me $10K in tooling.",
-    outcomeStat: "$180K",
-    outcomeLabel: "tooling cost avoided",
+      "I thought my modular desk organizer needed injection molding ($12K tooling). The report suggested CNC-machined bamboo instead \u2014 $800 tooling, 200-unit MOQ, Vietnam sourcing. Saved $11K before I even started.",
+    outcomeStat: "$11,200",
+    outcomeLabel: "saved by switching from injection molding to CNC",
   },
   {
     initials: "PM",
@@ -36,9 +36,9 @@ const PERSONAS = [
     roleBg: "#F0FDF4",
     roleColor: "#16A34A",
     quote:
-      "Our clients come to us with vague ideas. Bottlecap reports give us a credible starting point for every sourcing conversation. We run 10+ per month.",
-    outcomeStat: "40+",
-    outcomeLabel: "client projects powered",
+      "My lip balm was classified under 3304.10 \u2014 zero tariff. But the report flagged SPF 30 triggers FDA OTC drug monograph rules. Without that, I would\u2019ve launched non-compliant and faced a recall.",
+    outcomeStat: "$8K",
+    outcomeLabel: "in samples saved by catching FDA compliance gap",
   },
 ]
 

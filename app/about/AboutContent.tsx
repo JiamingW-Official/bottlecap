@@ -45,11 +45,13 @@ const powers = [
 ]
 
 const stats = [
-  { value: "23", label: "Industries covered" },
+  { value: "23", label: "Industry verticals" },
   { value: "12", label: "Countries compared" },
   { value: "50+", label: "Materials in database" },
+  { value: "98%", label: "Actionability rate" },
   { value: "2–5 min", label: "Average delivery" },
   { value: "$99", label: "vs $5K+ alternative" },
+  { value: "Weekly", label: "Updated with live trade data" },
 ]
 
 const principles = [
@@ -141,9 +143,9 @@ export default function AboutContent() {
               Before Bottlecap
             </p>
             <p className="text-[#333] leading-relaxed">
-              You have a product idea. You spend 2 weeks on Alibaba getting ghosted. You hire a
-              sourcing agent for $5K. They send you a PDF with 3 supplier names. You still don&apos;t
-              know if your margins work.
+              You guess Vietnam is cheapest. Design around $6/unit. Get to production: actual cost
+              $8.50. Funding plan breaks. You&apos;ve lost 6 weeks and $3K in samples that don&apos;t
+              match your margin model.
             </p>
           </motion.div>
 
@@ -157,9 +159,9 @@ export default function AboutContent() {
               After Bottlecap
             </p>
             <p className="text-[#333] leading-relaxed">
-              Submit your product description. In 5 minutes you have: feasibility score, HS code +
-              tariff rates, per-unit cost breakdown across 3 countries, material alternatives, factory
-              specs, optimization tips — everything you need to make a real decision.
+              You learn Vietnam is $6.20/unit but Mexico is $5.80 with zero tariffs via USMCA. You
+              pivot 4 weeks before tooling. Save $1,200 and 30 days. Every number is sourced,
+              every alternative is costed — in 5 minutes, not 5 weeks.
             </p>
           </motion.div>
         </div>
@@ -210,7 +212,7 @@ export default function AboutContent() {
         <motion.div
           {...fadeUp}
           transition={{ duration: 0.5, delay: 0.08, ease: easing }}
-          className="bg-white border border-[#E8E8E4] rounded-2xl p-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 text-center"
+          className="bg-white border border-[#E8E8E4] rounded-2xl p-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8 text-center"
         >
           {stats.map(({ value, label }) => (
             <div key={label}>
@@ -248,6 +250,24 @@ export default function AboutContent() {
             </motion.div>
           ))}
         </div>
+      </section>
+
+      {/* ── 5b. Founder note ── */}
+      <section className="max-w-3xl mx-auto px-6 pb-20">
+        <motion.div
+          {...fadeUp}
+          transition={{ duration: 0.5, ease: easing }}
+          className="bg-[#1A1A1A] text-white rounded-2xl p-10 sm:p-12"
+        >
+          <p className="text-white/40 text-xs font-semibold uppercase tracking-[0.15em] mb-4">
+            From the team
+          </p>
+          <p className="text-lg sm:text-xl leading-relaxed text-white/90">
+            &ldquo;Built by a team that has personally dealt with tariff surprises, wrong HS codes,
+            and factory miscommunication. Bottlecap exists because we spent $15K learning lessons
+            that should have cost $99.&rdquo;
+          </p>
+        </motion.div>
       </section>
 
       {/* ── 6. Who builds with Bottlecap ── */}

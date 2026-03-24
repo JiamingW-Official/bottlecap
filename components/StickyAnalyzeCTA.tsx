@@ -45,10 +45,10 @@ export default function StickyAnalyzeCTA() {
 
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold leading-tight">
-                Is your product idea feasible?
+                Get your HS code, landed cost, and best country in 5 minutes
               </p>
               <p className="text-[11px] text-white/50 leading-none mt-0.5">
-                2–5 min report · $99
+                AI-powered &middot; $99 &middot; 72-hr money-back guarantee
               </p>
             </div>
 
@@ -57,7 +57,7 @@ export default function StickyAnalyzeCTA() {
               className="shrink-0 flex items-center gap-1.5 bg-[#FF6B35] hover:bg-[#E85A25] text-white text-xs font-bold px-4 py-2 rounded-full transition-colors"
             >
               <Zap className="w-3 h-3" />
-              Analyze
+              Analyze now
             </Link>
 
             <button
