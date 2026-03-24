@@ -12,6 +12,9 @@ const toolsLinks = [
   { href: "/tools/cost-calculator", label: "Cost Calculator" },
   { href: "/tools/tariff-calculator", label: "Tariff Calculator" },
   { href: "/tools/moq-calculator", label: "MOQ Planner" },
+  { href: "/tools/margin-simulator", label: "Margin Simulator" },
+  { href: "/tools/risk-monitor", label: "Risk Monitor" },
+  { href: "/tools/negotiation-playbook", label: "Negotiation Playbook" },
 ]
 
 const guideLinks = [
@@ -88,6 +91,8 @@ function DropdownMenu({
     >
       <button
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-haspopup="true"
         className={`flex items-center gap-1 text-[13px] font-medium transition-colors ${
           isActive
             ? "text-[#FF6B35]"
@@ -303,6 +308,8 @@ export default function Navbar() {
                   { href: "/pricing", label: "Pricing" },
                   { href: "/dashboard", label: "My Reports" },
                   { href: "/about", label: "About" },
+                  { href: "/blog", label: "Blog" },
+                  { href: "/contact", label: "Contact" },
                 ].map(link => (
                   <Link
                     key={link.href}

@@ -15,6 +15,7 @@ import {
   Search,
   ArrowRight,
   Zap,
+  FileText,
 } from "lucide-react"
 import TextReveal from "@/components/animations/TextReveal"
 import MagneticButton from "@/components/interactive/MagneticButton"
@@ -154,9 +155,8 @@ export default function AgenticHero() {
             value={heroText}
             onChange={handleChange}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey && heroText.trim().length > 5) {
-                e.preventDefault()
-                handleAnalyzeClick()
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault() // Prevent accidental submission; use the button instead
               }
             }}
           />
@@ -165,15 +165,20 @@ export default function AgenticHero() {
               onClick={handleAnalyzeClick}
               className="bg-[#FF6B35] text-white rounded-xl px-6 py-3 font-semibold whitespace-nowrap hover:bg-[#E85A25] transition-all shadow-[0_2px_8px_rgba(255,107,53,0.25)] hover:shadow-[0_4px_14px_rgba(255,107,53,0.35)] shrink-0 flex items-center gap-2"
             >
-              {heroText.trim().length > 10 ? (
-                <>Analyze this <ArrowRight className="w-4 h-4" /></>
-              ) : (
-                <>Start for $99 <ArrowRight className="w-4 h-4" /></>
-              )}
+              Analyze my product <ArrowRight className="w-4 h-4" />
             </button>
           </MagneticButton>
         </div>
-        <p className="text-xs text-[#9B9B9B] mt-1.5 ml-1">Press Enter to analyze · Shift+Enter for new line</p>
+        <div className="flex items-center gap-3 mt-2 ml-1">
+          <p className="text-xs text-[#9B9B9B]">One report · $99 · 2-5 min delivery</p>
+          <a
+            href="/report/demo"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#FF6B35] hover:text-[#E85A25] transition-colors"
+          >
+            <FileText className="w-3 h-3" />
+            See example report
+          </a>
+        </div>
 
         {/* Classification chips */}
         <div className="mt-3 min-h-[32px]">
@@ -330,21 +335,6 @@ export default function AgenticHero() {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-
-      {/* Trust badges */}
-      <div className="flex flex-wrap gap-x-6 gap-y-2 mt-8">
-        {[
-          { dot: "#22C55E", text: "Ready in 2–5 minutes" },
-          { dot: "#9B9B9B", text: "Powered by Claude AI" },
-          { dot: "#9B9B9B", text: "72-hour money-back guarantee" },
-          { dot: "#9B9B9B", text: "Stripe secure checkout" },
-        ].map((item) => (
-          <span key={item.text} className="flex items-center gap-2 text-sm text-[#6B6B6B]">
-            <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: item.dot }} />
-            {item.text}
-          </span>
-        ))}
       </div>
 
       {/* Live activity ticker */}

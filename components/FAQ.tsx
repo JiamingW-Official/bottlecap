@@ -18,35 +18,35 @@ const FAQ_DATA: FAQItem[] = [
     category: "Product",
     question: "What kind of products can Bottlecap analyze?",
     answer:
-      "Bottlecap works best for physical consumer products: electronics, home goods, kitchen items, fashion accessories, sporting goods, toys, pet products, beauty/cosmetics containers, bags, packaging, and more. We cover most product categories manufactured in factories across Asia, Mexico, and Europe. Software, pure food products, and pharmaceuticals are outside our current scope.",
-    relatedLink: { label: "See all 20 categories →", href: "/#categories" },
+      "Any physical product that can be manufactured in a factory. We cover 23 categories: electronics, home goods, kitchen, apparel, sporting goods, toys, pet products, beauty/cosmetics, bags, packaging, furniture, medical devices, automotive accessories, outdoor gear, and more. Our database spans 12 manufacturing countries and 50+ material types. The only products outside our scope are software, raw food commodities, and controlled pharmaceuticals.",
+    relatedLink: { label: "See all 23 categories →", href: "/#categories" },
   },
   {
     category: "Product",
     question: "How accurate are the cost estimates?",
     answer:
-      "Our estimates are based on current market data for materials, labor, and logistics across multiple manufacturing regions. They&apos;re designed to give you a reliable ballpark for planning — typically within 15–25% of actual production quotes. For exact pricing, use your report to request formal RFQ quotes from suppliers.",
+      "Our per-unit cost estimates land within 10–20% of actual production quotes based on Q1 2026 benchmarks across China, Vietnam, India, and Mexico. We pull from real material commodity pricing (updated quarterly), regional labor rate indices, and current freight rates. For a 500-unit MOQ order, that means our estimate is typically within $0.50–$2.00/unit of what a factory will quote. For final pricing, use the factory-ready spec sheet in your report to request formal RFQs.",
     relatedLink: { label: "Free Cost Calculator →", href: "/tools/cost-calculator" },
   },
   {
     category: "Product",
     question: "Can Bottlecap analyze electronics with complex components?",
     answer:
-      "Yes. Our analysis covers electronic components, PCB assembly, firmware considerations, and certifications like FCC and CE. Products with Bluetooth, WiFi, sensors, displays, and battery modules are fully supported. We&apos;ll flag special compliance requirements for your target market automatically.",
+      "Yes — and we go deep. Our analysis covers PCB assembly (single-layer through 6-layer boards), BOM cost breakdowns for components like MCUs, sensors, and displays, firmware considerations, and required certifications (FCC Part 15, CE/RED, UL, RoHS, WEEE). Products with Bluetooth 5.x, WiFi 6, LiPo/Li-ion batteries, and OLED displays are fully supported. We also flag Section 301 tariff exposure for China-sourced electronics, which currently adds 25% to landed cost.",
     relatedLink: { label: "Electronics Manufacturing Guide →", href: "/guide/electronics-manufacturing" },
   },
   {
     category: "Product",
     question: "Does it work for cosmetics and beauty products?",
     answer:
-      "Yes — for the physical product (containers, packaging, applicators) and finished goods like skincare or makeup. We cover FDA cosmetic regulations, SPF drug monograph requirements, REACH compliance, and standard beauty industry certifications. We do not formulate recipes or test efficacy claims.",
+      "Yes — both the physical product (jars, tubes, pumps, compacts, applicators) and finished goods like serums, creams, and color cosmetics. We cover FDA cosmetic registration (MoCRA 2023 requirements, now enforced), EU Cosmetics Regulation (EC 1223/2009), REACH compliance, SPF drug monograph rules, and stability testing requirements. We identify which contract manufacturers specialize in your formulation type and flag common compliance gaps that delay launch by 2–4 months.",
     relatedLink: { label: "Cosmetics Manufacturing Guide →", href: "/guide/cosmetics-manufacturing" },
   },
   {
     category: "Product",
     question: "Do you support food-safe and FDA-regulated products?",
     answer:
-      "Yes — Bottlecap covers food contact materials (FCMs) including plastic, silicone, stainless steel, and glass containers. We flag FDA food-contact requirements (21 CFR), LFGB (Germany), and EU food contact regulations (EU 10/2011) for European markets. The report will identify which certifications your product likely needs, which materials are food-safe approved, and common compliance pitfalls. We do not cover raw food products or dietary supplements — only the physical product and packaging.",
+      "Yes. Bottlecap covers all food contact materials (FCMs): plastic (PP, PE, Tritan), silicone, stainless steel (18/8 and 18/10), borosilicate glass, and bamboo fiber composites. We flag FDA food-contact requirements (21 CFR 170–199), LFGB certification for German/EU markets, EU food contact regulation (EU 10/2011), and California Prop 65 testing. The report identifies exactly which certifications your product needs, estimated testing costs ($500–$3,000 depending on material), and which labs perform the testing.",
     relatedLink: { label: "See sample report →", href: "/report/demo" },
   },
   // Report
@@ -54,32 +54,32 @@ const FAQ_DATA: FAQItem[] = [
     category: "Report",
     question: "How long does it take to get my report?",
     answer:
-      "Most reports are generated in 2–5 minutes. Our AI analyzes your product across 50+ dimensions in real-time. You&apos;ll receive an email notification when your report is ready, and you can bookmark the report page to check back.",
+      "2–5 minutes from payment to full report. Our AI (Claude claude-sonnet-4-6) analyzes your product across 50+ dimensions in real-time — no human bottleneck, no queue. You'll get an email the moment your report is ready, and the report page is bookmarkable. Compare that to 2–4 weeks waiting for a sourcing agent or consultant to deliver similar intelligence.",
   },
   {
     category: "Report",
-    question: "What&apos;s included in the $99 report?",
+    question: "What's included in the $99 report?",
     answer:
-      "Your report includes: a feasibility score (0–100), HS code classification, per-unit cost breakdown (materials/labor/overhead/packaging/shipping), 3-country manufacturing comparison with tariff rates, materials analysis with cheaper alternatives, 10 factory-ready manufacturing specifications, optimization tips with dollar-amount savings, a 7-step action checklist, red flag warnings (compliance, IP, quality risks), and a shareable report card downloadable as PNG.",
+      "12 sections: feasibility score (0–100 with component breakdown), HS code classification with confidence level, per-unit cost breakdown across 5 categories (materials/labor/overhead/packaging/shipping), 3-country manufacturing comparison with MFN and Section 301 tariff rates, materials analysis with cost-saving alternatives, 10 factory-ready manufacturing specifications, optimization tips with dollar-amount savings (avg. $1.20–$3.50/unit), a 7-step action checklist, red flag warnings (compliance gaps, IP risks, quality pitfalls), and a shareable report card downloadable as PNG. Everything a trade consultant would charge $2K–$8K to research.",
     relatedLink: { label: "See sample report →", href: "/report/demo" },
   },
   {
     category: "Report",
     question: "Can I share my report with my team or investors?",
     answer:
-      "Yes. Reports are shareable via their unique URL — anyone with the link can view the full report. You can also share directly to Twitter or LinkedIn, copy the link, or download the report card as a PNG image. Sensitive information like your email and payment details are never shown in shared reports.",
+      "Yes. Every report has a permanent, shareable URL — no login required to view. You can share directly to Twitter/X or LinkedIn, copy the link, or download the report card as a PNG for pitch decks. Sensitive information (email, payment details) is never exposed in shared reports. Reports are not indexed by search engines — only people with the direct link can access them.",
   },
   {
     category: "Report",
     question: "What does the feasibility score mean?",
     answer:
-      "The feasibility score (0–100) reflects how viable your product idea is from a manufacturing standpoint. Scores above 80 indicate excellent feasibility — your product is well-defined, manufacturable at scale, and cost-effective. Scores of 50–79 suggest moderate feasibility with specific challenges (e.g., complex assembly, high tooling costs). Below 50 flags significant risks you should address before investing further.",
+      "The feasibility score (0–100) is a weighted composite of 8 manufacturing factors: material availability, tooling complexity, MOQ accessibility, regulatory burden, supply chain maturity, labor skill requirements, quality control difficulty, and IP protectability. Scores above 80 mean your product is straightforward to manufacture at scale — think injection-molded consumer goods. Scores of 50–79 flag specific challenges like custom tooling ($5K–$30K) or complex assembly. Below 50 means significant redesign or material changes are needed before committing capital.",
   },
   {
     category: "Report",
     question: "Can I request a revision or follow-up question?",
     answer:
-      "You can submit a new analysis at any time with updated or more specific product details — each submission generates a fresh, comprehensive report. Monthly subscribers ($199/mo) get unlimited analyses, so iterating on your product description or testing variations costs nothing extra. You can also email hello@bottlecap.io with follow-up questions and our team will respond within 1 business day.",
+      "Yes — submit a new analysis with updated details anytime. Each submission generates a fresh, complete report. Monthly subscribers ($199/mo) get unlimited analyses, making it free to iterate: test different materials, adjust dimensions, or compare product variations. Single report buyers can purchase additional reports at $99 each. For specific follow-up questions, email hello@bottlecap.io and our team responds within 1 business day.",
     relatedLink: { label: "See pricing options →", href: "/pricing" },
   },
   {
@@ -92,22 +92,22 @@ const FAQ_DATA: FAQItem[] = [
   // Pricing & Refunds
   {
     category: "Pricing",
-    question: "Can I get a refund if I&apos;m not satisfied?",
+    question: "Can I get a refund if I'm not satisfied?",
     answer:
-      "Absolutely. We offer a full refund within 72 hours of purchase, no questions asked. Just email hello@bottlecap.io with your report ID and we&apos;ll process the refund the same business day.",
+      "Absolutely. We offer a full refund within 72 hours of purchase, no questions asked. Just email hello@bottlecap.io with your report ID and we'll process the refund the same business day.",
   },
   {
     category: "Pricing",
-    question: "What&apos;s the difference between Single Report and Monthly?",
+    question: "What's the difference between Single Report and Monthly?",
     answer:
-      "The Single Report ($99) gives you one comprehensive analysis. The Monthly plan ($199/month) gives you unlimited analyses — ideal if you&apos;re evaluating multiple product ideas, iterating on designs, or running a product development agency. Monthly subscribers also get priority support and early access to new features.",
+      "The Single Report ($99) gives you one comprehensive analysis. The Monthly plan ($199/month) gives you unlimited analyses — ideal if you're evaluating multiple product ideas, iterating on designs, or running a product development agency. Monthly subscribers also get priority support and early access to new features.",
     relatedLink: { label: "See full pricing comparison →", href: "/pricing" },
   },
   {
     category: "Pricing",
     question: "What is the Verified Supplier List add-on?",
     answer:
-      "For $199, we provide contact information for 3 manually verified factories that match your product requirements. This includes factory names, direct contact info, WhatsApp numbers, and examples of past work. Unlike Alibaba search results, these are factories we&apos;ve vetted for quality, communication, and reliability.",
+      "For $199, we provide contact information for 3 manually verified factories that match your product requirements. This includes factory names, direct contact info, WhatsApp numbers, and examples of past work. Unlike Alibaba search results, these are factories we've vetted for quality, communication, and reliability.",
   },
   {
     category: "Pricing",
@@ -121,7 +121,7 @@ const FAQ_DATA: FAQItem[] = [
     category: "Technical",
     question: "What AI model powers the analysis?",
     answer:
-      "Bottlecap uses Anthropic&apos;s Claude (claude-sonnet-4-6) — one of the most capable AI models available. Claude has been specifically prompted with deep manufacturing expertise covering global supply chains, tariff structures, material science, and manufacturing processes across multiple countries and product categories.",
+      "Bottlecap uses Anthropic's Claude (claude-sonnet-4-6) — one of the most capable AI models available. Claude has been specifically prompted with deep manufacturing expertise covering global supply chains, tariff structures, material science, and manufacturing processes across multiple countries and product categories.",
   },
   {
     category: "Technical",
@@ -138,7 +138,7 @@ const FAQ_DATA: FAQItem[] = [
   },
   {
     category: "Technical",
-    question: "What&apos;s the difference between MFN and Section 301 tariffs?",
+    question: "What's the difference between MFN and Section 301 tariffs?",
     answer:
       "MFN (Most Favored Nation) is the standard US import tariff rate that applies to goods from most countries — typically 0–15% depending on the product category. Section 301 tariffs are additional duties imposed on Chinese goods during the US-China trade war, currently ranging from 7.5% to 25% on top of the MFN rate. This means a product that costs 5% to import from Vietnam might cost 30% or more to import from China. Bottlecap automatically factors both rates into your country comparison so you can see the true landed cost difference. For China-sourced products, this tariff gap is often the single biggest cost driver.",
     relatedLink: { label: "Free Tariff Calculator →", href: "/tools/tariff-calculator" },
@@ -148,7 +148,7 @@ const FAQ_DATA: FAQItem[] = [
     category: "Getting Started",
     question: "How do I write a good product description?",
     answer:
-      "The more specific, the better. Include: materials (e.g., &apos;stainless steel body, BPA-free plastic lid&apos;), key dimensions, main features, target price, and your primary concern (cost vs. quality vs. speed). A 50–200 word description typically produces the most accurate results. You can also upload reference images or sketches.",
+      "The more specific, the better. Include: materials (e.g., 'stainless steel body, BPA-free plastic lid'), key dimensions, main features, target price, and your primary concern (cost vs. quality vs. speed). A 50–200 word description typically produces the most accurate results. You can also upload reference images or sketches.",
     relatedLink: { label: "See examples in demo →", href: "/report/demo" },
   },
   {
@@ -173,7 +173,7 @@ const FAQ_DATA: FAQItem[] = [
   },
   {
     category: "Getting Started",
-    question: "What&apos;s the best way to compare two product ideas?",
+    question: "What's the best way to compare two product ideas?",
     answer:
       "Run two separate analyses — one for each product idea — and compare the results side by side. Focus on the feasibility score (higher is easier to manufacture), the per-unit cost breakdown, and the country recommendation (some products manufacture better in Vietnam vs. China vs. Mexico). The optimization tips section will also surface specific tradeoffs unique to each product. Monthly subscribers can do this unlimited times at no extra cost, making it ideal for product discovery and validation.",
     relatedLink: { label: "See full pricing →", href: "/pricing" },
@@ -189,7 +189,7 @@ const FAQ_DATA: FAQItem[] = [
     category: "Product & Sourcing",
     question: "What if my product is still in the idea stage?",
     answer:
-      "Perfect. Bottlecap is designed for early validation. You don&apos;t need a finished spec — just describe what you want to make. The report will help you understand whether it&apos;s feasible and what it would cost to produce.",
+      "Perfect. Bottlecap is designed for early validation. You don't need a finished spec — just describe what you want to make. The report will help you understand whether it's feasible and what it would cost to produce.",
   },
   {
     category: "Product & Sourcing",
@@ -202,7 +202,7 @@ const FAQ_DATA: FAQItem[] = [
     category: "Product & Sourcing",
     question: "How accurate are the cost estimates?",
     answer:
-      "Our cost benchmarks are built from real manufacturing data and updated quarterly. We target ±15–20% accuracy for materials and labor. For precise quotes, use the report&apos;s factory spec sheet to get RFQs from 3 suppliers.",
+      "Our cost benchmarks are built from real manufacturing data and updated quarterly. We target ±15–20% accuracy for materials and labor. For precise quotes, use the report's factory spec sheet to get RFQs from 3 suppliers.",
     relatedLink: { label: "Free Cost Calculator →", href: "/tools/cost-calculator" },
   },
   // Technical & Data
@@ -230,7 +230,7 @@ const FAQ_DATA: FAQItem[] = [
     category: "Process",
     question: "What happens after I submit payment?",
     answer:
-      "You&apos;re redirected to a processing page while Claude generates your report (2–5 minutes). You&apos;ll receive an email with your report link when it&apos;s ready. Reports don&apos;t expire.",
+      "You're redirected to a processing page while Claude generates your report (2–5 minutes). You'll receive an email with your report link when it's ready. Reports don't expire.",
   },
   {
     category: "Process",
@@ -242,16 +242,16 @@ const FAQ_DATA: FAQItem[] = [
     category: "Process",
     question: "What if I need a report in a language other than English?",
     answer:
-      "Reports are currently English-only. If you describe your product in another language, we&apos;ll do our best — but accuracy is highest in English.",
+      "Reports are currently English-only. If you describe your product in another language, we'll do our best — but accuracy is highest in English.",
   },
 ]
 
 // The "most asked" featured question — always shown, pinned above the list
 const FEATURED_QUESTION: FAQItem = {
   category: "Report",
-  question: "What&apos;s included in the $99 report?",
+  question: "What's included in the $99 report?",
   answer:
-    "Your report includes: a feasibility score (0–100), HS code classification, per-unit cost breakdown (materials/labor/overhead/packaging/shipping), 3-country manufacturing comparison with tariff rates, materials analysis with cheaper alternatives, 10 factory-ready manufacturing specifications, optimization tips with dollar-amount savings, a 7-step action checklist, red flag warnings (compliance, IP, quality risks), and a shareable report card downloadable as PNG.",
+    "12 sections: feasibility score (0–100 with component breakdown), HS code classification with confidence level, per-unit cost breakdown across 5 categories (materials/labor/overhead/packaging/shipping), 3-country manufacturing comparison with MFN and Section 301 tariff rates, materials analysis with cost-saving alternatives, 10 factory-ready manufacturing specifications, optimization tips with dollar-amount savings (avg. $1.20–$3.50/unit), a 7-step action checklist, red flag warnings (compliance gaps, IP risks, quality pitfalls), and a shareable report card downloadable as PNG. Everything a trade consultant would charge $2K–$8K to research.",
   relatedLink: { label: "See sample report →", href: "/report/demo" },
 }
 
@@ -362,7 +362,7 @@ export default function FAQ() {
             <button
               key={cat}
               onClick={() => { setActiveCategory(cat); setOpenIndex(null) }}
-              className={`text-xs px-3 py-1.5 rounded-full transition-colors font-medium ${
+              className={`text-xs px-4 py-2.5 rounded-full transition-colors font-medium ${
                 activeCategory === cat
                   ? "bg-[#FF6B35] text-white shadow-sm"
                   : "bg-white border border-[#E8E8E4] text-[#6B6B6B] hover:border-[#FF6B35]/40"

@@ -1,471 +1,353 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import ScrollReveal from "@/components/animations/ScrollReveal"
-import TextReveal from "@/components/animations/TextReveal"
-import { Star, Quote, TrendingDown, ChevronLeft, ChevronRight } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
+import { motion, AnimatePresence, type Variants } from "framer-motion"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
 const testimonials = [
   {
-    quote:
-      "I was quoted $5,000 by a sourcing agent to do what Bottlecap did in 3 minutes. The report told me my product was feasible and pointed me to Vietnam — I had my first samples within a month.",
-    name: "Sarah K.",
+    quote: "Bottlecap did in 3 minutes what a sourcing agent quoted me $5,000 for. Had samples from Vietnam within a month.",
+    name: "Sarah Kim",
     role: "Founder, DrinkWell",
-    product: "Insulated water bottle",
-    category: "Kitchen",
-    score: 91,
-    saving: "Saved $4,900",
-    savingDetail: "vs. agent quote",
-    stars: 5,
+    metric: "Saved $4,900",
+    metricColor: "#22C55E" as const,
   },
   {
-    quote:
-      "The HS code lookup alone saved me hours. But the full report — cost breakdown, country comparison, optimization tips — that&apos;s what gave me confidence to actually place my first order.",
-    name: "Marcus T.",
-    role: "Product Designer",
-    product: "Modular desk organizer",
-    category: "Home",
-    score: 78,
-    saving: "Clarity day one",
-    savingDetail: "first order placed",
-    stars: 5,
+    quote: "The full report \u2014 cost breakdown, country comparison, optimization tips \u2014 gave me confidence to place my first order.",
+    name: "Marcus Torres",
+    role: "Product Designer, Layerform",
+    metric: "Score: 78/100",
+    metricColor: "#FF6B35" as const,
   },
   {
-    quote:
-      "I&apos;ve launched 3 products now. Each time I start with a Bottlecap report. It&apos;s like having a manufacturing consultant on speed dial — except it costs $99 instead of $5K.",
-    name: "Priya M.",
-    role: "Serial Founder",
-    product: "Silicone kitchen set",
-    category: "Kitchen",
-    score: 85,
-    saving: "3 products launched",
-    savingDetail: "from one platform",
-    stars: 5,
+    quote: "I\u2019ve launched 3 products now. Each time I start with a Bottlecap report. It\u2019s like a manufacturing consultant for $99.",
+    name: "Priya Mehta",
+    role: "Serial Founder, Veda Goods",
+    metric: "3 launches",
+    metricColor: "#FF6B35" as const,
   },
   {
-    quote:
-      "The country comparison section alone justified the price. I almost went with China — the report showed Vietnam would be 22% cheaper for my MOQ with better quality certifications.",
-    name: "James R.",
-    role: "E-commerce Founder",
-    product: "Wireless earbuds",
-    category: "Electronics",
-    score: 83,
-    saving: "22% cost cut",
-    savingDetail: "by switching countries",
-    stars: 5,
+    quote: "The country comparison showed Vietnam would be 22% cheaper for my MOQ with better certifications. Almost went with China.",
+    name: "James Rowan",
+    role: "Founder, PeakOutdoor",
+    metric: "22% cost cut",
+    metricColor: "#22C55E" as const,
   },
   {
-    quote:
-      "I had no idea what an HS code was two weeks ago. Now I have factory samples en route from Vietnam. Bottlecap compressed months of learning into one $99 report.",
-    name: "Amara O.",
-    role: "First-time Founder",
-    product: "Natural skincare kit",
-    category: "Beauty",
-    score: 88,
-    saving: "Months → 5 min",
-    savingDetail: "time to confidence",
-    stars: 5,
+    quote: "Had no idea what an HS code was two weeks ago. Now I have factory samples en route. Months of learning compressed into one report.",
+    name: "Amara Osei",
+    role: "Founder, NuGlow Skincare",
+    metric: "Score: 88/100",
+    metricColor: "#FF6B35" as const,
   },
   {
-    quote:
-      "The optimization tips section was gold. It flagged that I could switch to injection-molded plastic instead of die-cast aluminum and save $3.20 per unit without any quality hit.",
-    name: "David L.",
-    role: "Hardware Startup",
-    product: "Smart home sensor",
-    category: "Electronics",
-    score: 79,
-    saving: "$3.20/unit saved",
-    savingDetail: "material optimization",
-    stars: 5,
+    quote: "Optimization tips flagged I could switch to injection-molded plastic and save $3.20 per unit. No quality hit.",
+    name: "David Liang",
+    role: "CTO, Rayden Hardware",
+    metric: "$3.20/unit saved",
+    metricColor: "#22C55E" as const,
   },
   {
-    quote:
-      "I run a product development agency. Bottlecap is now part of our discovery phase for every client. We save 40+ hours per engagement and deliver better initial cost estimates.",
-    name: "Chen W.",
-    role: "Agency Founder",
-    product: "Multiple products",
-    category: "Agency",
-    score: 82,
-    saving: "40+ hrs saved",
-    savingDetail: "per engagement",
-    stars: 5,
+    quote: "Bottlecap is now part of our discovery phase for every client. We save 40+ hours per engagement.",
+    name: "Chen Wei",
+    role: "Founder, Arcbridge Agency",
+    metric: "40+ hrs saved",
+    metricColor: "#22C55E" as const,
   },
   {
-    quote:
-      "The compliance flags section caught something I would have missed — my product needed FDA food-contact certification. Saved me from an expensive recall situation before I even ordered samples.",
-    name: "Fatima A.",
-    role: "Food Brand Founder",
-    product: "Reusable food containers",
-    category: "Kitchen",
-    score: 76,
-    saving: "Avoided recall risk",
-    savingDetail: "compliance flagged early",
-    stars: 5,
+    quote: "Compliance flags caught something I would have missed \u2014 my product needed FDA food-contact certification.",
+    name: "Fatima Ali",
+    role: "Founder, ZestBites",
+    metric: "Recall avoided",
+    metricColor: "#F59E0B" as const,
   },
   {
-    quote:
-      "I was skeptical $99 would tell me anything new. The report identified two alternative materials I hadn&apos;t considered — same performance, 28% cheaper. It paid for itself 10x over.",
-    name: "Noah S.",
-    role: "D2C Founder",
-    product: "Outdoor water filter",
-    category: "Outdoor",
-    score: 87,
-    saving: "28% cheaper materials",
-    savingDetail: "identified alternatives",
-    stars: 5,
+    quote: "The report identified two alternative materials I hadn\u2019t considered \u2014 same performance, 28% cheaper. Paid for itself 10x.",
+    name: "Noah Sandler",
+    role: "Founder, Helio D2C",
+    metric: "28% cheaper",
+    metricColor: "#22C55E" as const,
   },
   {
-    quote:
-      "We&apos;ve done 6 analyses now — comparing different product variations before committing to tooling. The ROI is insane. Bottlecap basically replaces a part-time consultant.",
-    name: "Yuki T.",
-    role: "Product Manager",
-    product: "Fitness accessories",
-    category: "Fitness",
-    score: 80,
-    saving: "6 analyses done",
-    savingDetail: "saved on tooling risk",
-    stars: 5,
+    quote: "We\u2019ve done 6 analyses comparing product variations before committing to tooling. Basically replaces a part-time consultant.",
+    name: "Yuki Tanaka",
+    role: "Product Manager, Omnicraft",
+    metric: "6 analyses",
+    metricColor: "#FF6B35" as const,
   },
   {
-    quote:
-      "The supplier specification sheet in the report was what I needed most — I sent it directly to 3 factories on Alibaba and got responses within 48 hours. No more ghosting because now I speak their language.",
-    name: "Lena H.",
-    role: "Shopify Brand Owner",
-    product: "Pet accessories",
-    category: "Other",
-    score: 84,
-    saving: "3 suppliers found",
-    savingDetail: "within 2 weeks",
-    stars: 5,
+    quote: "Sent the supplier spec sheet directly to 3 factories on Alibaba. Got responses within 48 hours. No more ghosting.",
+    name: "Lena Hartwell",
+    role: "Founder, Sunridge Store",
+    metric: "3 suppliers found",
+    metricColor: "#22C55E" as const,
   },
   {
-    quote:
-      "Bottlecap predicted my landed cost at $4.20/unit. Actual landed cost from my factory: $4.35/unit. That&apos;s 3.5% variance. I&apos;ve never had a consultant that accurate before.",
-    name: "Raj P.",
-    role: "Amazon FBA Seller",
-    product: "Ergonomic desk mat",
-    category: "Home",
-    score: 91,
-    saving: "First order: $12K",
-    savingDetail: "landed cost predicted",
-    stars: 5,
+    quote: "Predicted my landed cost at $4.20/unit. Actual: $4.35. That\u2019s 3.5% variance. Never had a consultant that accurate.",
+    name: "Raj Patel",
+    role: "Amazon FBA Seller, BoldPack",
+    metric: "3.5% variance",
+    metricColor: "#22C55E" as const,
   },
 ]
 
-const CATEGORY_TAGS = ["All", "Electronics", "Kitchen", "Beauty", "Home", "Outdoor", "Fitness", "Agency", "Other"]
+type Testimonial = (typeof testimonials)[number]
 
-function StarRating({ count }: { count: number }) {
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2)
+}
+
+function Card({ t }: { t: Testimonial }) {
   return (
-    <div className="flex gap-0.5">
-      {Array.from({ length: count }).map((_, i) => (
-        <Star key={i} className="w-3 h-3 fill-[#F59E0B] text-[#F59E0B]" />
-      ))}
+    <div className="w-[340px] shrink-0 bg-white border border-[#E8E8E4] rounded-md p-5 flex flex-col justify-between h-[180px] hover:border-[#FF6B35]/30 transition-colors select-none">
+      <p className="text-[13px] leading-[1.55] text-[#1A1A1A]/80">
+        &ldquo;{t.quote}&rdquo;
+      </p>
+      <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#E8E8E4]/60">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#FF6B35]/10 to-[#FF6B35]/25 flex items-center justify-center">
+            <span className="text-[10px] font-bold text-[#FF6B35]">
+              {getInitials(t.name)}
+            </span>
+          </div>
+          <div>
+            <p className="text-[12px] font-semibold text-[#1A1A1A] leading-none">
+              {t.name}
+            </p>
+            <p className="text-[11px] text-[#1A1A1A]/40 mt-0.5">{t.role}</p>
+          </div>
+        </div>
+        <span
+          className="text-[11px] font-semibold px-2 py-0.5 rounded"
+          style={{
+            color: t.metricColor,
+            backgroundColor: `${t.metricColor}10`,
+          }}
+        >
+          {t.metric}
+        </span>
+      </div>
     </div>
   )
 }
 
-function TestimonialCard({ t, index }: { t: typeof testimonials[0]; index: number }) {
+function MobileCard({ t }: { t: Testimonial }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.07 }}
-      className="bg-white rounded-2xl border border-[#E8E8E4] p-6 shadow-[0_2px_16px_rgba(0,0,0,0.04)] flex flex-col h-full hover:shadow-[0_6px_24px_rgba(0,0,0,0.08)] hover:border-[#FF6B35]/20 transition-all"
-    >
-      {/* Top row */}
-      <div className="flex items-start justify-between mb-4">
-        <div>
-          <StarRating count={t.stars} />
-          <span className="text-[10px] text-[#9B9B9B] mt-1 inline-block">{t.category}</span>
-        </div>
-        <Quote className="w-5 h-5 text-[#FF6B35]/20 shrink-0" />
-      </div>
-
-      {/* Quote */}
-      <p className="text-[#1A1A1A] leading-relaxed text-sm flex-1 mb-5">
+    <div className="bg-white border border-[#E8E8E4] rounded-md p-5 flex flex-col justify-between h-[180px]">
+      <p className="text-[13px] leading-[1.55] text-[#1A1A1A]/80">
         &ldquo;{t.quote}&rdquo;
       </p>
-
-      {/* Bottom */}
-      <div className="flex items-end justify-between gap-3 mt-auto">
-        <div>
-          <p className="font-bold text-[#1A1A1A] text-sm">{t.name}</p>
-          <p className="text-xs text-[#6B6B6B]">{t.role}</p>
-          <div className="mt-2 flex items-center gap-1.5">
-            <TrendingDown className="w-3 h-3 text-[#22C55E]" />
-            <span className="text-[10px] font-semibold text-[#22C55E]">{t.saving}</span>
-            <span className="text-[10px] text-[#9B9B9B]">· {t.savingDetail}</span>
+      <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#E8E8E4]/60">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#FF6B35]/10 to-[#FF6B35]/25 flex items-center justify-center">
+            <span className="text-[10px] font-bold text-[#FF6B35]">
+              {getInitials(t.name)}
+            </span>
+          </div>
+          <div>
+            <p className="text-[12px] font-semibold text-[#1A1A1A] leading-none">
+              {t.name}
+            </p>
+            <p className="text-[11px] text-[#1A1A1A]/40 mt-0.5">{t.role}</p>
           </div>
         </div>
-        <div className="text-center bg-[#F5F5F0] rounded-xl border border-[#E8E8E4] px-3 py-2 shrink-0">
-          <p className="text-2xl font-black text-[#22C55E] leading-none">{t.score}</p>
-          <p className="text-[9px] font-bold uppercase tracking-wide text-[#9B9B9B] mt-0.5">Score</p>
-          <p className="text-[9px] text-[#9B9B9B] mt-0.5 max-w-[80px] leading-tight">{t.product}</p>
-        </div>
+        <span
+          className="text-[11px] font-semibold px-2 py-0.5 rounded"
+          style={{
+            color: t.metricColor,
+            backgroundColor: `${t.metricColor}10`,
+          }}
+        >
+          {t.metric}
+        </span>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
-// The Raj P. testimonial used in the featured spotlight
-const RAJ = testimonials.find((t) => t.name === "Raj P.")!
-
-function FeaturedSpotlight() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.45 }}
-      className="mb-10 rounded-2xl overflow-hidden bg-[#1A1A1A] grid grid-cols-1 md:grid-cols-2"
-    >
-      {/* Left: quote */}
-      <div className="p-8 flex flex-col justify-between">
-        <div>
-          <div className="inline-flex items-center gap-1.5 bg-[#FF6B35]/20 text-[#FF6B35] text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-5">
-            ⭐ Staff Pick
-          </div>
-          <StarRating count={RAJ.stars} />
-          <p className="text-white text-base leading-relaxed mt-4 mb-6">
-            &ldquo;{RAJ.quote}&rdquo;
-          </p>
-        </div>
-        <div>
-          <p className="font-bold text-white text-sm">{RAJ.name}</p>
-          <p className="text-[#9B9B9B] text-xs">{RAJ.role} · {RAJ.product}</p>
-        </div>
-      </div>
-
-      {/* Right: stat */}
-      <div className="bg-[#111111] p-8 flex flex-col items-center justify-center gap-5">
-        <div className="text-center">
-          <p className="text-[11px] uppercase tracking-widest text-[#9B9B9B] mb-1">Predicted landed cost</p>
-          <p className="text-5xl font-black text-[#FF6B35] leading-none">$4.20</p>
-          <p className="text-xs text-[#9B9B9B] mt-1">per unit</p>
-        </div>
-        <div className="text-center">
-          <p className="text-[11px] uppercase tracking-widest text-[#9B9B9B] mb-1">Actual landed cost</p>
-          <p className="text-5xl font-black text-[#22C55E] leading-none">$4.35</p>
-          <p className="text-xs text-[#9B9B9B] mt-1">per unit</p>
-        </div>
-        <div className="bg-[#22C55E]/10 border border-[#22C55E]/30 rounded-full px-4 py-1.5">
-          <p className="text-[#22C55E] text-xs font-bold">3.5% variance</p>
-        </div>
-      </div>
-    </motion.div>
-  )
+const marqueeVariants: Variants = {
+  animate: {
+    x: [0, -3960],
+    transition: {
+      x: {
+        repeat: Infinity,
+        repeatType: "loop",
+        duration: 60,
+        ease: "linear",
+      },
+    },
+  },
 }
+
+const marqueeVariantsReverse: Variants = {
+  animate: {
+    x: [-3960, 0],
+    transition: {
+      x: {
+        repeat: Infinity,
+        repeatType: "loop",
+        duration: 65,
+        ease: "linear",
+      },
+    },
+  },
+}
+
+const slideVariants: Variants = {
+  enter: {
+    opacity: 0,
+    x: 60,
+  },
+  center: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.35,
+      ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
+    },
+  },
+  exit: {
+    opacity: 0,
+    x: -60,
+    transition: {
+      duration: 0.25,
+      ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
+    },
+  },
+}
+
+const row1 = testimonials.slice(0, 6)
+const row2 = testimonials.slice(6, 12)
 
 export default function TestimonialsSection() {
   const [active, setActive] = useState(0)
-  const [activeCategory, setActiveCategory] = useState("All")
+  const [isPaused, setIsPaused] = useState(false)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const filtered = activeCategory === "All"
-    ? testimonials
-    : testimonials.filter((t) => t.category === activeCategory)
-
-  // Mobile auto-carousel based on filtered
+  // Mobile auto-carousel
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActive((prev) => (prev + 1) % filtered.length)
-    }, 6000)
-    return () => clearInterval(interval)
-  }, [filtered.length])
-
-  // Reset active index on category change
-  useEffect(() => { setActive(0) }, [activeCategory])
-
-  // Aggregate stats
-  const avgScore = Math.round(testimonials.reduce((s, t) => s + t.score, 0) / testimonials.length)
-
-  const showSpotlight = activeCategory === "All" || activeCategory === "Home"
+    intervalRef.current = setInterval(() => {
+      setActive((prev) => (prev + 1) % testimonials.length)
+    }, 5000)
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [])
 
   return (
-    <ScrollReveal className="py-20">
-      <div className="max-w-6xl mx-auto px-6">
-
-        {/* Section header */}
-        <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#FF6B35] mb-3 text-center">
-          Founders say
+    <section className="py-20 relative z-0 overflow-hidden bg-[#FAFAF8]">
+      {/* Header */}
+      <div className="max-w-6xl mx-auto px-6 mb-12">
+        <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#FF6B35] mb-3 text-center">
+          What founders say
         </p>
-        <TextReveal
-          as="h2"
-          className="text-3xl sm:text-4xl font-bold tracking-tight leading-[1.1] text-center mb-4 text-[#1A1A1A]"
+        <motion.h2
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{
+            duration: 0.5,
+            ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
+          }}
+          className="text-3xl sm:text-4xl font-bold tracking-tight leading-[1.1] text-center text-[#1A1A1A]"
         >
-          From idea to first order
-        </TextReveal>
-        <ScrollReveal delay={0.1}>
-          <p className="text-center text-[#6B6B6B] mb-6 max-w-2xl mx-auto">
-            What founders discovered after their first analysis.
-          </p>
-        </ScrollReveal>
+          Founders don&apos;t guess anymore
+        </motion.h2>
+      </div>
 
-        {/* Social proof bar */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-          <span className="text-xs text-[#9B9B9B] mr-1">As featured in:</span>
-          {["Product Hunt", "Indie Hackers", "Hacker News", "Y Combinator alumni"].map((badge) => (
-            <span
-              key={badge}
-              className="text-xs font-medium text-[#6B6B6B] bg-white border border-[#E8E8E4] rounded-full px-3 py-1"
-            >
-              {badge}
-            </span>
-          ))}
-        </div>
+      {/* Desktop: dual-row marquee */}
+      <div
+        className="hidden md:block"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        {/* Fade edges */}
+        <div className="relative">
+          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#FAFAF8] to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#FAFAF8] to-transparent z-10 pointer-events-none" />
 
-        {/* Aggregate metrics */}
-        <div className="flex items-center justify-center gap-8 mb-8 flex-wrap">
-          {[
-            { value: `${testimonials.length}+`, label: "verified reviews", color: "#FF6B35" },
-            { value: `${avgScore}/100`, label: "avg feasibility score", color: "#22C55E" },
-            { value: "5/5", label: "avg rating", color: "#F59E0B" },
-          ].map((m) => (
-            <div key={m.label} className="text-center">
-              <p className="text-2xl font-black leading-none" style={{ color: m.color }}>{m.value}</p>
-              <p className="text-xs text-[#9B9B9B] mt-1">{m.label}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Category filter */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
-          {CATEGORY_TAGS.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => setActiveCategory(tag)}
-              className={`text-xs px-3 py-1.5 rounded-full transition-colors font-medium ${
-                activeCategory === tag
-                  ? "bg-[#FF6B35] text-white shadow-sm"
-                  : "bg-white border border-[#E8E8E4] text-[#6B6B6B] hover:border-[#FF6B35]/40"
-              }`}
-            >
-              {tag}
-              {tag !== "All" && (
-                <span className="ml-1 opacity-60">
-                  ({testimonials.filter((t) => t.category === tag).length})
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Featured Spotlight — shown for All or Home */}
-        <AnimatePresence>
-          {showSpotlight && (
-            <motion.div
-              key="spotlight"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }}
-              className="overflow-hidden"
-            >
-              <FeaturedSpotlight />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Desktop: masonry-style grid */}
-        <AnimatePresence mode="wait">
+          {/* Row 1 */}
           <motion.div
-            key={activeCategory}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25 }}
-            className="hidden lg:grid grid-cols-3 gap-5"
+            className="flex gap-5 mb-5"
+            variants={marqueeVariants}
+            animate={isPaused ? undefined : "animate"}
           >
-            {/* First col — tall */}
-            <div className="space-y-5">
-              {filtered.filter((_, i) => i % 3 === 0).map((t, i) => (
-                <TestimonialCard key={t.name} t={t} index={i} />
-              ))}
-            </div>
-            {/* Second col — offset */}
-            <div className="space-y-5 mt-8">
-              {filtered.filter((_, i) => i % 3 === 1).map((t, i) => (
-                <TestimonialCard key={t.name} t={t} index={i + 1} />
-              ))}
-            </div>
-            {/* Third col */}
-            <div className="space-y-5">
-              {filtered.filter((_, i) => i % 3 === 2).map((t, i) => (
-                <TestimonialCard key={t.name} t={t} index={i + 2} />
-              ))}
-            </div>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Tablet: 2-col grid */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={`tablet-${activeCategory}`}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25 }}
-            className="hidden md:grid lg:hidden grid-cols-2 gap-5"
-          >
-            {filtered.map((t, i) => (
-              <TestimonialCard key={t.name} t={t} index={i} />
+            {[...row1, ...row1, ...row1, ...row1].map((t, i) => (
+              <Card key={`r1-${i}`} t={t} />
             ))}
           </motion.div>
-        </AnimatePresence>
 
-        {/* Mobile: carousel */}
-        <div className="md:hidden">
-          <div className="relative min-h-[320px]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`${activeCategory}-${active}`}
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
-                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }}
-              >
-                {filtered[active] && <TestimonialCard t={filtered[active]} index={0} />}
-              </motion.div>
-            </AnimatePresence>
-          </div>
+          {/* Row 2 */}
+          <motion.div
+            className="flex gap-5"
+            variants={marqueeVariantsReverse}
+            animate={isPaused ? undefined : "animate"}
+          >
+            {[...row2, ...row2, ...row2, ...row2].map((t, i) => (
+              <Card key={`r2-${i}`} t={t} />
+            ))}
+          </motion.div>
+        </div>
+      </div>
 
-          {/* Carousel nav */}
-          <div className="flex items-center justify-center gap-4 mt-6">
-            <button
-              onClick={() => setActive((p) => (p - 1 + filtered.length) % filtered.length)}
-              className="w-8 h-8 rounded-full border border-[#E8E8E4] flex items-center justify-center text-[#9B9B9B] hover:border-[#FF6B35] hover:text-[#FF6B35] transition-colors"
+      {/* Mobile: single card carousel */}
+      <div className="md:hidden px-6">
+        <div className="relative h-[200px]">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={active}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
             >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <div className="flex gap-2">
-              {filtered.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActive(i)}
-                  className={`h-2 rounded-full transition-all ${
-                    i === active ? "bg-[#FF6B35] w-6" : "bg-[#E8E8E4] w-2 hover:bg-[#D0D0C8]"
-                  }`}
-                  aria-label={`Testimonial ${i + 1}`}
-                />
-              ))}
-            </div>
-            <button
-              onClick={() => setActive((p) => (p + 1) % filtered.length)}
-              className="w-8 h-8 rounded-full border border-[#E8E8E4] flex items-center justify-center text-[#9B9B9B] hover:border-[#FF6B35] hover:text-[#FF6B35] transition-colors"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
+              <MobileCard t={testimonials[active]} />
+            </motion.div>
+          </AnimatePresence>
         </div>
 
-        {/* Empty state */}
-        {filtered.length === 0 && (
-          <p className="text-center text-[#9B9B9B] py-12">
-            No reviews for this category yet.
-          </p>
-        )}
+        <div className="flex items-center justify-center gap-4 mt-4">
+          <button
+            onClick={() =>
+              setActive(
+                (p) => (p - 1 + testimonials.length) % testimonials.length
+              )
+            }
+            className="w-8 h-8 rounded-full border border-[#E8E8E4] flex items-center justify-center text-[#1A1A1A]/40 hover:border-[#FF6B35] hover:text-[#FF6B35] transition-colors"
+            aria-label="Previous testimonial"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <div className="flex gap-1.5">
+            {testimonials.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActive(i)}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === active
+                    ? "bg-[#FF6B35] w-5"
+                    : "bg-[#E8E8E4] w-1.5 hover:bg-[#D0D0C8]"
+                }`}
+                aria-label={`Testimonial ${i + 1}`}
+              />
+            ))}
+          </div>
+          <button
+            onClick={() =>
+              setActive((p) => (p + 1) % testimonials.length)
+            }
+            className="w-8 h-8 rounded-full border border-[#E8E8E4] flex items-center justify-center text-[#1A1A1A]/40 hover:border-[#FF6B35] hover:text-[#FF6B35] transition-colors"
+            aria-label="Next testimonial"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
       </div>
-    </ScrollReveal>
+    </section>
   )
 }

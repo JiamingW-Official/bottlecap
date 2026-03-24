@@ -14,80 +14,98 @@ interface Product {
   costRange: string
   growth: string
   emoji: string
+  feasibility: number
+  bestCountry: string
 }
 
 const PRODUCTS: Product[] = [
   {
-    name: "Insulated Water Bottle",
+    name: "40oz Stanley-style Tumbler",
     category: "Consumer Goods",
     categoryColor: "#3B82F6",
     categoryBg: "rgba(59,130,246,0.10)",
-    costRange: "$4–8/unit",
-    growth: "+34%",
+    costRange: "$3.80–6.50/unit",
+    growth: "+47%",
     emoji: "💧",
+    feasibility: 91,
+    bestCountry: "China",
   },
   {
-    name: "LED Desk Lamp",
+    name: "USB-C Magnetic Desk Lamp",
     category: "Electronics",
     categoryColor: "#F59E0B",
     categoryBg: "rgba(245,158,11,0.10)",
-    costRange: "$6–12/unit",
-    growth: "+28%",
+    costRange: "$7–14/unit",
+    growth: "+33%",
     emoji: "💡",
+    feasibility: 84,
+    bestCountry: "China",
   },
   {
-    name: "Bamboo Toothbrush Set",
+    name: "Biodegradable Bamboo Toothbrush (4-pack)",
     category: "Beauty",
     categoryColor: "#EC4899",
     categoryBg: "rgba(236,72,153,0.10)",
-    costRange: "$0.80–2/unit",
-    growth: "+51%",
+    costRange: "$0.70–1.60/unit",
+    growth: "+58%",
     emoji: "🌿",
+    feasibility: 94,
+    bestCountry: "Vietnam",
   },
   {
-    name: "Pet Collar with GPS",
+    name: "AirTag-compatible Pet GPS Collar",
     category: "Pet Products",
     categoryColor: "#8B5CF6",
     categoryBg: "rgba(139,92,246,0.10)",
-    costRange: "$18–35/unit",
-    growth: "+62%",
+    costRange: "$14–28/unit",
+    growth: "+71%",
     emoji: "🐾",
+    feasibility: 76,
+    bestCountry: "China",
   },
   {
-    name: "Portable Phone Charger",
+    name: "MagSafe 3-in-1 Charging Station",
     category: "Electronics",
     categoryColor: "#F59E0B",
     categoryBg: "rgba(245,158,11,0.10)",
-    costRange: "$8–15/unit",
-    growth: "+19%",
+    costRange: "$9–18/unit",
+    growth: "+39%",
     emoji: "🔋",
+    feasibility: 82,
+    bestCountry: "China",
   },
   {
-    name: "Yoga Mat",
+    name: "6mm Cork-TPE Hybrid Yoga Mat",
     category: "Sports",
     categoryColor: "#22C55E",
     categoryBg: "rgba(34,197,94,0.10)",
-    costRange: "$5–10/unit",
-    growth: "+41%",
+    costRange: "$5.50–11/unit",
+    growth: "+44%",
     emoji: "🧘",
+    feasibility: 89,
+    bestCountry: "India",
   },
   {
-    name: "Reusable Produce Bags",
+    name: "Compostable Mailer Bags (100-pack)",
     category: "Packaging",
     categoryColor: "#10B981",
     categoryBg: "rgba(16,185,129,0.10)",
-    costRange: "$0.60–1.20/unit",
-    growth: "+77%",
+    costRange: "$0.08–0.18/bag",
+    growth: "+82%",
     emoji: "🛍️",
+    feasibility: 93,
+    bestCountry: "Vietnam",
   },
   {
-    name: "Silicone Kitchen Utensils Set",
+    name: "Modular Silicone Kitchen Utensil Set (8-piece)",
     category: "Home & Kitchen",
     categoryColor: "#FF6B35",
     categoryBg: "rgba(255,107,53,0.10)",
-    costRange: "$3–6/unit",
-    growth: "+23%",
+    costRange: "$3.20–5.80/unit",
+    growth: "+26%",
     emoji: "🍳",
+    feasibility: 90,
+    bestCountry: "China",
   },
 ]
 
@@ -130,10 +148,22 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       </p>
 
       {/* Cost range */}
-      <p className="text-xs text-[#6B6B6B] mb-4">
+      <p className="text-xs text-[#6B6B6B] mb-1.5">
         Est. unit cost:{" "}
         <span className="font-semibold text-[#1A1A1A]">{product.costRange}</span>
       </p>
+
+      {/* Feasibility + Country */}
+      <div className="flex items-center gap-3 text-xs text-[#6B6B6B] mb-4">
+        <span>
+          Feasibility:{" "}
+          <span className={`font-semibold ${product.feasibility >= 85 ? "text-[#22C55E]" : product.feasibility >= 70 ? "text-[#F59E0B]" : "text-[#EF4444]"}`}>
+            {product.feasibility}/100
+          </span>
+        </span>
+        <span className="text-[#E8E8E4]">|</span>
+        <span className="font-medium text-[#1A1A1A]">{product.bestCountry}</span>
+      </div>
 
       {/* CTA */}
       <button
@@ -168,7 +198,7 @@ export default function TrendingProducts() {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22C55E]" />
             </span>
             <span className="text-[10px] font-bold tracking-[0.16em] uppercase text-[#6B6B6B] bg-[#F0F0EC] border border-[#E8E8E4] px-3 py-1 rounded-full">
-              Updated monthly based on our analysis patterns
+              Q1 2026 search trends &middot; Updated monthly
             </span>
           </div>
 

@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { CheckCircle, X, ChevronDown, ArrowRight, Shield, Users, Zap } from "lucide-react"
+import LiveActivityTicker from "@/components/LiveActivityTicker"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -187,6 +188,9 @@ export default function PricingContent() {
           <p className="mx-auto mt-4 max-w-xl text-lg text-[#5A5A52]">
             One report. Real intelligence. No subscription required.
           </p>
+          <div className="mt-6 inline-flex items-center gap-2.5 bg-[#F5F5F0] border border-[#E8E8E4] rounded-full px-4 py-2 max-w-full overflow-hidden">
+            <LiveActivityTicker />
+          </div>
         </motion.div>
       </section>
 
@@ -200,13 +204,8 @@ export default function PricingContent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
             whileHover={{ y: -4, transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] } }}
-            className="relative flex flex-col rounded-2xl border-2 border-[#FF6B35] bg-white shadow-sm"
+            className="relative flex flex-col rounded-2xl border border-[#E8E8E4] bg-white shadow-sm"
           >
-            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-              <span className="rounded-full bg-[#FF6B35] px-4 py-1 text-xs font-bold uppercase tracking-wide text-white">
-                Most popular
-              </span>
-            </div>
             <div className="flex flex-1 flex-col p-8">
               <h2 className="text-lg font-semibold text-[#1A1A1A]">Single Report</h2>
               <p className="mt-1 text-sm text-[#8A8A80]">Perfect for validating one product idea</p>
@@ -216,7 +215,7 @@ export default function PricingContent() {
               </div>
               <Link
                 href="/analyze"
-                className="mt-8 block w-full rounded-full bg-[#FF6B35] px-6 py-3.5 text-center text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                className="mt-8 block w-full rounded-full border-2 border-[#1A1A1A] bg-transparent px-6 py-3.5 text-center text-sm font-semibold text-[#1A1A1A] transition-colors hover:bg-[#1A1A1A] hover:text-white"
               >
                 Get your report
               </Link>
@@ -237,18 +236,18 @@ export default function PricingContent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
             whileHover={{ y: -4, transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] } }}
-            className="relative flex flex-col rounded-2xl bg-[#1A1A1A] shadow-sm"
+            className="relative flex flex-col rounded-2xl border-2 border-[#FF6B35] bg-white shadow-sm"
           >
             <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-              <span className="rounded-full bg-white px-4 py-1 text-xs font-bold uppercase tracking-wide text-[#1A1A1A]">
-                Most value
+              <span className="rounded-full bg-[#FF6B35] px-4 py-1 text-xs font-bold uppercase tracking-wide text-white">
+                Most popular
               </span>
             </div>
             <div className="flex flex-1 flex-col p-8">
-              <h2 className="text-lg font-semibold text-white">Pro Monthly</h2>
+              <h2 className="text-lg font-semibold text-[#1A1A1A]">Pro Monthly</h2>
               <p className="mt-1 text-sm text-[#8A8A80]">Unlimited analyses, every month</p>
               <div className="mt-6 flex items-end gap-1">
-                <span className="text-5xl font-bold text-white">$199</span>
+                <span className="text-5xl font-bold text-[#1A1A1A]">$199</span>
                 <span className="mb-2 text-[#8A8A80]">/month</span>
               </div>
               <Link
@@ -259,7 +258,7 @@ export default function PricingContent() {
               </Link>
               <ul className="mt-8 space-y-3">
                 {proFeatures.map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-sm text-[#D4D4CC]">
+                  <li key={f} className="flex items-start gap-3 text-sm text-[#3A3A32]">
                     <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#22C55E]" />
                     {f}
                   </li>

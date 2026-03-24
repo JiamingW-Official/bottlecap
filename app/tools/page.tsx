@@ -19,6 +19,9 @@ import {
   BarChart2,
   FileText,
   Layers,
+  Shield,
+  SlidersHorizontal,
+  MessageSquare,
 } from "lucide-react"
 import ScrollReveal from "@/components/animations/ScrollReveal"
 import TextReveal from "@/components/animations/TextReveal"
@@ -199,6 +202,46 @@ const toolGroups = [
         badgeColor: "bg-[#FFF0EB] text-[#FF6B35]",
         gradient: "from-[#FF6B35] to-[#FF9F1C]",
         time: "~2 min",
+      },
+    ],
+  },
+  {
+    category: "Strategic Intelligence",
+    description:
+      "Advanced tools for risk management, margin optimization, and factory negotiations — the moat features.",
+    tools: [
+      {
+        icon: Shield,
+        title: "Risk Monitor",
+        description:
+          "Track tariff volatility, shipping disruptions, and geopolitical risks across 8 manufacturing countries in real time.",
+        href: "/tools/risk-monitor",
+        badge: "Exclusive",
+        badgeColor: "bg-[#FEE2E2] text-[#991B1B]",
+        gradient: "from-[#EF4444] to-[#DC2626]",
+        time: "Live dashboard",
+      },
+      {
+        icon: SlidersHorizontal,
+        title: "Margin Simulator",
+        description:
+          "Interactive P&L calculator with 8 sliders. Model margins across China, Vietnam, and Mexico scenarios instantly.",
+        href: "/tools/margin-simulator",
+        badge: "Exclusive",
+        badgeColor: "bg-[#FEE2E2] text-[#991B1B]",
+        gradient: "from-[#8B5CF6] to-[#6366F1]",
+        time: "Interactive",
+      },
+      {
+        icon: MessageSquare,
+        title: "Negotiation Playbook",
+        description:
+          "6-phase factory negotiation guide with copy-paste email templates, RFQ scripts, NDA clauses, and AQL tables.",
+        href: "/tools/negotiation-playbook",
+        badge: "Exclusive",
+        badgeColor: "bg-[#FEE2E2] text-[#991B1B]",
+        gradient: "from-[#F59E0B] to-[#D97706]",
+        time: "Reference",
       },
     ],
   },

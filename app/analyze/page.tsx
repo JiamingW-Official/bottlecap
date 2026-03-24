@@ -11,6 +11,7 @@ import {
   CheckSquare, Star, ChevronRight, Hash,
 } from "lucide-react"
 import SubmitForm from "@/components/SubmitForm"
+import LiveActivityTicker from "@/components/LiveActivityTicker"
 
 // ── Static data ────────────────────────────────────────────────────────────────
 
@@ -731,19 +732,9 @@ function AnalyzeContent() {
           Tell us. We&apos;ll analyze it across 50+ dimensions — cost, countries, materials, tariffs — and deliver a 12-section report in 2–5 minutes.
         </p>
 
-        {/* Live social proof row */}
-        <div className="inline-flex items-center gap-2.5 bg-[#F5F5F0] border border-[#E8E8E4] rounded-full px-4 py-2">
-          <span className="relative flex h-2 w-2 shrink-0">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22C55E]" />
-          </span>
-          <span className="text-xs text-[#4B4B4B]">
-            <span className="font-semibold text-[#1A1A1A]">847</span> analyses run this month
-            <span className="text-[#D1D1CC] mx-2">·</span>
-            Avg score: <span className="font-semibold text-[#1A1A1A]">79/100</span>
-            <span className="text-[#D1D1CC] mx-2">·</span>
-            <span className="font-semibold text-[#1A1A1A]">4.9/5</span> rating
-          </span>
+        {/* Live activity ticker */}
+        <div className="inline-flex items-center gap-2.5 bg-[#F5F5F0] border border-[#E8E8E4] rounded-full px-4 py-2 max-w-full overflow-hidden">
+          <LiveActivityTicker />
         </div>
       </motion.div>
 

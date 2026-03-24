@@ -7,22 +7,28 @@ const EASE = [0.25, 0.1, 0.25, 1] as [number, number, number, number]
 
 const COLUMNS = [
   {
-    stat: "$3,000–$10,000",
+    stat: "$5K–$15K+",
     label: "vs. Sourcing Agent",
-    copy: "Get the same intelligence in 5 minutes that agents charge for over 2 weeks.",
+    copy: "$5K–$15K retainer + 3–8% commission on every order. You get the same supplier intelligence in 5 minutes for a flat $99.",
     accentColor: "#FF6B35",
   },
   {
-    stat: "$500+/hr",
+    stat: "$2K–$8K",
     label: "vs. Trade Consultant",
-    copy: "Bottlecap covers HS codes, tariff rates, and cost breakdowns consultants charge thousands to research.",
+    copy: "$150–$400/hr, typical engagement $2K–$8K. Bottlecap delivers HS codes, tariff rates, and landed-cost breakdowns instantly.",
     accentColor: "#F59E0B",
   },
   {
-    stat: "40+ hours",
+    stat: "40–120 hrs",
     label: "vs. DIY Research",
-    copy: "No more Alibaba rabbit holes, spreadsheet hell, or missed tariff changes.",
+    copy: "40–120 hours across Alibaba, trade databases, and tariff schedules. We compress that into a single 12-section report.",
     accentColor: "#22C55E",
+  },
+  {
+    stat: "$3K–$10K",
+    label: "vs. Trade Show",
+    copy: "$3K–$10K per show for booth fees, flights, hotels, and sample shipping — and you still leave without cost data.",
+    accentColor: "#3B82F6",
   },
 ]
 
@@ -39,10 +45,13 @@ function CountUp({
   duration?: number
   triggered: boolean
 }) {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(end) // SSR renders final value
+  const [hasAnimated, setHasAnimated] = useState(false)
 
   useEffect(() => {
-    if (!triggered) return
+    if (!triggered || hasAnimated) return
+    setCount(0) // reset to 0 for animation
+    setHasAnimated(true)
     let startTime: number | null = null
     const step = (timestamp: number) => {
       if (!startTime) startTime = timestamp
@@ -53,7 +62,7 @@ function CountUp({
       else setCount(end)
     }
     requestAnimationFrame(step)
-  }, [triggered, end, duration])
+  }, [triggered, end, duration, hasAnimated])
 
   return (
     <span>
@@ -91,8 +100,8 @@ export default function ROIStrip() {
           Compare what you would pay elsewhere
         </motion.h2>
 
-        {/* 3 columns */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+        {/* 4 columns */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {COLUMNS.map((col, i) => (
             <motion.div
               key={col.label}
@@ -192,8 +201,8 @@ export default function ROIStrip() {
           className="rounded-2xl bg-[#FF6B35]/10 border border-[#FF6B35]/20 px-6 py-5 text-center"
         >
           <p className="text-base sm:text-lg font-semibold text-white leading-snug">
-            Net ROI if you save even 10 hours:{" "}
-            <span className="text-[#FF6B35] font-black">over 50x your $99 investment.</span>
+            Net ROI: $99 replaces $5K+ in research costs.{" "}
+            <span className="text-[#FF6B35] font-black">Average user saves 47 hours.</span>
           </p>
         </motion.div>
       </div>

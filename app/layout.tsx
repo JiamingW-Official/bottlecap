@@ -13,6 +13,9 @@ import KonamiEasterEgg from "@/components/KonamiEasterEgg"
 import EasterEggs from "@/components/EasterEggs"
 import AccessibilityEnhancements from "@/components/AccessibilityEnhancements"
 import StickyAnalyzeCTA from "@/components/StickyAnalyzeCTA"
+import CookieConsent from "@/components/CookieConsent"
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -35,6 +38,9 @@ export const metadata: Metadata = {
     "product development",
     "supply chain analysis",
   ],
+  icons: {
+    icon: "/favicon.svg",
+  },
   openGraph: {
     title: "Bottlecap — Manufacturing Feasibility in 5 Minutes",
     description:
@@ -42,6 +48,7 @@ export const metadata: Metadata = {
     siteName: "Bottlecap",
     type: "website",
     locale: "en_US",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
@@ -124,8 +131,11 @@ export default function RootLayout({
           <KonamiEasterEgg />
           <EasterEggs />
           <AccessibilityEnhancements />
+          <CookieConsent />
           <StickyAnalyzeCTA />
         </SmoothScrollProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

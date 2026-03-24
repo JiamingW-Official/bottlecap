@@ -27,13 +27,14 @@ const productLinks = [
 
 const toolLinks = [
   { href: "/tools/hs-lookup",          label: "HS Code Lookup" },
-  { href: "/tools/cost-calculator",    label: "Cost Calculator" },
-  { href: "/tools/tariff-calculator",  label: "Tariff Calculator" },
-  { href: "/tools/country-compare",    label: "Country Compare" },
-  { href: "/tools/moq-calculator",     label: "MOQ Planner" },
-  { href: "/tools/margin-calculator",  label: "Margin Calculator" },
-  { href: "/tools/roi-calculator",     label: "ROI Calculator" },
-  { href: "/tools/sourcing-quiz",      label: "Sourcing Quiz" },
+  { href: "/tools/cost-calculator",        label: "Cost Calculator" },
+  { href: "/tools/tariff-calculator",      label: "Tariff Calculator" },
+  { href: "/tools/country-compare",        label: "Country Compare" },
+  { href: "/tools/moq-calculator",         label: "MOQ Planner" },
+  { href: "/tools/margin-simulator",       label: "Margin Simulator" },
+  { href: "/tools/risk-monitor",           label: "Risk Monitor" },
+  { href: "/tools/negotiation-playbook",   label: "Negotiation Playbook" },
+  { href: "/tools/quiz",                   label: "Sourcing Quiz" },
 ]
 
 const learnLinks = [
@@ -55,21 +56,46 @@ const resourceLinks = [
   { href: "/suppliers",           label: "Verified Suppliers" },
   { href: "/cost-guides",         label: "Cost Guides" },
   { href: "/about",               label: "About" },
-  { href: "#",                    label: "Blog (coming soon)", disabled: true },
+  { href: "/blog",                label: "Blog" },
+  { href: "/contact",             label: "Contact" },
+  { href: "/changelog",           label: "Changelog" },
 ]
 
 export default function Footer() {
   const [email, setEmail] = useState("")
   const [subscribed, setSubscribed] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (email.trim()) {
-      setSubscribed(true)
+    if (!email.trim()) return
+
+    setLoading(true)
+    setError("")
+
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      })
+
+      const data = await res.json()
+
+      if (res.ok && data.success) {
+        setSubscribed(true)
+      } else {
+        setError(data.message || "Something went wrong. Please try again.")
+      }
+    } catch {
+      setError("Network error. Please try again.")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -111,23 +137,30 @@ export default function Footer() {
                 Thanks — we&apos;ll be in touch
               </p>
             ) : (
-              <form onSubmit={handleSubscribe} className="flex gap-2 w-full sm:w-auto">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
-                  required
-                  className="flex-1 sm:w-52 bg-white border border-[#E8E8E4] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#FF6B35] transition-colors"
-                />
-                <button
-                  type="submit"
-                  className="bg-[#FF6B35] text-white rounded-xl px-5 py-2.5 text-sm font-semibold hover:bg-[#E85A25] transition-colors shrink-0 flex items-center gap-1.5"
-                >
-                  Subscribe
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </form>
+              <div className="w-full sm:w-auto">
+                <form onSubmit={handleSubscribe} className="flex gap-2 w-full sm:w-auto">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    required
+                    disabled={loading}
+                    className="flex-1 sm:w-52 bg-white border border-[#E8E8E4] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#FF6B35] transition-colors disabled:opacity-50"
+                  />
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="bg-[#FF6B35] text-white rounded-xl px-5 py-2.5 text-sm font-semibold hover:bg-[#E85A25] transition-colors shrink-0 flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? "Sending..." : "Subscribe"}
+                    {!loading && <ArrowRight className="w-3.5 h-3.5" />}
+                  </button>
+                </form>
+                {error && (
+                  <p className="text-xs text-red-500 mt-1.5">{error}</p>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -225,15 +258,11 @@ export default function Footer() {
               Resources
             </p>
             <ul className="space-y-2.5">
-              {resourceLinks.map(({ href, label, disabled }) => (
+              {resourceLinks.map(({ href, label }) => (
                 <li key={label}>
-                  {disabled ? (
-                    <span className="text-sm text-[#C0C0C0] cursor-default">{label}</span>
-                  ) : (
-                    <Link href={href} className="text-sm text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors">
-                      {label}
-                    </Link>
-                  )}
+                  <Link href={href} className="text-sm text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors">
+                    {label}
+                  </Link>
                 </li>
               ))}
             </ul>
