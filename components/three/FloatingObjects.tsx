@@ -2,301 +2,196 @@
 
 import { useRef, useMemo } from "react"
 import { useFrame, type ThreeElements } from "@react-three/fiber"
-import { RoundedBox, Sphere, Torus } from "@react-three/drei"
+import { Float, MeshDistortMaterial, Sphere } from "@react-three/drei"
 import * as THREE from "three"
 import type { GPUTier } from "@/lib/hooks/useWebGLCapability"
 
 type _R3F = ThreeElements
 
-interface FloatingObjectsProps {
+interface Props {
   mouse: React.MutableRefObject<{ x: number; y: number }>
   scrollY: React.MutableRefObject<number>
   tier: GPUTier
 }
 
-// ─── Network node (glass sphere with inner glow) ─────────────
-function NetworkNode({
-  position,
-  scale,
-  color,
-  speed,
-  depthFactor,
-  mouse,
-  scrollY,
+// ─── Shared drift ─────────────────────────────────────────────
+function useDrift(
+  ref: React.RefObject<THREE.Object3D | null>,
+  base: [number, number, number],
+  speed: number,
+  depth: number,
+  phase: number,
+  mouse: React.MutableRefObject<{ x: number; y: number }>,
+  scrollY: React.MutableRefObject<number>,
+) {
+  useFrame(({ clock }) => {
+    if (!ref.current) return
+    const t = clock.elapsedTime
+    ref.current.position.x = base[0] + Math.sin(t * speed * 0.25 + phase) * 0.6 + mouse.current.x * depth * 0.45
+    ref.current.position.y = base[1] + Math.cos(t * speed * 0.2 + phase * 1.3) * 0.45 + mouse.current.y * depth * 0.3 - scrollY.current * 2 * depth
+    ref.current.position.z = base[2] + Math.sin(t * speed * 0.1 + phase * 0.7) * 0.2
+  })
+}
+
+// ─── 1. Glass Network Node (from original — translucent sphere with inner glow) ──
+function GlassNode({
+  pos, radius, color, glowColor, speed, depth, phase, mouse, scrollY,
 }: {
-  position: THREE.Vector3
-  scale: number
-  color: string
-  speed: number
-  depthFactor: number
+  pos: [number, number, number]; radius: number; color: string; glowColor: string
+  speed: number; depth: number; phase: number
   mouse: React.MutableRefObject<{ x: number; y: number }>
   scrollY: React.MutableRefObject<number>
 }) {
   const ref = useRef<THREE.Group>(null)
-  const basePos = useMemo(() => position.clone(), [position])
+  const coreRef = useRef<THREE.Mesh>(null)
+  useDrift(ref, pos, speed, depth, phase, mouse, scrollY)
 
-  useFrame((state) => {
+  useFrame(({ clock }) => {
     if (!ref.current) return
-    const t = state.clock.elapsedTime
-
-    ref.current.position.x =
-      basePos.x +
-      Math.sin(t * speed + depthFactor * 10) * 0.4 +
-      mouse.current.x * depthFactor * 0.3
-    ref.current.position.y =
-      basePos.y +
-      Math.cos(t * speed * 0.8 + depthFactor * 5) * 0.3 +
-      mouse.current.y * depthFactor * 0.2 -
-      scrollY.current * 1.5 * depthFactor
-    ref.current.position.z =
-      basePos.z + Math.sin(t * speed * 0.5) * 0.2
-
-    ref.current.rotation.y += 0.004 * speed
-    ref.current.rotation.x += 0.002 * speed
+    ref.current.rotation.y = clock.elapsedTime * 0.04 + phase
+    if (coreRef.current) {
+      coreRef.current.scale.setScalar(1 + Math.sin(clock.elapsedTime * 2 + phase) * 0.12)
+    }
   })
 
   return (
-    <group ref={ref} position={position}>
-      <Sphere args={[0.18 * scale, 24, 24]}>
-        <meshPhysicalMaterial
+    <Float speed={0.6 + phase * 0.1} rotationIntensity={0.04} floatIntensity={0.15}>
+      <group ref={ref}>
+        {/* Outer glass shell */}
+        <Sphere args={[radius, 64, 64]}>
+          <meshPhysicalMaterial
+            color={color}
+            transparent
+            opacity={0.15}
+            metalness={0.1}
+            roughness={0.02}
+            transmission={0.92}
+            thickness={radius * 3}
+            ior={1.45}
+            clearcoat={1}
+            clearcoatRoughness={0.06}
+            envMapIntensity={1.5}
+          />
+        </Sphere>
+        {/* Inner glow core */}
+        <mesh ref={coreRef}>
+          <sphereGeometry args={[radius * 0.3, 20, 20]} />
+          <meshBasicMaterial color={glowColor} transparent opacity={0.4} />
+        </mesh>
+        {/* Tiny specular highlight */}
+        <mesh position={[radius * 0.25, radius * 0.3, radius * 0.2]}>
+          <sphereGeometry args={[radius * 0.06, 8, 8]} />
+          <meshBasicMaterial color="#ffffff" transparent opacity={0.7} />
+        </mesh>
+      </group>
+    </Float>
+  )
+}
+
+// ─── 2. Morphing Chrome Blob ──────────────────────────────────
+function ChromeBlob({
+  pos, scale, color, speed, depth, phase, mouse, scrollY,
+}: {
+  pos: [number, number, number]; scale: number; color: string
+  speed: number; depth: number; phase: number
+  mouse: React.MutableRefObject<{ x: number; y: number }>
+  scrollY: React.MutableRefObject<number>
+}) {
+  const ref = useRef<THREE.Mesh>(null)
+  useDrift(ref, pos, speed, depth, phase, mouse, scrollY)
+
+  useFrame(({ clock }) => {
+    if (!ref.current) return
+    ref.current.rotation.y = clock.elapsedTime * 0.06 + phase
+    ref.current.rotation.z = Math.sin(clock.elapsedTime * 0.12 + phase) * 0.08
+  })
+
+  return (
+    <Float speed={0.5} rotationIntensity={0.05} floatIntensity={0.1}>
+      <mesh ref={ref} scale={scale}>
+        <sphereGeometry args={[1, 96, 96]} />
+        <MeshDistortMaterial
           color={color}
-          transparent
-          opacity={0.15}
-          roughness={0.05}
-          metalness={0.1}
-          transmission={0.85}
-          thickness={0.5}
-          ior={1.5}
-        />
-      </Sphere>
-      <Sphere args={[0.08 * scale, 16, 16]}>
-        <meshBasicMaterial color={color} transparent opacity={0.6} />
-      </Sphere>
-      <Torus args={[0.25 * scale, 0.008 * scale, 8, 48]} rotation={[Math.PI / 3, 0, 0]}>
-        <meshBasicMaterial color={color} transparent opacity={0.2} />
-      </Torus>
-    </group>
-  )
-}
-
-// ─── Data particle stream ─────────────────────────────────────
-function DataStream({
-  start,
-  end,
-  color,
-  speed,
-}: {
-  start: [number, number, number]
-  end: [number, number, number]
-  color: string
-  speed: number
-}) {
-  const particlesRef = useRef<THREE.Points>(null)
-  const count = 12
-
-  const positions = useMemo(() => {
-    const arr = new Float32Array(count * 3)
-    for (let i = 0; i < count; i++) {
-      const t = i / count
-      arr[i * 3] = start[0] + (end[0] - start[0]) * t
-      arr[i * 3 + 1] = start[1] + (end[1] - start[1]) * t
-      arr[i * 3 + 2] = start[2] + (end[2] - start[2]) * t
-    }
-    return arr
-  }, [start, end])
-
-  useFrame((state) => {
-    if (!particlesRef.current) return
-    const time = state.clock.elapsedTime
-    const posAttr = particlesRef.current.geometry.getAttribute("position")
-
-    for (let i = 0; i < count; i++) {
-      const t = ((i / count + time * speed * 0.3) % 1)
-      posAttr.setXYZ(
-        i,
-        start[0] + (end[0] - start[0]) * t + Math.sin(time * 2 + i) * 0.03,
-        start[1] + (end[1] - start[1]) * t + Math.cos(time * 2 + i) * 0.03,
-        start[2] + (end[2] - start[2]) * t
-      )
-    }
-    posAttr.needsUpdate = true
-  })
-
-  return (
-    <points ref={particlesRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          array={positions}
-          count={count}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        color={color}
-        size={0.025}
-        transparent
-        opacity={0.7}
-        sizeAttenuation
-      />
-    </points>
-  )
-}
-
-// ─── Product form (abstract container silhouette) ─────────────
-function ProductForm({
-  position,
-  scale,
-  speed,
-  mouse,
-  scrollY,
-}: {
-  position: [number, number, number]
-  scale: number
-  speed: number
-  mouse: React.MutableRefObject<{ x: number; y: number }>
-  scrollY: React.MutableRefObject<number>
-}) {
-  const ref = useRef<THREE.Group>(null)
-
-  useFrame((state) => {
-    if (!ref.current) return
-    const t = state.clock.elapsedTime
-    ref.current.position.y = position[1] + Math.sin(t * speed) * 0.2 - scrollY.current * 1.2
-    ref.current.position.x = position[0] + mouse.current.x * 0.15
-    ref.current.rotation.y = t * 0.3 * speed
-    ref.current.rotation.x = Math.sin(t * 0.5) * 0.1
-  })
-
-  return (
-    <group ref={ref} position={position} scale={scale}>
-      <RoundedBox args={[0.35, 0.6, 0.35]} radius={0.08} smoothness={4}>
-        <meshPhysicalMaterial
-          color="#FF6B35"
-          transparent
-          opacity={0.08}
-          roughness={0.05}
-          metalness={0.3}
-          transmission={0.9}
-          thickness={0.8}
-          ior={1.45}
-        />
-      </RoundedBox>
-      <mesh position={[0, 0.38, 0]}>
-        <cylinderGeometry args={[0.12, 0.15, 0.12, 16]} />
-        <meshPhysicalMaterial
-          color="#FFD166"
-          transparent
-          opacity={0.12}
-          roughness={0.1}
-          metalness={0.4}
-          transmission={0.8}
+          metalness={0.85}
+          roughness={0.12}
+          distort={0.2}
+          speed={1}
+          clearcoat={1}
+          clearcoatRoughness={0.05}
+          envMapIntensity={2}
         />
       </mesh>
-      <RoundedBox args={[0.36, 0.61, 0.36]} radius={0.08} smoothness={4}>
-        <meshBasicMaterial color="#FF6B35" wireframe transparent opacity={0.06} />
-      </RoundedBox>
-    </group>
+    </Float>
   )
 }
 
-// ─── Hex grid backdrop ────────────────────────────────────────
-function HexGrid({
-  position,
-  mouse,
-  scrollY,
+// ─── 3. Thin Chrome Ring ──────────────────────────────────────
+function ChromeRing({
+  pos, radius, tube, tiltX, color, speed, depth, phase, mouse, scrollY,
 }: {
-  position: [number, number, number]
+  pos: [number, number, number]; radius: number; tube: number; tiltX: number
+  color: string; speed: number; depth: number; phase: number
   mouse: React.MutableRefObject<{ x: number; y: number }>
   scrollY: React.MutableRefObject<number>
 }) {
-  const ref = useRef<THREE.Group>(null)
+  const ref = useRef<THREE.Mesh>(null)
 
-  useFrame((state) => {
+  useFrame(({ clock }) => {
     if (!ref.current) return
-    const t = state.clock.elapsedTime
-    ref.current.position.y = position[1] - scrollY.current * 0.8
-    ref.current.position.x = position[0] + mouse.current.x * 0.1
-    ref.current.rotation.z = Math.sin(t * 0.2) * 0.05
-    ref.current.rotation.x = -0.3 + mouse.current.y * 0.05
+    const t = clock.elapsedTime
+    ref.current.position.x = pos[0] + mouse.current.x * depth * 0.3
+    ref.current.position.y = pos[1] + Math.sin(t * speed * 0.15 + phase) * 0.25 - scrollY.current * 1.6 * depth
+    ref.current.rotation.x = tiltX + t * 0.08 * speed
+    ref.current.rotation.y = t * 0.1 * speed + phase
   })
 
-  const hexPositions = useMemo(() => {
-    const pts: [number, number][] = []
-    const size = 0.4
-    for (let q = -2; q <= 2; q++) {
-      for (let r = -2; r <= 2; r++) {
-        if (Math.abs(q + r) > 2) continue
-        const x = size * (Math.sqrt(3) * q + (Math.sqrt(3) / 2) * r)
-        const y = size * (1.5 * r)
-        pts.push([x, y])
-      }
-    }
-    return pts
-  }, [])
-
   return (
-    <group ref={ref} position={position}>
-      {hexPositions.map(([x, y], i) => (
-        <mesh key={i} position={[x, y, 0]}>
-          <circleGeometry args={[0.18, 6]} />
-          <meshBasicMaterial color="#FF6B35" transparent opacity={0.03 + (i % 3) * 0.015} side={THREE.DoubleSide} />
-        </mesh>
-      ))}
-      {hexPositions.slice(0, 7).map(([x, y], i) => (
-        <mesh key={`ring-${i}`} position={[x, y, 0.01]}>
-          <ringGeometry args={[0.16, 0.18, 6]} />
-          <meshBasicMaterial color="#FF9F1C" transparent opacity={0.08} side={THREE.DoubleSide} />
-        </mesh>
-      ))}
-    </group>
+    <mesh ref={ref} position={pos}>
+      <torusGeometry args={[radius, tube, 24, 128]} />
+      <meshPhysicalMaterial
+        color={color}
+        metalness={0.9}
+        roughness={0.06}
+        clearcoat={1}
+        clearcoatRoughness={0.03}
+        envMapIntensity={2}
+      />
+    </mesh>
   )
 }
 
-// ─── Ambient particles ────────────────────────────────────────
-function AmbientParticles({
-  count,
-  mouse,
-  scrollY,
-}: {
+// ─── 4. Warm Dust Particles ───────────────────────────────────
+function Dust({ count, mouse, scrollY }: {
   count: number
   mouse: React.MutableRefObject<{ x: number; y: number }>
   scrollY: React.MutableRefObject<number>
 }) {
   const ref = useRef<THREE.Points>(null)
-
-  const positions = useMemo(() => {
-    const arr = new Float32Array(count * 3)
+  const { positions, seeds } = useMemo(() => {
+    const p = new Float32Array(count * 3)
+    const s: number[] = []
     for (let i = 0; i < count; i++) {
-      arr[i * 3] = (Math.random() - 0.5) * 10
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 8
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 6 - 1
+      p[i * 3] = (Math.random() - 0.5) * 14
+      p[i * 3 + 1] = (Math.random() - 0.5) * 10
+      p[i * 3 + 2] = (Math.random() - 0.5) * 6 - 1
+      s.push(Math.random() * 100)
     }
-    return arr
+    return { positions: p, seeds: s }
   }, [count])
 
-  const seeds = useMemo(
-    () => Array.from({ length: count }, () => Math.random() * 100),
-    [count]
-  )
-
-  useFrame((state) => {
+  useFrame(({ clock }) => {
     if (!ref.current) return
-    const t = state.clock.elapsedTime
-    const posAttr = ref.current.geometry.getAttribute("position")
-
+    const t = clock.elapsedTime
+    const attr = ref.current.geometry.getAttribute("position")
     for (let i = 0; i < count; i++) {
-      const seed = seeds[i]
-      const baseX = (seed * 1234.5) % 10 - 5
-      const baseY = (seed * 5678.9) % 8 - 4
-      posAttr.setXYZ(
-        i,
-        baseX + Math.sin(t * 0.3 + seed) * 0.5 + mouse.current.x * 0.15,
-        baseY + Math.cos(t * 0.25 + seed) * 0.4 - scrollY.current * 1.5,
-        -1 + Math.sin(t * 0.2 + seed * 2) * 0.3
+      const sd = seeds[i]
+      attr.setXYZ(i,
+        ((sd * 1234.5) % 14 - 7) + Math.sin(t * 0.08 + sd) * 0.5 + mouse.current.x * 0.06,
+        ((sd * 5678.9) % 10 - 5) + Math.cos(t * 0.06 + sd) * 0.4 - scrollY.current * 1.2,
+        -1.5 + Math.sin(t * 0.04 + sd * 2) * 0.3
       )
     }
-    posAttr.needsUpdate = true
+    attr.needsUpdate = true
   })
 
   return (
@@ -304,95 +199,93 @@ function AmbientParticles({
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" array={positions} count={count} itemSize={3} />
       </bufferGeometry>
-      <pointsMaterial color="#FF6B35" size={0.015} transparent opacity={0.35} sizeAttenuation />
+      <pointsMaterial color="#FF6B35" size={0.015} transparent opacity={0.2} sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false} />
     </points>
   )
 }
 
-// ─── Main export ──────────────────────────────────────────────
-export default function FloatingObjects({ mouse, scrollY, tier }: FloatingObjectsProps) {
-  const timeRef = useRef(0)
-  useFrame((state) => { timeRef.current = state.clock.elapsedTime })
-
-  const nodes = useMemo(() => {
-    const count = tier === "high" ? 8 : tier === "medium" ? 5 : 3
-    const configs = []
-    const colors = ["#FF6B35", "#FF9F1C", "#FFD166", "#FF8C61", "#3B82F6", "#22C55E", "#8B5CF6", "#06B6D4"]
-
-    for (let i = 0; i < count; i++) {
-      const angle = (i / count) * Math.PI * 2
-      const radius = 1.8 + Math.random() * 1.5
-      configs.push({
-        position: new THREE.Vector3(
-          Math.cos(angle) * radius + (Math.random() - 0.5) * 0.5,
-          Math.sin(angle) * radius * 0.6 + (Math.random() - 0.5) * 0.5,
-          (Math.random() - 0.5) * 2 - 1
-        ),
-        scale: 0.8 + Math.random() * 1.2,
-        color: colors[i % colors.length],
-        speed: 0.3 + Math.random() * 0.4,
-        depthFactor: 0.3 + Math.random() * 0.7,
-      })
-    }
-    return configs
-  }, [tier])
-
-  const streams = useMemo(() => {
-    if (tier === "low") return []
-    const connections: { start: [number, number, number]; end: [number, number, number]; color: string; speed: number }[] = []
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const dist = nodes[i].position.distanceTo(nodes[j].position)
-        if (dist < 3.5 && connections.length < (tier === "high" ? 8 : 4)) {
-          connections.push({
-            start: nodes[i].position.toArray() as [number, number, number],
-            end: nodes[j].position.toArray() as [number, number, number],
-            color: nodes[i].color,
-            speed: 0.5 + Math.random() * 0.5,
-          })
+// ─── 5. Faint Connection Lines ────────────────────────────────
+function ConnectionLines({ positions, mouse }: {
+  positions: [number, number, number][]
+  mouse: React.MutableRefObject<{ x: number; y: number }>
+}) {
+  const ref = useRef<THREE.LineSegments>(null)
+  const linePositions = useMemo(() => {
+    const pts: number[] = []
+    for (let i = 0; i < positions.length; i++) {
+      for (let j = i + 1; j < positions.length; j++) {
+        const dx = positions[i][0] - positions[j][0]
+        const dy = positions[i][1] - positions[j][1]
+        const dz = positions[i][2] - positions[j][2]
+        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
+        if (dist < 4) {
+          pts.push(...positions[i], ...positions[j])
         }
       }
     }
-    return connections
-  }, [nodes, tier])
+    return new Float32Array(pts)
+  }, [positions])
+
+  useFrame(({ clock }) => {
+    if (!ref.current) return
+    ref.current.rotation.y = Math.sin(clock.elapsedTime * 0.02) * 0.03
+    ref.current.position.x = mouse.current.x * 0.1
+    ref.current.position.y = mouse.current.y * 0.05
+  })
+
+  if (linePositions.length === 0) return null
+
+  return (
+    <lineSegments ref={ref}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" array={linePositions} count={linePositions.length / 3} itemSize={3} />
+      </bufferGeometry>
+      <lineBasicMaterial color="#FF6B35" transparent opacity={0.06} />
+    </lineSegments>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SCENE COMPOSITION
+// ═══════════════════════════════════════════════════════════════
+export default function FloatingObjects({ mouse, scrollY, tier }: Props) {
+  const hi = tier === "high"
+  const md = tier === "medium"
+
+  // Node positions for connection lines
+  const nodePositions: [number, number, number][] = useMemo(() => [
+    [-2, 1.2, 0.5],
+    [2.5, 0.8, 0],
+    [0.5, -0.5, 0.3],
+    [-1.5, -1.2, -0.3],
+    [3, -1, -0.5],
+    [-3, 0.2, -0.8],
+    [1, 2, -0.5],
+  ], [])
 
   return (
     <group>
-      {nodes.map((node, i) => (
-        <NetworkNode
-          key={`node-${i}`}
-          position={node.position}
-          scale={node.scale}
-          color={node.color}
-          speed={node.speed}
-          depthFactor={node.depthFactor}
-          mouse={mouse}
-          scrollY={scrollY}
-        />
-      ))}
+      {/* ── Glass nodes — the network feel ─────────────────── */}
+      <GlassNode pos={[-2, 1.2, 0.5]} radius={0.55} color="#ffe8d6" glowColor="#FF6B35" speed={0.2} depth={0.5} phase={0} mouse={mouse} scrollY={scrollY} />
+      <GlassNode pos={[2.5, 0.8, 0]} radius={0.4} color="#e0e8ff" glowColor="#3B82F6" speed={0.18} depth={0.45} phase={1.8} mouse={mouse} scrollY={scrollY} />
+      <GlassNode pos={[0.5, -0.5, 0.3]} radius={0.65} color="#ffe0cc" glowColor="#F97316" speed={0.15} depth={0.55} phase={3.2} mouse={mouse} scrollY={scrollY} />
+      {(hi || md) && <GlassNode pos={[-1.5, -1.2, -0.3]} radius={0.3} color="#f0e0ff" glowColor="#8B5CF6" speed={0.22} depth={0.4} phase={4.5} mouse={mouse} scrollY={scrollY} />}
+      {hi && <GlassNode pos={[3, -1, -0.5]} radius={0.25} color="#ffe0cc" glowColor="#FF6B35" speed={0.25} depth={0.6} phase={5.8} mouse={mouse} scrollY={scrollY} />}
 
-      {streams.map((stream, i) => (
-        <DataStream
-          key={`stream-${i}`}
-          start={stream.start}
-          end={stream.end}
-          color={stream.color}
-          speed={stream.speed}
-        />
-      ))}
+      {/* ── Chrome blobs — organic, glossy ──────────────────── */}
+      <ChromeBlob pos={[-3, 0.2, -0.8]} scale={0.5} color="#e8d0ff" speed={0.12} depth={0.55} phase={0.5} mouse={mouse} scrollY={scrollY} />
+      {(hi || md) && <ChromeBlob pos={[1, 2, -0.5]} scale={0.35} color="#ffd6e0" speed={0.15} depth={0.7} phase={2.3} mouse={mouse} scrollY={scrollY} />}
+      {hi && <ChromeBlob pos={[3.5, 1.5, -1.2]} scale={0.25} color="#d6e8ff" speed={0.18} depth={0.8} phase={4.1} mouse={mouse} scrollY={scrollY} />}
 
-      {tier !== "low" && (
-        <>
-          <ProductForm position={[-2.5, 0.5, -1]} scale={0.8} speed={0.35} mouse={mouse} scrollY={scrollY} />
-          <ProductForm position={[2.8, -0.3, -0.5]} scale={0.6} speed={0.25} mouse={mouse} scrollY={scrollY} />
-        </>
-      )}
+      {/* ── Chrome rings — slow, elegant ────────────────────── */}
+      <ChromeRing pos={[-0.5, 0.5, -0.3]} radius={1.2} tube={0.025} tiltX={-0.4} color="#ffe0cc" speed={0.1} depth={0.5} phase={0} mouse={mouse} scrollY={scrollY} />
+      {(hi || md) && <ChromeRing pos={[2, -0.8, -0.8]} radius={0.7} tube={0.02} tiltX={0.5} color="#e0d0ff" speed={0.08} depth={0.45} phase={2.5} mouse={mouse} scrollY={scrollY} />}
 
-      {tier === "high" && (
-        <HexGrid position={[0, -0.5, -2.5]} mouse={mouse} scrollY={scrollY} />
-      )}
+      {/* ── Connection lines between nodes ──────────────────── */}
+      {hi && <ConnectionLines positions={nodePositions} mouse={mouse} />}
 
-      <AmbientParticles count={tier === "high" ? 60 : tier === "medium" ? 30 : 15} mouse={mouse} scrollY={scrollY} />
+      {/* ── Dust particles ─────────────────────────────────── */}
+      <Dust count={hi ? 40 : md ? 20 : 8} mouse={mouse} scrollY={scrollY} />
     </group>
   )
 }
